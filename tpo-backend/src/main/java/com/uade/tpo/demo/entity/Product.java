@@ -22,7 +22,7 @@ import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = { "category", "seller", "images" })
+@ToString(exclude = { "category", "images" })
 @Entity
 public class Product {
 
@@ -61,11 +61,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
-    // Relacion ManyToOne: muchos productos pertenecen a un mismo vendedor.
-    @ManyToOne
-    @JoinColumn(name = "seller_id", nullable = false)
-    private User seller;
 
     // Relacion OneToMany: un producto tiene una o mas fotos.
     @JsonIgnore

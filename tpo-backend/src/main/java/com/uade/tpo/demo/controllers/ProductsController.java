@@ -24,9 +24,7 @@ import com.uade.tpo.demo.entity.dto.ProductResponse;
 import com.uade.tpo.demo.entity.dto.ProductUpdateRequest;
 import com.uade.tpo.demo.entity.dto.StockRequest;
 import com.uade.tpo.demo.exceptions.CategoryNotFoundException;
-import com.uade.tpo.demo.exceptions.ForbiddenActionException;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
-import com.uade.tpo.demo.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -47,7 +45,6 @@ public class ProductsController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Long sellerId,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false, defaultValue = "false") boolean onlyAvailable,
@@ -58,69 +55,58 @@ public class ProductsController {
                 : PageRequest.of(page, size);
 
         return ResponseEntity.ok(productService.getProducts(
-                categoryId, sellerId, minPrice, maxPrice, onlyAvailable, search, pageRequest));
+                categoryId, minPrice, maxPrice, onlyAvailable, search, pageRequest));
     }
 
-    /** Detalle del producto: imagen, descripcion, precio y disponibilidad. */
+    /** Detalle del producto: imagenes, descripcion, precio y disponibilidad. */
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long productId)
             throws ProductNotFoundException {
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
-    /** Alta de una publicacion por parte de un vendedor. */
+    /** Alta de una publicacion. Con seguridad, queda restringido al rol ADMIN. */
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest)
-            throws CategoryNotFoundException, UserNotFoundException {
+            throws CategoryNotFoundException {
 
         ProductResponse result = productService.createProduct(productRequest);
         return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }
 
-    /**
-     * Modificacion de la publicacion. El sellerId viaja por query param hasta que
-     * este la capa de seguridad; despues sale del token del usuario autenticado.
-     */
+    /** Modificacion de la publicacion. */
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long productId,
-            @RequestParam Long sellerId,
             @Valid @RequestBody ProductUpdateRequest productRequest)
-            throws ProductNotFoundException, CategoryNotFoundException, ForbiddenActionException {
+            throws ProductNotFoundException, CategoryNotFoundException {
 
-        return ResponseEntity.ok(productService.updateProduct(productId, sellerId, productRequest));
+        return ResponseEntity.ok(productService.updateProduct(productId, productRequest));
     }
 
-    /** Manejo de stock por parte del vendedor duenio del producto. */
+    /** Manejo del stock del producto. */
     @PatchMapping("/{productId}/stock")
     public ResponseEntity<ProductResponse> updateStock(
             @PathVariable Long productId,
-            @RequestParam Long sellerId,
-            @Valid @RequestBody StockRequest stockRequest)
-            throws ProductNotFoundException, ForbiddenActionException {
+            @Valid @RequestBody StockRequest stockRequest) throws ProductNotFoundException {
 
-        return ResponseEntity.ok(productService.updateStock(productId, sellerId, stockRequest));
+        return ResponseEntity.ok(productService.updateStock(productId, stockRequest));
     }
 
     /** Gestion de descuentos sobre un producto individual. */
     @PatchMapping("/{productId}/discount")
     public ResponseEntity<ProductResponse> updateDiscount(
             @PathVariable Long productId,
-            @RequestParam Long sellerId,
-            @Valid @RequestBody DiscountRequest discountRequest)
-            throws ProductNotFoundException, ForbiddenActionException {
+            @Valid @RequestBody DiscountRequest discountRequest) throws ProductNotFoundException {
 
-        return ResponseEntity.ok(productService.updateDiscount(productId, sellerId, discountRequest));
+        return ResponseEntity.ok(productService.updateDiscount(productId, discountRequest));
     }
 
     /** Baja de la publicacion. */
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(
-            @PathVariable Long productId,
-            @RequestParam Long sellerId)
-            throws ProductNotFoundException, ForbiddenActionException {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) throws ProductNotFoundException {
 
-        productService.deleteProduct(productId, sellerId);
+        productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
 }

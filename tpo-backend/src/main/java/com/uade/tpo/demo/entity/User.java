@@ -30,7 +30,7 @@ import lombok.ToString;
  */
 @Data
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = { "cart", "orders", "products", "roles" })
+@ToString(exclude = { "cart", "orders", "roles" })
 @Entity
 @Table(name = "users")
 public class User {
@@ -63,15 +63,10 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
 
-    // Relacion OneToMany: un usuario (comprador) genera muchas ordenes.
+    // Relacion OneToMany: un usuario genera muchas ordenes.
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
-
-    // Relacion OneToMany: un usuario (vendedor) publica muchos productos.
-    @JsonIgnore
-    @OneToMany(mappedBy = "seller")
-    private List<Product> products = new ArrayList<>();
 
     // Relacion ManyToMany con tabla intermedia user_role.
     @ManyToMany(fetch = FetchType.EAGER)

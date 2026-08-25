@@ -36,6 +36,9 @@ public class DataInitializer implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
+    /** Placeholder que si carga en el navegador, para poder ver la imagen en la demo. */
+    private static final String IMAGE_URL = "https://placehold.co/600x600/1f2937/ffffff?text=";
+
     @Autowired
     private RoleRepository roleRepository;
 
@@ -56,13 +59,13 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        Role buyer = roleRepository.findByDescription("BUYER").orElseGet(() -> roleRepository.save(new Role("BUYER")));
-        Role seller = roleRepository.findByDescription("SELLER")
-                .orElseGet(() -> roleRepository.save(new Role("SELLER")));
+        Role user = roleRepository.findByDescription("USER").orElseGet(() -> roleRepository.save(new Role("USER")));
+        Role admin = roleRepository.findByDescription("ADMIN").orElseGet(() -> roleRepository.save(new Role("ADMIN")));
 
-        User vendedor = createUser("vendedor", "vendedor@juegos.com", "Lucia", "Fernandez", List.of(buyer, seller));
-        User otroVendedor = createUser("ludoteca", "ventas@ludoteca.com", "Martin", "Alvarez", List.of(buyer, seller));
-        User comprador = createUser("comprador", "comprador@mail.com", "Sofia", "Gomez", List.of(buyer));
+        // La tienda tiene un unico vendedor: la administracion del sitio.
+        User tienda = createUser("admin", "admin@juegosdemesa.com", "Tomas", "Szkarlatiuk", List.of(user, admin));
+        User sofia = createUser("sofia", "sofia@mail.com", "Sofia", "Gomez", List.of(user));
+        User martin = createUser("martin", "martin@mail.com", "Martin", "Alvarez", List.of(user));
 
         Category estrategia = createCategory("Estrategia");
         Category familiar = createCategory("Familiar");
@@ -70,40 +73,35 @@ public class DataInitializer implements CommandLineRunner {
         createCategory("Party games");
 
         createProduct("Catan", "Juego de estrategia y negociacion para 3 a 4 jugadores. Edicion en espaniol.",
-                new BigDecimal("54999.00"), 12, 0, estrategia, vendedor,
-                List.of("https://images.example.com/catan-1.jpg", "https://images.example.com/catan-2.jpg"));
+                new BigDecimal("54999.00"), 12, 0, estrategia, List.of("Catan", "Catan+caja"));
 
         createProduct("Carcassonne", "Juego de colocacion de losetas. Incluye la expansion Rio.",
-                new BigDecimal("42500.00"), 7, 15, estrategia, vendedor,
-                List.of("https://images.example.com/carcassonne.jpg"));
+                new BigDecimal("42500.00"), 7, 15, estrategia, List.of("Carcassonne"));
 
         createProduct("Dixit", "Juego de cartas ilustradas y asociacion de ideas para toda la familia.",
-                new BigDecimal("61000.00"), 4, 0, familiar, otroVendedor,
-                List.of("https://images.example.com/dixit.jpg"));
+                new BigDecimal("61000.00"), 4, 0, familiar, List.of("Dixit"));
 
         createProduct("Uno", "El clasico juego de cartas. Mazo de 108 cartas.",
-                new BigDecimal("8900.00"), 0, 0, cartas, otroVendedor,
-                List.of("https://images.example.com/uno.jpg"));
+                new BigDecimal("8900.00"), 0, 0, cartas, List.of("Uno"));
 
         createProduct("Virus!", "Juego de cartas rapido para 2 a 6 jugadores.",
-                new BigDecimal("15400.00"), 25, 20, cartas, vendedor,
-                List.of("https://images.example.com/virus.jpg"));
+                new BigDecimal("15400.00"), 25, 20, cartas, List.of("Virus"));
 
         log.info("Datos de prueba cargados.");
-        log.info("Usuarios -> vendedor id={} | ludoteca id={} | comprador id={}",
-                vendedor.getId(), otroVendedor.getId(), comprador.getId());
+        log.info("Usuarios -> admin (la tienda) id={} | sofia id={} | martin id={}",
+                tienda.getId(), sofia.getId(), martin.getId());
         log.info("Nota: 'Uno' se carga con stock 0 a proposito, para probar la validacion del carrito.");
     }
 
     private User createUser(String username, String email, String name, String surname, List<Role> roles) {
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword("123456");
-        user.setName(name);
-        user.setSurname(surname);
-        user.setRoles(new ArrayList<>(roles));
-        return userRepository.save(user);
+        User u = new User();
+        u.setUsername(username);
+        u.setEmail(email);
+        u.setPassword("123456");
+        u.setName(name);
+        u.setSurname(surname);
+        u.setRoles(new ArrayList<>(roles));
+        return userRepository.save(u);
     }
 
     private Category createCategory(String description) {
@@ -113,7 +111,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createProduct(String name, String description, BigDecimal price, int stock, int discount,
-            Category category, User seller, List<String> images) {
+            Category category, List<String> imageLabels) {
 
         Product product = new Product();
         product.setName(name);
@@ -122,11 +120,10 @@ public class DataInitializer implements CommandLineRunner {
         product.setStock(stock);
         product.setDiscount(discount);
         product.setCategory(category);
-        product.setSeller(seller);
         product.setActive(true);
 
-        for (String url : images)
-            product.getImages().add(new ProductImage(url, product));
+        for (String label : imageLabels)
+            product.getImages().add(new ProductImage(IMAGE_URL + label, product));
 
         productRepository.save(product);
     }

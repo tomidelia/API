@@ -13,7 +13,6 @@ import com.uade.tpo.demo.entity.dto.ErrorResponse;
 import com.uade.tpo.demo.exceptions.CartItemNotFoundException;
 import com.uade.tpo.demo.exceptions.CategoryNotFoundException;
 import com.uade.tpo.demo.exceptions.EmptyCartException;
-import com.uade.tpo.demo.exceptions.ForbiddenActionException;
 import com.uade.tpo.demo.exceptions.InsufficientStockException;
 import com.uade.tpo.demo.exceptions.InvalidOperationException;
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
@@ -38,11 +37,6 @@ public class GlobalExceptionHandler {
             InvalidOperationException.class })
     public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler(ForbiddenActionException.class)
-    public ResponseEntity<ErrorResponse> handleForbidden(Exception ex) {
-        return build(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     /** Errores de las validaciones declarativas de los DTO (@NotBlank, @Min...). */

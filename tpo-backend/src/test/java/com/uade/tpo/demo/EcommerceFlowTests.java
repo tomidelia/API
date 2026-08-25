@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,19 +15,15 @@ import org.springframework.data.domain.PageRequest;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.dto.CartItemRequest;
 import com.uade.tpo.demo.entity.dto.CartResponse;
-import com.uade.tpo.demo.entity.dto.DiscountRequest;
 import com.uade.tpo.demo.entity.dto.OrderResponse;
 import com.uade.tpo.demo.entity.dto.ProductRequest;
 import com.uade.tpo.demo.entity.dto.ProductResponse;
-import com.uade.tpo.demo.exceptions.ForbiddenActionException;
 import com.uade.tpo.demo.exceptions.InsufficientStockException;
 import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.repository.UserRepository;
 import com.uade.tpo.demo.service.CartService;
 import com.uade.tpo.demo.service.OrderService;
 import com.uade.tpo.demo.service.ProductService;
-
-import org.junit.jupiter.api.Assertions;
 
 /**
  * Recorre los casos de uso principales del enunciado contra una base H2 en
@@ -66,7 +63,7 @@ class EcommerceFlowTests {
     @Test
     void elCatalogoDevuelveLosProductosCargados() {
         Page<ProductResponse> page = productService.getProducts(
-                null, null, null, null, false, null, PageRequest.of(0, 10));
+                null, null, null, false, null, PageRequest.of(0, 10));
 
         assertThat(page.getContent()).extracting(ProductResponse::getName)
                 .contains("Catan", "Carcassonne", "Dixit", "Uno", "Virus!");
@@ -75,11 +72,11 @@ class EcommerceFlowTests {
     @Test
     void sePuedeBuscarPorNombreYFiltrarPorPrecio() {
         Page<ProductResponse> porNombre = productService.getProducts(
-                null, null, null, null, false, "catan", PageRequest.of(0, 10));
+                null, null, null, false, "catan", PageRequest.of(0, 10));
         assertThat(porNombre.getContent()).extracting(ProductResponse::getName).containsExactly("Catan");
 
         Page<ProductResponse> baratos = productService.getProducts(
-                null, null, null, new BigDecimal("20000"), false, null, PageRequest.of(0, 10));
+                null, null, new BigDecimal("20000"), false, null, PageRequest.of(0, 10));
         assertThat(baratos.getContent()).extracting(ProductResponse::getName)
                 .containsExactlyInAnyOrder("Uno", "Virus!");
     }
@@ -87,7 +84,7 @@ class EcommerceFlowTests {
     @Test
     void elFiltroDeDisponiblesDejaAfueraLosProductosSinStock() {
         Page<ProductResponse> disponibles = productService.getProducts(
-                null, null, null, null, true, null, PageRequest.of(0, 10));
+                null, null, null, true, null, PageRequest.of(0, 10));
 
         assertThat(disponibles.getContent()).extracting(ProductResponse::getName).doesNotContain("Uno");
     }
@@ -95,14 +92,14 @@ class EcommerceFlowTests {
     @Test
     void elDescuentoSeReflejaEnElPrecioFinal() {
         ProductResponse carcassonne = productService.getProducts(
-                null, null, null, null, false, "carcassonne", PageRequest.of(0, 1)).getContent().get(0);
+                null, null, null, false, "carcassonne", PageRequest.of(0, 1)).getContent().get(0);
 
         // 42500 con 15% de descuento
         assertThat(carcassonne.getFinalPrice()).isEqualByComparingTo(new BigDecimal("36125.00"));
     }
 
     @Test
-    void unVendedorPublicaUnProductoConVariasFotos() throws Exception {
+    void sePublicaUnProductoConVariasFotos() throws Exception {
         ProductRequest request = new ProductRequest();
         request.setName("Aventureros al Tren");
         request.setDescription("Juego de rutas ferroviarias para 2 a 5 jugadores.");
@@ -110,9 +107,8 @@ class EcommerceFlowTests {
         request.setStock(3);
         request.setDiscount(10);
         request.setCategoryId(productRepository.findAll().get(0).getCategory().getId());
-        request.setSellerId(userId("vendedor"));
-        request.setImages(List.of("https://images.example.com/ticket-1.jpg",
-                "https://images.example.com/ticket-2.jpg"));
+        request.setImages(List.of("https://placehold.co/600x600?text=Ticket1",
+                "https://placehold.co/600x600?text=Ticket2"));
 
         ProductResponse creado = productService.createProduct(request);
 
@@ -123,22 +119,13 @@ class EcommerceFlowTests {
     }
 
     @Test
-    void otroVendedorNoPuedeTocarUnaPublicacionAjena() {
-        DiscountRequest request = new DiscountRequest();
-        request.setDiscount(90);
-
-        Assertions.assertThrows(ForbiddenActionException.class,
-                () -> productService.updateDiscount(productId("Catan"), userId("ludoteca"), request));
-    }
-
-    @Test
     void noSePuedeAgregarAlCarritoUnProductoSinStock() {
         CartItemRequest request = new CartItemRequest();
         request.setProductId(productId("Uno"));
         request.setQuantity(1);
 
         Assertions.assertThrows(InsufficientStockException.class,
-                () -> cartService.addItem(userId("comprador"), request));
+                () -> cartService.addItem(userId("sofia"), request));
     }
 
     @Test
@@ -148,12 +135,12 @@ class EcommerceFlowTests {
         request.setQuantity(99);
 
         Assertions.assertThrows(InsufficientStockException.class,
-                () -> cartService.addItem(userId("comprador"), request));
+                () -> cartService.addItem(userId("sofia"), request));
     }
 
     @Test
     void elCheckoutCalculaElTotalYDescuentaElStock() throws Exception {
-        Long comprador = userId("comprador");
+        Long comprador = userId("martin");
         Long catan = productId("Catan");
         int stockInicial = productRepository.findById(catan).orElseThrow().getStock();
 

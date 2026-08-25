@@ -23,21 +23,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product p "
             + "where p.active = true "
             + "and (:categoryId is null or p.category.id = :categoryId) "
-            + "and (:sellerId is null or p.seller.id = :sellerId) "
             + "and (:minPrice is null or p.price >= :minPrice) "
             + "and (:maxPrice is null or p.price <= :maxPrice) "
             + "and (:onlyAvailable = false or p.stock > 0) "
             + "and (:search is null or lower(p.name) like lower(concat('%', :search, '%')) "
             + "     or lower(p.description) like lower(concat('%', :search, '%')))")
     Page<Product> search(@Param("categoryId") Long categoryId,
-            @Param("sellerId") Long sellerId,
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice,
             @Param("onlyAvailable") boolean onlyAvailable,
             @Param("search") String search,
             Pageable pageable);
-
-    List<Product> findBySellerIdAndActiveTrue(Long sellerId);
 
     List<Product> findByCategoryIdAndActiveTrue(Long categoryId);
 }

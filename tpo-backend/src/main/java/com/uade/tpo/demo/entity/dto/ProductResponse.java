@@ -29,8 +29,6 @@ public class ProductResponse {
     private boolean available;
     private Long categoryId;
     private String categoryDescription;
-    private Long sellerId;
-    private String sellerUsername;
     private List<String> images;
 
     public static ProductResponse from(Product product) {
@@ -45,8 +43,6 @@ public class ProductResponse {
                 .available(product.isAvailable())
                 .categoryId(product.getCategory().getId())
                 .categoryDescription(product.getCategory().getDescription())
-                .sellerId(product.getSeller().getId())
-                .sellerUsername(product.getSeller().getUsername())
                 .images(product.getImages().stream()
                         .map(ProductImage::getUrl)
                         .collect(Collectors.toList()))

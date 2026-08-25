@@ -44,7 +44,7 @@ class ApiEndpointsTests {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).containsKeys("name", "description", "price", "finalPrice", "stock",
-                "available", "images", "categoryDescription", "sellerUsername");
+                "available", "images", "categoryDescription");
     }
 
     @SuppressWarnings("rawtypes")
@@ -86,7 +86,7 @@ class ApiEndpointsTests {
         List<Map<String, Object>> content = (List<Map<String, Object>>) productos.getBody().get("content");
         Object unoId = content.get(0).get("id");
 
-        ResponseEntity<Map> response = rest.postForEntity("/carts/3/items",
+        ResponseEntity<Map> response = rest.postForEntity("/carts/2/items",
                 Map.of("productId", unoId, "quantity", 1), Map.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -96,7 +96,7 @@ class ApiEndpointsTests {
     @SuppressWarnings("rawtypes")
     @Test
     void elCheckoutConCarritoVacioDevuelve400() {
-        ResponseEntity<Map> response = rest.postForEntity("/orders/checkout/3", null, Map.class);
+        ResponseEntity<Map> response = rest.postForEntity("/orders/checkout/2", null, Map.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().get("message").toString()).contains("vacio");
@@ -111,13 +111,13 @@ class ApiEndpointsTests {
         Object virusId = content.get(0).get("id");
 
         // 15400 con 20% de descuento = 12320 por unidad
-        ResponseEntity<Map> carrito = rest.postForEntity("/carts/3/items",
+        ResponseEntity<Map> carrito = rest.postForEntity("/carts/2/items",
                 Map.of("productId", virusId, "quantity", 3), Map.class);
         assertThat(carrito.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(new BigDecimal(carrito.getBody().get("total").toString()))
                 .isEqualByComparingTo(new BigDecimal("36960.00"));
 
-        ResponseEntity<Map> orden = rest.postForEntity("/orders/checkout/3", null, Map.class);
+        ResponseEntity<Map> orden = rest.postForEntity("/orders/checkout/2", null, Map.class);
         assertThat(orden.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(new BigDecimal(orden.getBody().get("total").toString()))
                 .isEqualByComparingTo(new BigDecimal("36960.00"));
@@ -125,7 +125,7 @@ class ApiEndpointsTests {
         ResponseEntity<Map> productoDespues = rest.getForEntity("/products/" + virusId, Map.class);
         assertThat(productoDespues.getBody().get("stock")).isEqualTo(22);
 
-        ResponseEntity<Map> carritoDespues = rest.getForEntity("/carts/3", Map.class);
+        ResponseEntity<Map> carritoDespues = rest.getForEntity("/carts/2", Map.class);
         @SuppressWarnings("unchecked")
         List<Object> items = (List<Object>) carritoDespues.getBody().get("items");
         assertThat(items).isEmpty();

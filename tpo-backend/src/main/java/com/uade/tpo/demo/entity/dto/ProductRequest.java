@@ -35,13 +35,6 @@ public class ProductRequest {
     @NotNull(message = "La categoria es obligatoria")
     private Long categoryId;
 
-    /**
-     * Hasta que este la capa de seguridad el vendedor viaja en el body.
-     * Cuando integremos JWT se toma del usuario autenticado.
-     */
-    @NotNull(message = "El vendedor es obligatorio")
-    private Long sellerId;
-
     /** Una o mas fotos del producto (URL o imagen en base64). */
     private List<String> images = new ArrayList<>();
 }

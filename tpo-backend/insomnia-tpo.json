@@ -9,7 +9,7 @@
       "_type": "workspace",
       "parentId": null,
       "name": "TPO - E-commerce de juegos de mesa",
-      "description": "API REST del TPO de Aplicaciones Interactivas.\n\nANTES DE EMPEZAR:\n1) Levantar el backend (puerto 4002).\n2) Correr las carpetas EN ORDEN, de la 01 a la 05.\n\nLos ids estan fijos y asumen la base recien cargada. Si ya venias probando, resetea la base con el comando del README y volve a levantar la app: asi los ids vuelven a coincidir.",
+      "description": "API REST del TPO de Aplicaciones Interactivas.\n\nANTES DE EMPEZAR:\n1) Levantar el backend (puerto 4002).\n2) Correr las carpetas EN ORDEN, de la 01 a la 05.\n\nLos ids estan fijos y asumen la base recien cargada. Si ya venias probando, resetea la base con el comando del README y volve a levantar la app: asi los ids vuelven a coincidir.\n\nUsuario comprador de la demo: id 2 (sofia).",
       "scope": "collection"
     },
     {
@@ -34,7 +34,7 @@
       "_id": "fld_gestion",
       "_type": "request_group",
       "parentId": "wrk_tpo",
-      "name": "03 - Gestion de productos (vendedor)",
+      "name": "03 - Gestion de productos (la tienda)",
       "description": "",
       "environment": {},
       "metaSortKey": 3000
@@ -298,7 +298,7 @@
       "_type": "request",
       "parentId": "fld_catalogo",
       "name": "Detalle del producto",
-      "description": "Imagen, descripcion, precio y disponibilidad.",
+      "description": "Imagenes, descripcion, precio y disponibilidad. Los links de images abren en el navegador.",
       "method": "GET",
       "url": "http://localhost:4002/products/1",
       "headers": [],
@@ -358,7 +358,7 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Aventureros al Tren\",\n  \"description\": \"Juego de rutas ferroviarias para 2 a 5 jugadores.\",\n  \"price\": 70000.0,\n  \"stock\": 5,\n  \"discount\": 10,\n  \"categoryId\": 1,\n  \"sellerId\": 1,\n  \"images\": [\n    \"https://images.example.com/ticket-1.jpg\",\n    \"https://images.example.com/ticket-2.jpg\"\n  ]\n}"
+        "text": "{\n  \"name\": \"Aventureros al Tren\",\n  \"description\": \"Juego de rutas ferroviarias para 2 a 5 jugadores.\",\n  \"price\": 70000.0,\n  \"stock\": 5,\n  \"discount\": 10,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros\",\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros+caja\"\n  ]\n}"
       }
     },
     {
@@ -396,7 +396,7 @@
       "name": "Modificar publicacion",
       "description": "Solo se actualiza lo que viaja en el body; el resto queda igual.",
       "method": "PUT",
-      "url": "http://localhost:4002/products/6?sellerId=1",
+      "url": "http://localhost:4002/products/6",
       "headers": [
         {
           "name": "Content-Type",
@@ -422,9 +422,9 @@
       "_type": "request",
       "parentId": "fld_gestion",
       "name": "Manejar el stock",
-      "description": "Requisito del enunciado: el usuario que crea el producto podra manejar el stock del mismo.",
+      "description": "Requisito del enunciado: poder manejar el stock del producto.",
       "method": "PATCH",
-      "url": "http://localhost:4002/products/6/stock?sellerId=1",
+      "url": "http://localhost:4002/products/6/stock",
       "headers": [
         {
           "name": "Content-Type",
@@ -452,7 +452,7 @@
       "name": "Aplicar descuento",
       "description": "Requisito del enunciado: gestion de descuentos sobre productos individuales. Ver como cambia finalPrice en la respuesta.",
       "method": "PATCH",
-      "url": "http://localhost:4002/products/6/discount?sellerId=1",
+      "url": "http://localhost:4002/products/6/discount",
       "headers": [
         {
           "name": "Content-Type",
@@ -477,10 +477,10 @@
       "_id": "req_019",
       "_type": "request",
       "parentId": "fld_gestion",
-      "name": "[403] Otro vendedor toca la publicacion",
-      "description": "Devuelve 403: solo el vendedor duenio puede modificar su propia publicacion.",
-      "method": "PATCH",
-      "url": "http://localhost:4002/products/6/discount?sellerId=2",
+      "name": "Cambiar las fotos",
+      "description": "Si viaja la lista images, reemplaza por completo las fotos del producto.",
+      "method": "PUT",
+      "url": "http://localhost:4002/products/6",
       "headers": [
         {
           "name": "Content-Type",
@@ -498,7 +498,7 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"discount\": 90\n}"
+        "text": "{\n  \"images\": [\n    \"https://placehold.co/600x600/166534/ffffff?text=Foto+nueva\"\n  ]\n}"
       }
     },
     {
@@ -508,7 +508,7 @@
       "name": "Eliminar publicacion",
       "description": "Devuelve 204. Sale del catalogo pero se conserva en la base para no romper las ordenes que ya lo compraron.",
       "method": "DELETE",
-      "url": "http://localhost:4002/products/6?sellerId=1",
+      "url": "http://localhost:4002/products/6",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -526,9 +526,9 @@
       "_type": "request",
       "parentId": "fld_carrito",
       "name": "Ver el carrito",
-      "description": "Usuario 3 = comprador. Si todavia no tiene carrito, se lo crea vacio.",
+      "description": "Usuario 2 = sofia, una compradora. Si todavia no tiene carrito, se lo crea vacio.",
       "method": "GET",
-      "url": "http://localhost:4002/carts/3",
+      "url": "http://localhost:4002/carts/2",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -548,7 +548,7 @@
       "name": "Vaciar el carrito (arrancar de cero)",
       "description": "Para empezar la demo con el carrito limpio.",
       "method": "DELETE",
-      "url": "http://localhost:4002/carts/3",
+      "url": "http://localhost:4002/carts/2",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -568,7 +568,7 @@
       "name": "[400] Agregar producto SIN stock",
       "description": "Producto 4 = Uno, stock 0. Requisito del enunciado: no se puede agregar al carrito.",
       "method": "POST",
-      "url": "http://localhost:4002/carts/3/items",
+      "url": "http://localhost:4002/carts/2/items",
       "headers": [
         {
           "name": "Content-Type",
@@ -596,7 +596,7 @@
       "name": "Agregar Catan x2",
       "description": "54999 x 2 = 109998.",
       "method": "POST",
-      "url": "http://localhost:4002/carts/3/items",
+      "url": "http://localhost:4002/carts/2/items",
       "headers": [
         {
           "name": "Content-Type",
@@ -624,7 +624,7 @@
       "name": "Agregar Virus! x1",
       "description": "Virus! tiene 20% off: 15400 pasa a 12320. Se ve en el subtotal.",
       "method": "POST",
-      "url": "http://localhost:4002/carts/3/items",
+      "url": "http://localhost:4002/carts/2/items",
       "headers": [
         {
           "name": "Content-Type",
@@ -652,7 +652,7 @@
       "name": "[400] Agregar mas que el stock",
       "description": "Dixit tiene stock 4. Devuelve 400 diciendo cuanto hay disponible.",
       "method": "POST",
-      "url": "http://localhost:4002/carts/3/items",
+      "url": "http://localhost:4002/carts/2/items",
       "headers": [
         {
           "name": "Content-Type",
@@ -680,7 +680,7 @@
       "name": "Modificar cantidad de una linea",
       "description": "OJO: el 1 del final es el id de la LINEA del carrito, no del producto. Sale del campo id de cada item que devuelve Ver el carrito.",
       "method": "PUT",
-      "url": "http://localhost:4002/carts/3/items/1",
+      "url": "http://localhost:4002/carts/2/items/1",
       "headers": [
         {
           "name": "Content-Type",
@@ -708,7 +708,7 @@
       "name": "Eliminar una linea",
       "description": "Mismo criterio: el 2 es el id de la linea, no del producto.",
       "method": "DELETE",
-      "url": "http://localhost:4002/carts/3/items/2",
+      "url": "http://localhost:4002/carts/2/items/2",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -728,7 +728,7 @@
       "name": "Ver el carrito antes de comprar",
       "description": "Aca se ve el total calculado automaticamente.",
       "method": "GET",
-      "url": "http://localhost:4002/carts/3",
+      "url": "http://localhost:4002/carts/2",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -748,7 +748,7 @@
       "name": "Checkout",
       "description": "Valida el stock, calcula el total con los descuentos, descuenta stock y vacia el carrito. Devuelve 201.",
       "method": "POST",
-      "url": "http://localhost:4002/orders/checkout/3",
+      "url": "http://localhost:4002/orders/checkout/2",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -788,7 +788,7 @@
       "name": "El carrito quedo vacio",
       "description": "",
       "method": "GET",
-      "url": "http://localhost:4002/carts/3",
+      "url": "http://localhost:4002/carts/2",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -808,7 +808,7 @@
       "name": "Historial de compras del usuario",
       "description": "",
       "method": "GET",
-      "url": "http://localhost:4002/orders/user/3?page=0&size=10",
+      "url": "http://localhost:4002/orders/user/2?page=0&size=10",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -848,7 +848,7 @@
       "name": "[400] Checkout con carrito vacio",
       "description": "Como el checkout anterior vacio el carrito, este devuelve 400.",
       "method": "POST",
-      "url": "http://localhost:4002/orders/checkout/3",
+      "url": "http://localhost:4002/orders/checkout/2",
       "headers": [],
       "parameters": [],
       "authentication": {},

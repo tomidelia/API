@@ -1,6 +1,7 @@
 # TPO — Aplicaciones Interactivas
 
-E-commerce de venta de **juegos de mesa**.
+E-commerce de venta de **juegos de mesa**. Tienda unica: nosotros somos el
+vendedor y los usuarios que se registran son compradores.
 UADE — Ingeniería Informática — 2º cuatrimestre 2026.
 
 ## Estructura
@@ -31,7 +32,7 @@ endpoints y la colección de Insomnia para probarlo.
 
 Resumen rápido:
 
-1. Crear el esquema en MySQL: `CREATE DATABASE marketplace;`
+1. Crear el esquema en MySQL: `CREATE DATABASE ecommerce;`
 2. Copiar `tpo-backend/src/main/resources/application.properties.example` a
    `application.properties` y poner ahí la contraseña de tu MySQL.
 3. Abrir `tpo-backend` en VS Code y ejecutar `DemoApplication.java`.

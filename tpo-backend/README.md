@@ -3,6 +3,9 @@
 API REST con Spring Boot + Spring Data JPA + MySQL, construida sobre el código base
 de la clase de Hibernate.
 
+**Modelo:** tienda única. Nosotros somos el vendedor; los usuarios que se registran son
+compradores. La administración del sitio publica y gestiona los productos.
+
 **Estado:** backend completo salvo la capa de seguridad, que se integra después de
 la clase correspondiente.
 
@@ -15,7 +18,7 @@ la clase correspondiente.
 | API REST sobre toda la información (completa o filtrada) | ✅ |
 | Capa de persistencia sobre el negocio entregado | ✅ |
 | Catálogo con foto y precio | ✅ |
-| Búsqueda y filtrado por categoría, precio, vendedor y texto | ✅ |
+| Búsqueda y filtrado por categoría, precio y texto | ✅ |
 | Detalle del producto con imagen y descripción | ✅ |
 | Agregar productos al carrito | ✅ |
 | Producto sin stock: se indica y no se puede agregar al carrito | ✅ |
@@ -24,13 +27,27 @@ la clase correspondiente.
 | Checkout descuenta stock y valida disponibilidad | ✅ |
 | Alta de publicación con una o más fotos | ✅ |
 | Publicación con descripción, categoría y precio | ✅ |
-| El vendedor maneja el stock de su producto | ✅ |
-| El vendedor elimina su producto | ✅ |
+| Manejo de stock del producto | ✅ |
+| Baja de producto | ✅ |
 | Gestión de descuentos sobre productos individuales | ✅ |
-| Registro de usuarios (comprador / vendedor) | ⏳ lo entrega la cátedra con seguridad |
-| Login y autenticación | ⏳ lo entrega la cátedra con seguridad |
+| Registro y login de usuarios | ⏳ lo entrega la cátedra con seguridad |
 | Administración de permisos | ⏳ lo entrega la cátedra con seguridad |
 | Interfaz de usuario dinámica (frontend) | ⏳ pendiente |
+
+### Una aclaración sobre el modelo
+
+El enunciado dice *"registro de usuarios como compradores y vendedores"* y que *"los
+usuarios registrados como vendedores podrán realizar el alta de una publicación"*, o sea
+un marketplace tipo MercadoLibre.
+
+**Nosotros decidimos hacer una tienda única**: la página es nuestra y vendemos nuestros
+propios juegos. Los usuarios que se registran son compradores. Es una desviación
+consciente del enunciado; la profesora mencionó en clase que hay grupos trabajando con un
+solo vendedor.
+
+En la práctica esto significa que los productos no tienen dueño: los endpoints de alta,
+modificación y baja son de administración del sitio y, cuando integremos seguridad, van a
+quedar restringidos al rol `ADMIN`.
 
 Categorías está tal cual la dio la profesora: sólo se cambió la relación con
 Product de `@OneToOne` a `@OneToMany`, porque una categoría agrupa varios productos.
@@ -61,8 +78,8 @@ Estos dos pasos los hace cada uno en su computadora después de clonar el repo.
 Abrí MySQL Workbench, conectate a la instancia local y ejecutá:
 
 ```sql
-CREATE DATABASE marketplace;
-USE marketplace;
+CREATE DATABASE ecommerce;
+USE ecommerce;
 ```
 
 No crees ninguna tabla a mano: las genera Hibernate a partir de las entidades.
@@ -108,8 +125,8 @@ Los tests usan una base H2 en memoria, así que corren sin MySQL levantado:
 $env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd test
 ```
 
-Son 19 tests que recorren catálogo, filtros, publicación, permisos de vendedor,
-validación de stock y el flujo completo de compra.
+Son 18 tests que recorren catálogo, filtros, publicación, validación de stock y el
+flujo completo de compra.
 
 ---
 
@@ -121,16 +138,25 @@ tener que cargar nada a mano (`config/DataInitializer.java`). Se apaga con
 
 **Usuarios** (los IDs se imprimen en la consola al arrancar):
 
-| id | username | rol |
-|---|---|---|
-| 1 | vendedor | comprador + vendedor |
-| 2 | ludoteca | comprador + vendedor |
-| 3 | comprador | comprador |
+| id | username | rol | quién es |
+|---|---|---|---|
+| 1 | admin | ADMIN + USER | la tienda |
+| 2 | sofia | USER | compradora |
+| 3 | martin | USER | comprador |
 
 **Categorías:** Estrategia, Familiar, Cartas, Party games.
 
 **Productos:** Catan, Carcassonne (15% off), Dixit, Uno (**stock 0 a propósito**,
 para mostrar la validación) y Virus! (20% off).
+
+### Sobre las fotos
+
+La API guarda la **URL** de cada foto, no el archivo. Los productos de prueba usan
+imágenes de `placehold.co`, que son placeholders genéricos que sí cargan en el navegador.
+
+Para poner fotos reales sólo hay que mandar la URL real en el campo `images` al crear o
+modificar el producto. También acepta una imagen embebida en base64
+(`data:image/png;base64,...`), por si más adelante el frontend sube archivos.
 
 ---
 
@@ -157,17 +183,16 @@ Base: `http://localhost:4002`
 | GET | `/products` | Catálogo con filtros y paginado |
 | GET | `/products/{id}` | Detalle del producto |
 | POST | `/products` | Alta de publicación |
-| PUT | `/products/{id}?sellerId=1` | Modificar publicación |
-| PATCH | `/products/{id}/stock?sellerId=1` | Manejo de stock |
-| PATCH | `/products/{id}/discount?sellerId=1` | Descuento individual |
-| DELETE | `/products/{id}?sellerId=1` | Eliminar publicación |
+| PUT | `/products/{id}` | Modificar publicación |
+| PATCH | `/products/{id}/stock` | Manejo de stock |
+| PATCH | `/products/{id}/discount` | Descuento individual |
+| DELETE | `/products/{id}` | Eliminar publicación |
 
 Filtros del catálogo (todos opcionales y combinables):
 
 ```
 /products?page=0&size=10
          &categoryId=1
-         &sellerId=1
          &minPrice=10000
          &maxPrice=60000
          &onlyAvailable=true
@@ -184,16 +209,15 @@ POST `/products`:
   "stock": 5,
   "discount": 10,
   "categoryId": 1,
-  "sellerId": 1,
   "images": [
-    "https://images.example.com/ticket-1.jpg",
-    "https://images.example.com/ticket-2.jpg"
+    "https://placehold.co/600x600?text=Aventureros",
+    "https://placehold.co/600x600?text=Aventureros+caja"
   ]
 }
 ```
 
-PATCH `/products/{id}/stock?sellerId=1` → `{ "stock": 20 }`
-PATCH `/products/{id}/discount?sellerId=1` → `{ "discount": 25 }`
+PATCH `/products/{id}/stock` → `{ "stock": 20 }`
+PATCH `/products/{id}/discount` → `{ "discount": 25 }`
 
 ### Carrito
 
@@ -205,8 +229,8 @@ PATCH `/products/{id}/discount?sellerId=1` → `{ "discount": 25 }`
 | DELETE | `/carts/{userId}/items/{itemId}` | Sacar una línea |
 | DELETE | `/carts/{userId}` | Vaciar el carrito |
 
-POST `/carts/3/items` → `{ "productId": 1, "quantity": 2 }`
-PUT `/carts/3/items/1` → `{ "quantity": 3 }`
+POST `/carts/2/items` → `{ "productId": 1, "quantity": 2 }`
+PUT `/carts/2/items/1` → `{ "quantity": 3 }`
 
 ### Órdenes
 
@@ -220,43 +244,43 @@ PUT `/carts/3/items/1` → `{ "quantity": 3 }`
 
 ## 7. Probar todo con Insomnia
 
-En el proyecto esta el archivo **`insomnia-tpo.json`**: una coleccion con **35 requests**
-ya armadas, con sus bodies y una nota en cada una explicando que tiene que devolver.
+En el proyecto está el archivo **`insomnia-tpo.json`**: una colección con **35 requests**
+ya armadas, con sus bodies y una nota en cada una explicando qué tiene que devolver.
 
-**Importarla:** abrir Insomnia, boton **Create** (o el menu de la coleccion) ->
-**Import** -> **From File** -> elegir `insomnia-tpo.json`.
+**Importarla:** abrir Insomnia → menú `File` (o el botón `Create`) → **Import** →
+**From File** → elegir `insomnia-tpo.json`.
 
 Quedan 5 carpetas, pensadas para correrse **en orden**:
 
-| Carpeta | Que muestra |
+| Carpeta | Qué muestra |
 |---|---|
-| 01 - Categorias | El codigo de la catedra: paginado, alta y el error de duplicada |
-| 02 - Catalogo | Paginado, los 5 filtros, el detalle y el 404 |
-| 03 - Gestion de productos | Publicar con fotos, modificar, stock, descuentos, el 403 y la baja |
+| 01 - Categorías | El código de la cátedra: paginado, alta y el error de duplicada |
+| 02 - Catálogo | Paginado, los filtros, el detalle y el 404 |
+| 03 - Gestión de productos | Publicar con fotos, modificar, stock, descuentos y la baja |
 | 04 - Carrito | Agregar, modificar, eliminar, y los 400 por falta de stock |
-| 05 - Checkout y ordenes | La compra, el descuento de stock y el historial |
+| 05 - Checkout y órdenes | La compra, el descuento de stock y el historial |
 
-Las requests marcadas con **[400]**, **[403]** o **[404]** fallan **a proposito**: son las
-validaciones del enunciado. Cuando las corras vas a ver ese codigo de error y el mensaje
-explicando el motivo. No estan rotas.
+Las requests marcadas con **[400]** o **[404]** fallan **a propósito**: son las
+validaciones del enunciado. Cuando las corras vas a ver ese código de error y el mensaje
+explicando el motivo. No están rotas.
 
 ### Importante antes de la demo
 
-Los ids de la coleccion estan fijos y asumen la base recien cargada. Si veniste probando
-y creaste o borraste cosas, **antes de la clase**: apaga la app, corre el reset de abajo y
-volve a levantarla. Ahi los ids vuelven a coincidir y la coleccion corre de punta a punta
+Los IDs de la colección están fijos y asumen la base recién cargada. Si veniste probando
+y creaste o borraste cosas, **antes de la clase**: apagá la app, corré el reset de abajo y
+volvé a levantarla. Ahí los IDs vuelven a coincidir y la colección corre de punta a punta
 sin un solo error inesperado.
 
 ```bash
-& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -pTU_PASSWORD -e "DROP DATABASE marketplace; CREATE DATABASE marketplace;"
+& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -pTU_PASSWORD -e "DROP DATABASE ecommerce; CREATE DATABASE ecommerce;"
 ```
 
-Reemplazar `TU_PASSWORD` por la contrasenia de tu MySQL.
+Reemplazá `TU_PASSWORD` por la contraseña de tu MySQL.
 
-Un detalle a tener a mano: en **"Modificar cantidad de una linea"** y **"Eliminar una
-linea"**, el numero del final de la URL es el id de la **linea del carrito**, no el del
+Un detalle a tener a mano: en **"Modificar cantidad de una línea"** y **"Eliminar una
+línea"**, el número del final de la URL es el ID de la **línea del carrito**, no el del
 producto. Sale del campo `id` de cada item que devuelve *Ver el carrito*. Con la base
-recien reseteada son el 1 y el 2, que es lo que ya viene cargado.
+recién reseteada son el 1 y el 2, que es lo que ya viene cargado.
 
 ---
 
@@ -266,19 +290,16 @@ recien reseteada son el 1 y el 2, que es lo que ya viene cargado.
    y `available: false` en Uno.
 2. **Filtrar** → `GET /products?search=cartas&maxPrice=20000` y
    `GET /products?onlyAvailable=true` (Uno desaparece).
-3. **Detalle** → `GET /products/1`.
+3. **Detalle** → `GET /products/1`. Los links de `images` se abren en el navegador.
 4. **Publicar** → `POST /products` con dos fotos. Devuelve **201**.
 5. **Validación** → `POST /products` con el body vacío. Devuelve **400** con el
    detalle de qué campo falta.
-6. **Stock y descuento** → `PATCH /products/1/stock?sellerId=1` y
-   `PATCH /products/1/discount?sellerId=1`.
-7. **Permisos** → `PATCH /products/1/discount?sellerId=2`. Devuelve **403**: ese
-   usuario no es el vendedor.
-8. **Sin stock** → `POST /carts/3/items` con el id de Uno. Devuelve **400**.
-9. **Carrito** → agregar Catan x2, ver el total, cambiar la cantidad.
-10. **Checkout** → `POST /orders/checkout/3`. Devuelve **201** con el total.
-11. **Se descontó el stock** → `GET /products/1` y `GET /carts/3` (vacío).
-12. **Historial** → `GET /orders/user/3`.
+6. **Stock y descuento** → `PATCH /products/6/stock` y `PATCH /products/6/discount`.
+7. **Sin stock** → `POST /carts/2/items` con el id de Uno. Devuelve **400**.
+8. **Carrito** → agregar Catan x2, ver el total, cambiar la cantidad.
+9. **Checkout** → `POST /orders/checkout/2`. Devuelve **201** con el total.
+10. **Se descontó el stock** → `GET /products/1` y `GET /carts/2` (vacío).
+11. **Historial** → `GET /orders/user/2`.
 
 ---
 
@@ -314,7 +335,7 @@ com.uade.tpo.demo
 | Relación | Dónde |
 |---|---|
 | OneToOne | `User` ↔ `Cart` |
-| OneToMany / ManyToOne | `Category` → `Product`, `User` → `Product` (vendedor), `User` → `Order`, `Cart` → `CartItem`, `Order` → `OrderItem`, `Product` → `ProductImage` |
+| OneToMany / ManyToOne | `Category` → `Product`, `User` → `Order`, `Cart` → `CartItem`, `Order` → `OrderItem`, `Product` → `ProductImage` |
 | ManyToMany | `User` ↔ `Role` (tabla intermedia `user_role`) |
 
 ### Decisiones que conviene poder explicar
@@ -329,7 +350,7 @@ com.uade.tpo.demo
   referencian, así que se marca `active = false`, se saca de los carritos y
   desaparece del catálogo.
 - **`OrderItem` guarda precio y descuento del momento de la compra**, para que la
-  orden no cambie si después el vendedor toca el precio.
+  orden no cambie si después se toca el precio.
 - **El checkout es una única transacción**: si falla el stock de una línea, no se
   descuenta el stock de ninguna.
 - **Lombok declarado como annotation processor en el `pom.xml`.** Desde Java 23
@@ -345,8 +366,8 @@ Lo que hay que tocar cuando se integre el código de login/register de la cáted
 1. Reemplazar la entidad `User` por la que entregue la profesora (esta tiene
    `username`, `email`, `password`, `name` y `surname`, que es lo que pide el
    enunciado) y sacar la contraseña en texto plano.
-2. Sacar los `sellerId` y `userId` que hoy viajan por query param o por la URL:
-   pasan a salir del usuario del token JWT.
+2. Sacar los `userId` que hoy viajan por la URL en carrito y órdenes: pasan a salir
+   del usuario del token JWT.
 3. Poner `app.seed-demo-data=false` o borrar `DataInitializer`.
-4. Restringir por rol: publicar/editar/eliminar productos sólo para `SELLER`,
-   carrito y checkout sólo para el dueño del carrito.
+4. Restringir por rol: los endpoints de alta, modificación, stock, descuento y baja de
+   productos sólo para `ADMIN`; carrito y checkout sólo para el dueño del carrito.

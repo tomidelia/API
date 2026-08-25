@@ -12,21 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 import com.uade.tpo.demo.entity.Category;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.ProductImage;
-import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.entity.dto.DiscountRequest;
 import com.uade.tpo.demo.entity.dto.ProductRequest;
 import com.uade.tpo.demo.entity.dto.ProductResponse;
 import com.uade.tpo.demo.entity.dto.ProductUpdateRequest;
 import com.uade.tpo.demo.entity.dto.StockRequest;
 import com.uade.tpo.demo.exceptions.CategoryNotFoundException;
-import com.uade.tpo.demo.exceptions.ForbiddenActionException;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
-import com.uade.tpo.demo.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.repository.CartItemRepository;
 import com.uade.tpo.demo.repository.CategoryRepository;
 import com.uade.tpo.demo.repository.ProductRepository;
-import com.uade.tpo.demo.repository.UserRepository;
 
+/**
+ * La tienda tiene un unico vendedor (nosotros), asi que los productos no tienen
+ * duenio: cualquier alta, modificacion o baja la hace la administracion del
+ * sitio. Cuando integremos seguridad, estos endpoints quedan restringidos al
+ * rol ADMIN.
+ */
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -37,20 +39,17 @@ public class ProductServiceImpl implements ProductService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private CartItemRepository cartItemRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductResponse> getProducts(Long categoryId, Long sellerId, BigDecimal minPrice,
-            BigDecimal maxPrice, boolean onlyAvailable, String search, PageRequest pageRequest) {
+    public Page<ProductResponse> getProducts(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice,
+            boolean onlyAvailable, String search, PageRequest pageRequest) {
 
         String term = (search == null || search.isBlank()) ? null : search.trim();
 
         return productRepository
-                .search(categoryId, sellerId, minPrice, maxPrice, onlyAvailable, term, pageRequest)
+                .search(categoryId, minPrice, maxPrice, onlyAvailable, term, pageRequest)
                 .map(ProductResponse::from);
     }
 
@@ -62,16 +61,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse createProduct(ProductRequest productRequest)
-            throws CategoryNotFoundException, UserNotFoundException {
+    public ProductResponse createProduct(ProductRequest productRequest) throws CategoryNotFoundException {
 
-        Category category = categoryRepository.findById(productRequest.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException(
-                        "No existe la categoria con id " + productRequest.getCategoryId()));
-
-        User seller = userRepository.findById(productRequest.getSellerId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "No existe el usuario con id " + productRequest.getSellerId()));
+        Category category = findCategory(productRequest.getCategoryId());
 
         Product product = new Product();
         product.setName(productRequest.getName());
@@ -80,7 +72,6 @@ public class ProductServiceImpl implements ProductService {
         product.setStock(productRequest.getStock());
         product.setDiscount(productRequest.getDiscount() == null ? 0 : productRequest.getDiscount());
         product.setCategory(category);
-        product.setSeller(seller);
         product.setActive(true);
         replaceImages(product, productRequest.getImages());
 
@@ -89,11 +80,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateProduct(Long productId, Long sellerId, ProductUpdateRequest productRequest)
-            throws ProductNotFoundException, CategoryNotFoundException, ForbiddenActionException {
+    public ProductResponse updateProduct(Long productId, ProductUpdateRequest productRequest)
+            throws ProductNotFoundException, CategoryNotFoundException {
 
         Product product = findActiveProduct(productId);
-        validateOwner(product, sellerId);
 
         if (productRequest.getName() != null)
             product.setName(productRequest.getName());
@@ -110,12 +100,8 @@ public class ProductServiceImpl implements ProductService {
         if (productRequest.getDiscount() != null)
             product.setDiscount(productRequest.getDiscount());
 
-        if (productRequest.getCategoryId() != null) {
-            Category category = categoryRepository.findById(productRequest.getCategoryId())
-                    .orElseThrow(() -> new CategoryNotFoundException(
-                            "No existe la categoria con id " + productRequest.getCategoryId()));
-            product.setCategory(category);
-        }
+        if (productRequest.getCategoryId() != null)
+            product.setCategory(findCategory(productRequest.getCategoryId()));
 
         if (productRequest.getImages() != null)
             replaceImages(product, productRequest.getImages());
@@ -125,11 +111,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateStock(Long productId, Long sellerId, StockRequest stockRequest)
-            throws ProductNotFoundException, ForbiddenActionException {
+    public ProductResponse updateStock(Long productId, StockRequest stockRequest)
+            throws ProductNotFoundException {
 
         Product product = findActiveProduct(productId);
-        validateOwner(product, sellerId);
         product.setStock(stockRequest.getStock());
 
         return ProductResponse.from(productRepository.save(product));
@@ -137,11 +122,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateDiscount(Long productId, Long sellerId, DiscountRequest discountRequest)
-            throws ProductNotFoundException, ForbiddenActionException {
+    public ProductResponse updateDiscount(Long productId, DiscountRequest discountRequest)
+            throws ProductNotFoundException {
 
         Product product = findActiveProduct(productId);
-        validateOwner(product, sellerId);
         product.setDiscount(discountRequest.getDiscount());
 
         return ProductResponse.from(productRepository.save(product));
@@ -149,11 +133,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(Long productId, Long sellerId)
-            throws ProductNotFoundException, ForbiddenActionException {
+    public void deleteProduct(Long productId) throws ProductNotFoundException {
 
         Product product = findActiveProduct(productId);
-        validateOwner(product, sellerId);
 
         // Se saca de los carritos donde este cargado y se le hace una baja logica,
         // para no romper las ordenes ya cerradas que apuntan a este producto.
@@ -168,11 +150,9 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("No existe el producto con id " + productId));
     }
 
-    /** Hasta que este la capa de seguridad, el duenio de la publicacion se valida a mano. */
-    private void validateOwner(Product product, Long sellerId) throws ForbiddenActionException {
-        if (!product.getSeller().getId().equals(sellerId))
-            throw new ForbiddenActionException(
-                    "El usuario " + sellerId + " no es el vendedor de la publicacion " + product.getId());
+    private Category findCategory(Long categoryId) throws CategoryNotFoundException {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("No existe la categoria con id " + categoryId));
     }
 
     private void replaceImages(Product product, List<String> urls) {

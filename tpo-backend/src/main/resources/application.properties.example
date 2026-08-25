@@ -3,10 +3,10 @@ server.port=4002
 
 # ---------------------------------------------------------------------------
 # Conexion a la base de datos
-# El esquema "marketplace" hay que crearlo una sola vez desde MySQL Workbench.
+# El esquema "ecommerce" hay que crearlo una sola vez desde MySQL Workbench.
 # IMPORTANTE: poner abajo la password de TU MySQL antes de levantar el proyecto.
 # ---------------------------------------------------------------------------
-spring.datasource.url=jdbc:mysql://localhost:3306/marketplace
+spring.datasource.url=jdbc:mysql://localhost:3306/ecommerce
 spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
 spring.datasource.username=root
 spring.datasource.password=CAMBIAR_POR_TU_PASSWORD
