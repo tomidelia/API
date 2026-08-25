@@ -38,5 +38,5 @@ public class ProductRequest {
 
     /** Una o mas fotos del producto (URL o imagen en base64). Al menos una. */
     @NotEmpty(message = "El producto tiene que tener al menos una imagen")
-    private List<String> images = new ArrayList<>();
+    private List<@NotBlank(message = "La imagen no puede estar vacia") String> images = new ArrayList<>();
 }

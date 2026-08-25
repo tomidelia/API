@@ -7,7 +7,9 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+
 
 /** Todos los campos son opcionales: solo se actualiza lo que llega. */
 @Data
@@ -30,6 +32,6 @@ public class ProductUpdateRequest {
     private Long categoryId;
 
     /** Si viene la lista, reemplaza por completo las fotos del producto. */
-    @Size(min = 1, message = "El producto tiene que quedar con al menos una imagen")
-    private List<String> images;
+    @Size(min = 1, message = "El producto tiene que tener al menos una imagen")
+    private List<@NotBlank(message = "La imagen no puede estar vacia") String> images;
 }
