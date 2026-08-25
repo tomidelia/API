@@ -1,0 +1,25 @@
+spring.application.name=demo
+server.port=4002
+
+# ---------------------------------------------------------------------------
+# Conexion a la base de datos
+# El esquema "marketplace" hay que crearlo una sola vez desde MySQL Workbench.
+# IMPORTANTE: poner abajo la password de TU MySQL antes de levantar el proyecto.
+# ---------------------------------------------------------------------------
+spring.datasource.url=jdbc:mysql://localhost:3306/marketplace
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password=CAMBIAR_POR_TU_PASSWORD
+
+# Hibernate crea y actualiza las tablas a partir de las entidades.
+spring.jpa.hibernate.ddl-auto=update
+
+# Muestra en consola el SQL que genera el ORM (util para mostrar en clase).
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Fechas en formato ISO (2026-08-24T18:30:00) en lugar de timestamp numerico.
+spring.jackson.serialization.write-dates-as-timestamps=false
+
+# Carga los datos de prueba la primera vez. Poner en false para desactivarla.
+app.seed-demo-data=true

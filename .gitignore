@@ -1,0 +1,8 @@
+# Este repo solo publica el codigo del TPO.
+# Todo lo que esta en la raiz se ignora salvo lo que se habilita explicitamente:
+# el material de la catedra (enunciado, PPT, grabaciones y transcripciones de las
+# clases) no se sube, porque no es material nuestro para publicar.
+/*
+!/.gitignore
+!/README.md
+!/tpo-backend/
