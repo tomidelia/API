@@ -10,19 +10,19 @@ UADE — Ingeniería Informática — 2º cuatrimestre 2026.
 tpo-backend/     API REST con Spring Boot + Spring Data JPA + MySQL
 ```
 
-El frontend se va a sumar como `tpo-frontend/` cuando lo veamos en clase.
+El frontend se va a sumar como `tpo-frontend/`.
 
 ## Estado
 
 | Parte | Estado |
 |---|---|
-| API REST | ✅ completa |
-| Capa de persistencia | ✅ completa |
+| API REST | ✅ |
+| Capa de persistencia | ✅ |
 | Catálogo, búsqueda y filtros | ✅ |
 | Carrito y checkout | ✅ |
 | Gestión de productos, stock y descuentos | ✅ |
-| Seguridad (login, register, permisos) | ⏳ pendiente, se integra con el código de la cátedra |
-| Frontend | ⏳ pendiente |
+| Seguridad (login, register, permisos) | ⏳ |
+| Frontend | ⏳ |
 
 ## Cómo arrancar
 
