@@ -38,10 +38,10 @@ la clase correspondiente.
 
 El enunciado dice *"registro de usuarios como compradores y vendedores"* y que *"los
 usuarios registrados como vendedores podrán realizar el alta de una publicación"*, o sea
-un marketplace tipo MercadoLibre.
+una plataforma con muchos vendedores publicando, estilo MercadoLibre.
 
-**Nosotros decidimos hacer una tienda única**: la página es nuestra y vendemos nuestros
-propios juegos. Los usuarios que se registran son compradores. Es una desviación
+**Nosotros hacemos un e-commerce con un vendedor único**: la página es nuestra y vendemos
+nuestros propios juegos. Los usuarios que se registran son compradores. Es una desviación
 consciente del enunciado; la profesora mencionó en clase que hay grupos trabajando con un
 solo vendedor.
 
@@ -154,6 +154,9 @@ para mostrar la validación) y Virus! (20% off).
 La API guarda la **URL** de cada foto, no el archivo. Los productos de prueba usan
 imágenes de `placehold.co`, que son placeholders genéricos que sí cargan en el navegador.
 
+**Todo producto tiene que tener al menos una imagen**: está validado tanto al crear como
+al modificar, así el catálogo nunca queda con un producto sin foto.
+
 Para poner fotos reales sólo hay que mandar la URL real en el campo `images` al crear o
 modificar el producto. También acepta una imagen embebida en base64
 (`data:image/png;base64,...`), por si más adelante el frontend sube archivos.
@@ -244,8 +247,13 @@ PUT `/carts/2/items/1` → `{ "quantity": 3 }`
 
 ## 7. Probar todo con Insomnia
 
-En el proyecto está el archivo **`insomnia-tpo.json`**: una colección con **35 requests**
+En el proyecto está el archivo **`insomnia-tpo.json`**: una colección con **60 requests**
 ya armadas, con sus bodies y una nota en cada una explicando qué tiene que devolver.
+
+Cubre **todos los endpoints y todos los caminos de error**: cada validación de negocio,
+cada 404, cada campo obligatorio. La idea es llegar a la clase de seguridad sabiendo que
+la base está sana, porque una vez que se mete el token es mucho más difícil rastrear
+dónde rompe.
 
 **Importarla:** abrir Insomnia → menú `File` (o el botón `Create`) → **Import** →
 **From File** → elegir `insomnia-tpo.json`.
@@ -260,9 +268,14 @@ Quedan 5 carpetas, pensadas para correrse **en orden**:
 | 04 - Carrito | Agregar, modificar, eliminar, y los 400 por falta de stock |
 | 05 - Checkout y órdenes | La compra, el descuento de stock y el historial |
 
-Las requests marcadas con **[400]** o **[404]** fallan **a propósito**: son las
-validaciones del enunciado. Cuando las corras vas a ver ese código de error y el mensaje
+Las requests marcadas con **[400]**, **[404]** o **[204]** fallan **a propósito**: son
+las validaciones del negocio. Cuando las corras vas a ver ese código de error y el mensaje
 explicando el motivo. No están rotas.
+
+De las 60, hay **26 casos de error** cubiertos: producto o categoría inexistente, campos
+obligatorios, precio negativo, descuento mayor a 100, stock negativo, producto sin
+imágenes, cantidad cero, más cantidad que stock, línea de carrito inexistente, checkout
+con carrito vacío, usuario inexistente y categoría duplicada.
 
 ### Importante antes de la demo
 

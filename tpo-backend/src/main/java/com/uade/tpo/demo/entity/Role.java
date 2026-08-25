@@ -32,12 +32,12 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // BUYER / SELLER
+    // USER / ADMIN
     @Column(nullable = false, unique = true)
     private String description;
 
-    // Relacion ManyToMany: un rol lo tienen muchos usuarios y un usuario tiene
-    // muchos roles (un mismo usuario puede ser comprador y vendedor).
+    // Relacion ManyToMany: un rol lo tienen muchos usuarios y un usuario puede
+    // tener mas de un rol (la administracion es ADMIN y ademas USER).
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();

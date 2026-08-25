@@ -8,6 +8,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -35,6 +36,7 @@ public class ProductRequest {
     @NotNull(message = "La categoria es obligatoria")
     private Long categoryId;
 
-    /** Una o mas fotos del producto (URL o imagen en base64). */
+    /** Una o mas fotos del producto (URL o imagen en base64). Al menos una. */
+    @NotEmpty(message = "El producto tiene que tener al menos una imagen")
     private List<String> images = new ArrayList<>();
 }
