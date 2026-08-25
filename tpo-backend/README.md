@@ -95,13 +95,13 @@ es de cada uno
 **Desde la terminal:** hace falta `JAVA_HOME`. En PowerShell:
 
 ```bash
-$env:JAVA_HOME = "C:\Users\usuario\Downloads\jdk-26_windows-x64_bin\jdk-26.0.2.1"; .\mvnw.cmd spring-boot:run
+$env:JAVA_HOME = "RUTA_DEL_JDK_26"; .\mvnw.cmd spring-boot:run
 ```
 
 Para dejarlo configurado para siempre:
 
 ```bash
-[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\usuario\Downloads\jdk-26_windows-x64_bin\jdk-26.0.2.1", "User")
+[Environment]::SetEnvironmentVariable("JAVA_HOME", "RUTA_DEL_JDK_26", "User")
 ```
 
 La API queda en **http://localhost:4002**.
@@ -111,7 +111,7 @@ La API queda en **http://localhost:4002**.
 Los tests usan una base H2 en memoria, así que corren sin MySQL levantado:
 
 ```bash
-$env:JAVA_HOME = "C:\Users\usuario\Downloads\jdk-26_windows-x64_bin\jdk-26.0.2.1"; .\mvnw.cmd test
+$env:JAVA_HOME = "RUTA_DEL_JDK_26"; .\mvnw.cmd test
 ```
 
 Son 18 tests que recorren catálogo, filtros, publicación, validación de stock y el
