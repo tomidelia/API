@@ -30,27 +30,17 @@ la clase correspondiente.
 | Manejo de stock del producto | ✅ |
 | Baja de producto | ✅ |
 | Gestión de descuentos sobre productos individuales | ✅ |
-| Registro y login de usuarios | ⏳ lo entrega la cátedra con seguridad |
-| Administración de permisos | ⏳ lo entrega la cátedra con seguridad |
-| Interfaz de usuario dinámica (frontend) | ⏳ pendiente |
+| Registro y login de usuarios | ⏳ |
+| Administración de permisos | ⏳ |
+| Interfaz de usuario dinámica (frontend) | ⏳ |
 
-### Una aclaración sobre el modelo
+### Modelo del negocio
 
-El enunciado dice *"registro de usuarios como compradores y vendedores"* y que *"los
-usuarios registrados como vendedores podrán realizar el alta de una publicación"*, o sea
-una plataforma con muchos vendedores publicando, estilo MercadoLibre.
+El proyecto implementa un e-commerce de juegos de mesa con una tienda única.
 
-**Nosotros hacemos un e-commerce con un vendedor único**: la página es nuestra y vendemos
-nuestros propios juegos. Los usuarios que se registran son compradores. Es una desviación
-consciente del enunciado; la profesora mencionó en clase que hay grupos trabajando con un
-solo vendedor.
+La administración del sitio se encarga de publicar y gestionar los productos, mientras que los usuarios registrados realizan compras.
 
-En la práctica esto significa que los productos no tienen dueño: los endpoints de alta,
-modificación y baja son de administración del sitio y, cuando integremos seguridad, van a
-quedar restringidos al rol `ADMIN`.
-
-Categorías está tal cual la dio la profesora: sólo se cambió la relación con
-Product de `@OneToOne` a `@OneToMany`, porque una categoría agrupa varios productos.
+Cuando se integre la capa de seguridad, las operaciones de administración quedarán restringidas al rol `ADMIN`.
 
 ---
 
@@ -58,9 +48,8 @@ Product de `@OneToOne` a `@OneToMany`, porque una categoría agrupa varios produ
 
 | Herramienta | Detalle |
 |---|---|
-| JDK 17 o superior | Probado con JDK 17 y 23 |
-| MySQL Server 8 + Workbench | El servicio tiene que estar corriendo |
-| Maven | No hace falta instalarlo: el proyecto trae `mvnw` |
+| JDK 17 o superior |
+| MySQL Server + Workbench | El servicio tiene que estar corriendo |
 | Insomnia | Para probar los endpoints (ver sección 7) |
 
 **Extensiones de VS Code:** instalá el **Extension Pack for Java** (de Microsoft) y
@@ -82,7 +71,7 @@ CREATE DATABASE ecommerce;
 USE ecommerce;
 ```
 
-No crees ninguna tabla a mano: las genera Hibernate a partir de las entidades.
+Las tablas se generan a partir de las entidades.
 
 ### 3.2 Poner la contraseña
 
@@ -94,13 +83,13 @@ spring.datasource.password=CAMBIAR_POR_TU_PASSWORD
 ```
 
 por la contraseña de tu MySQL. Ese archivo está en el `.gitignore` porque la contraseña
-es de cada uno, tal como dijo la profesora en clase.
+es de cada uno
 
 ---
 
 ## 4. Levantar el proyecto
 
-**Desde VS Code (lo más simple):** abrí la carpeta `tpo-backend`, abrí
+**Desde VS Code:** abrí la carpeta `tpo-backend`, abrí
 `DemoApplication.java` y tocá **Run**.
 
 **Desde la terminal:** hace falta `JAVA_HOME`. En PowerShell:
@@ -109,7 +98,7 @@ es de cada uno, tal como dijo la profesora en clase.
 $env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd spring-boot:run
 ```
 
-Para dejarlo configurado para siempre (así no lo escribís cada vez):
+Para dejarlo configurado para siempre:
 
 ```bash
 [Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Java\jdk-23", "User")
@@ -297,40 +286,20 @@ recién reseteada son el 1 y el 2, que es lo que ya viene cargado.
 
 ---
 
-## 8. Guion para la demo en clase
+## 8. Estructura del proyecto
 
-1. **Catálogo** → `GET /products` — se ve `finalPrice` ya con el descuento aplicado
-   y `available: false` en Uno.
-2. **Filtrar** → `GET /products?search=cartas&maxPrice=20000` y
-   `GET /products?onlyAvailable=true` (Uno desaparece).
-3. **Detalle** → `GET /products/1`. Los links de `images` se abren en el navegador.
-4. **Publicar** → `POST /products` con dos fotos. Devuelve **201**.
-5. **Validación** → `POST /products` con el body vacío. Devuelve **400** con el
-   detalle de qué campo falta.
-6. **Stock y descuento** → `PATCH /products/6/stock` y `PATCH /products/6/discount`.
-7. **Sin stock** → `POST /carts/2/items` con el id de Uno. Devuelve **400**.
-8. **Carrito** → agregar Catan x2, ver el total, cambiar la cantidad.
-9. **Checkout** → `POST /orders/checkout/2`. Devuelve **201** con el total.
-10. **Se descontó el stock** → `GET /products/1` y `GET /carts/2` (vacío).
-11. **Historial** → `GET /orders/user/2`.
-
----
-
-## 9. Estructura del proyecto
-
-Arquitectura en 3 capas con inyección de dependencias, igual que en clase: por cada
-entidad hay controller, interfaz de servicio, implementación y repositorio.
+Arquitectura en 3 capas con inyección de dependencias, siguiendo la estructura trabajada en clase: controllers para las solicitudes HTTP, services para la lógica de negocio y repositories para el acceso a datos.
 
 ```
 com.uade.tpo.demo
 ├── controllers/          Capa de tráfico HTTP (@RestController)
-│   ├── CategoriesController        (de la cátedra)
+│   ├── CategoriesController        
 │   ├── ProductsController
 │   ├── CartsController
 │   ├── OrdersController
 │   └── GlobalExceptionHandler      Traduce excepciones a status code + JSON
 ├── service/              Lógica de negocio (interfaz + @Service que la implementa)
-│   ├── CategoryService / CategoryServiceImpl      (de la cátedra)
+│   ├── CategoryService / CategoryServiceImpl      
 │   ├── ProductService  / ProductServiceImpl
 │   ├── CartService     / CartServiceImpl
 │   └── OrderService    / OrderServiceImpl
@@ -351,36 +320,19 @@ com.uade.tpo.demo
 | OneToMany / ManyToOne | `Category` → `Product`, `User` → `Order`, `Cart` → `CartItem`, `Order` → `OrderItem`, `Product` → `ProductImage` |
 | ManyToMany | `User` ↔ `Role` (tabla intermedia `user_role`) |
 
-### Decisiones que conviene poder explicar
 
-- **DTOs para las respuestas.** Las entidades no se serializan directo: las
-  relaciones bidireccionales harían que Jackson entre en recursión infinita. Además
-  el DTO expone `finalPrice` y `available`, que el frontend necesita.
-- **`@EqualsAndHashCode(of = "id")` en las entidades.** El `@Data` de Lombok genera
-  un `equals`/`toString` que recorre las dos puntas de cada relación y desborda la
-  pila. Se acota al id.
-- **Baja lógica del producto.** Borrarlo de verdad rompería las órdenes que ya lo
-  referencian, así que se marca `active = false`, se saca de los carritos y
-  desaparece del catálogo.
-- **`OrderItem` guarda precio y descuento del momento de la compra**, para que la
-  orden no cambie si después se toca el precio.
-- **El checkout es una única transacción**: si falla el stock de una línea, no se
-  descuenta el stock de ninguna.
-- **Lombok declarado como annotation processor en el `pom.xml`.** Desde Java 23
-  javac ya no ejecuta los processors que encuentra solos en el classpath; sin esa
-  configuración el proyecto no compila.
+### Decisiones técnicas
+
+- Se utilizan DTOs para separar las entidades de las respuestas de la API.
+- Los productos utilizan baja lógica mediante el atributo `active`.
+- `OrderItem` conserva el precio y descuento existentes al momento de realizar la compra.
+- El checkout se ejecuta dentro de una transacción para mantener la consistencia del stock y de la orden.
 
 ---
 
-## 10. Cuando llegue la clase de seguridad
+## 9. Pendiente
 
-Lo que hay que tocar cuando se integre el código de login/register de la cátedra:
-
-1. Reemplazar la entidad `User` por la que entregue la profesora (esta tiene
-   `username`, `email`, `password`, `name` y `surname`, que es lo que pide el
-   enunciado) y sacar la contraseña en texto plano.
-2. Sacar los `userId` que hoy viajan por la URL en carrito y órdenes: pasan a salir
-   del usuario del token JWT.
-3. Poner `app.seed-demo-data=false` o borrar `DataInitializer`.
-4. Restringir por rol: los endpoints de alta, modificación, stock, descuento y baja de
-   productos sólo para `ADMIN`; carrito y checkout sólo para el dueño del carrito.
+- Integración de autenticación y autorización.
+- Restricción de endpoints según los roles `USER` y `ADMIN`.
+- Obtención del usuario autenticado mediante el token en carrito y órdenes.
+- Desarrollo de la interfaz de usuario.
