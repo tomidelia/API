@@ -36,7 +36,7 @@ public class ProductRequest {
     @NotNull(message = "La categoria es obligatoria")
     private Long categoryId;
 
-    /** Una o mas fotos del producto (URL o imagen en base64). Al menos una. */
+/** Una o mas URLs de fotos del producto. Al menos una. */
     @NotEmpty(message = "El producto tiene que tener al menos una imagen")
     private List<@NotBlank(message = "La imagen no puede estar vacia") String> images = new ArrayList<>();
 }

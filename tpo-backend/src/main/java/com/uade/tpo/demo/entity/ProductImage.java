@@ -33,7 +33,7 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** URL de la foto (soporta tambien una imagen embebida en base64). */
+/** URL de la foto del producto. */
     @Column(nullable = false, length = 5000)
     private String url;
 

@@ -48,7 +48,7 @@ Cuando se integre la capa de seguridad, las operaciones de administración queda
 
 | Herramienta | Detalle |
 |---|---|
-| JDK 17 o superior |
+| JDK 26 |
 | MySQL Server + Workbench | El servicio tiene que estar corriendo |
 | Insomnia | Para probar los endpoints (ver sección 7) |
 
@@ -95,13 +95,13 @@ es de cada uno
 **Desde la terminal:** hace falta `JAVA_HOME`. En PowerShell:
 
 ```bash
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd spring-boot:run
+$env:JAVA_HOME = "C:\Users\usuario\Downloads\jdk-26_windows-x64_bin\jdk-26.0.2.1"; .\mvnw.cmd spring-boot:run
 ```
 
 Para dejarlo configurado para siempre:
 
 ```bash
-[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Java\jdk-23", "User")
+[Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Users\usuario\Downloads\jdk-26_windows-x64_bin\jdk-26.0.2.1", "User")
 ```
 
 La API queda en **http://localhost:4002**.
@@ -111,7 +111,7 @@ La API queda en **http://localhost:4002**.
 Los tests usan una base H2 en memoria, así que corren sin MySQL levantado:
 
 ```bash
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd test
+$env:JAVA_HOME = "C:\Users\usuario\Downloads\jdk-26_windows-x64_bin\jdk-26.0.2.1"; .\mvnw.cmd test
 ```
 
 Son 18 tests que recorren catálogo, filtros, publicación, validación de stock y el
@@ -147,8 +147,7 @@ imágenes de `placehold.co`, que son placeholders genéricos que sí cargan en e
 al modificar, así el catálogo nunca queda con un producto sin foto.
 
 Para poner fotos reales sólo hay que mandar la URL real en el campo `images` al crear o
-modificar el producto. También acepta una imagen embebida en base64
-(`data:image/png;base64,...`), por si más adelante el frontend sube archivos.
+modificar el producto. 
 
 ---
 
