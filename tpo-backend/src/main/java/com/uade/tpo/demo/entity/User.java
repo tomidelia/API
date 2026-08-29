@@ -23,10 +23,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * NOTA: el alta de usuarios (register), el login y el hasheo de contrasenias
- * los entrega la catedra junto con la clase de seguridad. Esta entidad queda
- * modelada con los datos que pide el enunciado para que el resto del dominio
- * (productos, carrito y ordenes) pueda referenciarla.
+ * Usuario del sistema.
+ * La autenticacion y autorizacion se integraran en la etapa de seguridad.
  */
 @Data
 @EqualsAndHashCode(of = "id")

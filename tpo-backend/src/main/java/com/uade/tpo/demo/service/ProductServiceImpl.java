@@ -24,10 +24,7 @@ import com.uade.tpo.demo.repository.CategoryRepository;
 import com.uade.tpo.demo.repository.ProductRepository;
 
 /**
- * La tienda tiene un unico vendedor (nosotros), asi que los productos no tienen
- * duenio: cualquier alta, modificacion o baja la hace la administracion del
- * sitio. Cuando integremos seguridad, estos endpoints quedan restringidos al
- * rol ADMIN.
+ * La tienda tiene un unico vendedor: cualquier alta, modificacion o baja la hace el ADMIN. 
  */
 @Service
 public class ProductServiceImpl implements ProductService {
