@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
 
     /**
-     * Checkout sin procesamiento de pago, como pide el enunciado:
+     * Checkout sin procesamiento de pago:
      * 1) valida que el carrito tenga productos,
      * 2) valida el stock de cada linea,
      * 3) calcula el total aplicando los descuentos vigentes,
