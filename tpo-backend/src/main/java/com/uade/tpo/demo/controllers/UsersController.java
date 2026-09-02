@@ -23,11 +23,11 @@ import com.uade.tpo.demo.service.UserService;
 import jakarta.validation.Valid;
 
 /**
- * Administracion de cuentas de usuario, que pide el enunciado. Todo este
- * controller es exclusivo del ADMIN (ver SecurityConfig).
+ * Administracion de cuentas de usuario.
+ * Todo este controller es exclusivo del ADMIN (ver SecurityConfig).
  *
- * El registro y el login NO estan aca: son el codigo de la catedra y viven en
- * AuthenticationController, bajo /api/v1/auth.
+ * El registro y el login se gestionan en AuthenticationController,
+ * bajo /api/v1/auth.
  */
 @RestController
 @RequestMapping("users")

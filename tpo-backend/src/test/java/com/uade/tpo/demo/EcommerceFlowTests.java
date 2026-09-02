@@ -26,7 +26,7 @@ import com.uade.tpo.demo.service.OrderService;
 import com.uade.tpo.demo.service.ProductService;
 
 /**
- * Recorre los casos de uso principales del enunciado contra una base H2 en
+ * Recorre los principales casos de uso contra una base H2 en
  * memoria: catalogo, filtros, publicacion, stock, descuentos, carrito y
  * checkout.
  */

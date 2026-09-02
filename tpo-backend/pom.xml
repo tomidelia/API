@@ -37,7 +37,7 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- JSON Web Token, mismas versiones que el modelo de la catedra -->
+        <!-- Dependencias para autenticacion mediante JSON Web Token -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>

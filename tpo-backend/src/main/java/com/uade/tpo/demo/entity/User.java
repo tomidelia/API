@@ -28,9 +28,9 @@ import lombok.ToString;
 /**
  * Usuario de la aplicacion.
  *
- * Implementa UserDetails, la interfaz de Spring Security, igual que en el
- * modelo de la catedra. Spring identifica al usuario por lo que devuelve
- * getUsername(): en nuestro caso el email, que es con lo que se hace el login.
+ * Implementa UserDetails para integrarse con Spring Security.
+ * Spring identifica al usuario mediante el valor devuelto por
+ * getUsername(): en este caso el email utilizado para iniciar sesion.
  */
 @Data
 @EqualsAndHashCode(of = "id")
@@ -47,10 +47,10 @@ public class User implements UserDetails {
     private Long id;
 
     /**
-     * Nombre de usuario elegido al registrarse: lo pide el enunciado.
-     * Se guarda en la columna "username", pero OJO: el login NO es por aca,
-     * es por email (ver getUsername() al final de la clase).
-     */
+* Nombre de usuario elegido durante el registro.
+ * Se guarda en la columna "username", mientras que la autenticacion
+ * se realiza mediante email.
+ */
     @Column(name = "username", nullable = false, unique = true)
     private String nickname;
 

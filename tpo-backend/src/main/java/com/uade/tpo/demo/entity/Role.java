@@ -1,9 +1,9 @@
 package com.uade.tpo.demo.entity;
 
 /**
- * Roles de la aplicacion, modelados como enum igual que en el ejemplo de la
- * catedra. Al ser un enum, SecurityConfig puede referenciarlos con
- * Role.ADMIN.name() y no hace falta ni repositorio ni tabla aparte.
+ * Roles disponibles en la aplicacion.
+ * Al ser un enum, SecurityConfig puede referenciarlos con
+ * Role.ADMIN.name() sin necesidad de un repositorio ni una tabla adicional.
  *
  * USER  = comprador. Es el rol con el que se registra cualquier persona.
  * ADMIN = la tienda. Es el unico que puede publicar y administrar productos.

@@ -11,7 +11,7 @@ se registran son compradores.
 
 ## 1. Qué está hecho
 
-| Requisito del enunciado | Estado |
+| Requisito | Estado |
 |---|---|
 | API REST sobre toda la información (completa o filtrada) | ✅ |
 | Capa de persistencia sobre el negocio entregado | ✅ |
@@ -34,17 +34,12 @@ se registran son compradores.
 
 ### Una aclaración sobre el modelo
 
-El enunciado plantea que los usuarios se registren como compradores **y vendedores**, o
-sea una plataforma con muchos vendedores publicando, estilo Mercado Libre.
+El proyecto adopta un modelo de e-commerce con un único vendedor. La aplicación administra un catálogo propio de 
+juegos de mesa y los usuarios registrados reciben por defecto el rol de comprador.
 
-**Nosotros hacemos un e-commerce con un vendedor único**: la página es nuestra y vendemos
-nuestros propios juegos. Es una desviación consciente; la profesora mencionó en clase que
-hay grupos trabajando con un solo vendedor, y en la clase de JWT dijo explícitamente que
-en ese caso *"tocará hacer que por defecto cualquier usuario que se registra caiga en rol
-de comprador, no de vendedor"*. Eso es exactamente lo que hace `AuthenticationService`.
+`AuthenticationService` asigna automáticamente el rol `USER` a cada nuevo registro.
 
-Categorías es el código que dio la profesora: sólo se cambió la relación con Product de
-`@OneToOne` a `@OneToMany`, porque una categoría agrupa varios productos.
+La relación entre `Category` y `Product` se modeló como `@OneToMany`, ya que una categoría puede agrupar varios productos.
 
 ---
 
@@ -77,7 +72,7 @@ No crees ninguna tabla a mano: las genera Hibernate a partir de las entidades.
 
 Copiá `application.properties.example` a `application.properties` dentro de
 `src/main/resources/` y reemplazá `CAMBIAR_POR_TU_PASSWORD` por la contraseña de tu MySQL.
-Ese archivo está en el `.gitignore`, tal como pidió la profesora.
+Ese archivo está incluido en el `.gitignore` para evitar subir credenciales y configuraciones locales al repositorio.
 
 Ahí también están la clave y la expiración del token, que `JwtService` inyecta con
 `@Value` para no dejar datos sensibles escritos en el código.
@@ -112,21 +107,13 @@ administración de cuentas.
 
 ## 5. Con qué arranca la base
 
-**La base arranca vacía.** Lo único que existe al levantar la aplicación por primera vez
-es la cuenta de la tienda, que crea `config/AdminBootstrap`.
+**La base arranca vacía.** Al iniciar la aplicación por primera vez se crea únicamente la cuenta administrativa de la tienda mediante `config/AdminBootstrap`.
 
-Eso no es "cargar datos hardcodeados": es el arranque en frío del sistema. Como el
-registro público **siempre** da rol USER, sin esa cuenta no existiría ningún ADMIN y nadie
-podría cargar el primer producto. El email y la contraseña salen del
-`application.properties`, no del código:
+Esta cuenta es necesaria porque el registro público asigna siempre el rol `USER`, por lo que se requiere un usuario `ADMIN` inicial para gestionar el catálogo. El email y la contraseña se obtienen desde `application.properties` y no quedan escritos directamente en el código.
 
 ```properties
 app.admin.email=admin@juegosdemesa.com
 app.admin.password=admin1234
-```
-
-**Todo lo demás se crea desde Insomnia**, como pidió la profesora: las categorías, los
-productos y los compradores. La colección (sección 8) hace ese recorrido completo.
 
 ### Catálogo de ejemplo (opcional, apagado)
 
@@ -177,8 +164,8 @@ Está todo en **`controllers/config/SecurityConfig.java`**:
 | Compradores | `/orders/**` | sólo **USER** |
 | Todo lo demás | — | autenticado (red de seguridad) |
 
-El catálogo es público a propósito: se navega sin registrarse, igual que en Mercado
-Libre. Recién al usar el carrito hace falta identificarse.
+El catálogo es público a propósito: se puede navegar sin registrarse.
+La autenticación es necesaria al momento de utilizar el carrito.
 
 ### Piezas de la implementación
 
@@ -271,9 +258,9 @@ Nunca devuelve contraseñas, ni siquiera hasheadas. Un administrador no puede ca
 rol a sí mismo: si pudiera, la tienda podría quedarse sin ninguna cuenta capaz de
 administrar productos.
 
-> El **registro y el login no están acá**: son el código de la cátedra y viven en
-> `/api/v1/auth`. Este controller cubre la "administración de cuentas de usuario,
-> incluyendo la asignación de permisos" que pide el enunciado.
+> El **registro y el login no están acá**: se gestionan en
+> `/api/v1/auth`. Este controller se encarga de la administración de cuentas
+> de usuario y de la asignación de permisos.
 
 ### Carrito (USER)
 

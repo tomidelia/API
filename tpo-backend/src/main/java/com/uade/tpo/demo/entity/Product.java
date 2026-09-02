@@ -76,7 +76,7 @@ public class Product {
         return price.multiply(factor).setScale(2, RoundingMode.HALF_UP);
     }
 
-    /** El enunciado pide indicar si el producto tiene o no stock disponible. */
+    /** Indica si el producto tiene stock disponible. */
     public boolean isAvailable() {
         return stock != null && stock > 0;
     }

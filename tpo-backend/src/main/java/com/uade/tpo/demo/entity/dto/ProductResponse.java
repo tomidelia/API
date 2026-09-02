@@ -25,7 +25,7 @@ public class ProductResponse {
     private Integer discount;
     private BigDecimal finalPrice;
     private Integer stock;
-    /** El enunciado pide indicar cuando el producto no tiene stock. */
+    /** Indica si el producto tiene stock disponible. */
     private boolean available;
     private Long categoryId;
     private String categoryDescription;
