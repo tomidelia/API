@@ -56,8 +56,8 @@ class EcommerceFlowTests {
                 .orElseThrow();
     }
 
-    private Long userId(String username) {
-        return userRepository.findByUsername(username).orElseThrow().getId();
+    private Long userId(String email) {
+        return userRepository.findByEmail(email).orElseThrow().getId();
     }
 
     @Test
@@ -125,7 +125,7 @@ class EcommerceFlowTests {
         request.setQuantity(1);
 
         Assertions.assertThrows(InsufficientStockException.class,
-                () -> cartService.addItem(userId("sofia"), request));
+                () -> cartService.addItem(userId("sofia@mail.com"), request));
     }
 
     @Test
@@ -135,12 +135,12 @@ class EcommerceFlowTests {
         request.setQuantity(99);
 
         Assertions.assertThrows(InsufficientStockException.class,
-                () -> cartService.addItem(userId("sofia"), request));
+                () -> cartService.addItem(userId("sofia@mail.com"), request));
     }
 
     @Test
     void elCheckoutCalculaElTotalYDescuentaElStock() throws Exception {
-        Long comprador = userId("martin");
+        Long comprador = userId("martin@mail.com");
         Long catan = productId("Catan");
         int stockInicial = productRepository.findById(catan).orElseThrow().getStock();
 

@@ -17,5 +17,6 @@ public interface OrderService {
 
     public Page<OrderResponse> getOrdersByUser(Long userId, PageRequest pageRequest) throws UserNotFoundException;
 
-    public OrderResponse getOrderById(Long orderId) throws OrderNotFoundException;
+    /** Solo devuelve la orden si pertenece al usuario que la pide. */
+    public OrderResponse getOrderById(Long orderId, Long userId) throws OrderNotFoundException;
 }
