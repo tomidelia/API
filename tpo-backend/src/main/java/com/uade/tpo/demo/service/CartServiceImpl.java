@@ -55,7 +55,7 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new ProductNotFoundException(
                         "No existe el producto con id " + cartItemRequest.getProductId()));
 
-        // El enunciado pide que un producto sin stock no se pueda agregar al carrito.
+        // Un producto sin stock no puede agregarse al carrito.
         if (!product.isAvailable())
             throw new InsufficientStockException(
                     "El producto " + product.getName() + " no tiene stock disponible");

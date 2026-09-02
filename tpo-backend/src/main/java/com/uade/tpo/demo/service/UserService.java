@@ -9,10 +9,10 @@ import com.uade.tpo.demo.exceptions.ForbiddenActionException;
 import com.uade.tpo.demo.exceptions.UserNotFoundException;
 
 /**
- * Administracion de cuentas, que pide el enunciado.
+ * Administracion de cuentas de usuario.
  *
- * OJO: el registro, el login y el hasheo de contrasenias NO estan aca: eso es
- * el codigo de la catedra y vive en AuthenticationService.
+ * El registro, el login y el hasheo de contrasenias se gestionan
+ * en AuthenticationService.
  */
 public interface UserService {
 

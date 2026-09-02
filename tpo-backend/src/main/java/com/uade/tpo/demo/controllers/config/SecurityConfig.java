@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/error/**").permitAll()
 
                         // El catalogo se navega sin estar registrado, igual que
-                        // en Mercado Libre: home, filtros y detalle del producto.
+                        // Catalogo publico: home, filtros y detalle del producto.
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categories").permitAll()

@@ -27,9 +27,9 @@ import com.uade.tpo.demo.repository.UserRepository;
 /**
  * Carga un catalogo de ejemplo para desarrollo y para los tests automaticos.
  *
- * VIENE APAGADO (app.seed-demo-data=false). Para la demo de la materia todo se
- * crea desde Insomnia, como pidio la profesora: la coleccion arranca con la
- * base vacia y va creando categorias, productos y compradores.
+ * VIENE APAGADO (app.seed-demo-data=false). Los datos de prueba pueden
+ * crearse desde Insomnia, comenzando con la base vacia y agregando
+ * categorias, productos y compradores.
  *
  * Se enciende con app.seed-demo-data=true cuando conviene tener datos a mano.
  */

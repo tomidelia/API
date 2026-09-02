@@ -40,5 +40,5 @@ app.admin.email=admin@juegosdemesa.com
 app.admin.password=admin1234
 
 # Catalogo de ejemplo para desarrollo. Apagado: para la demo se crea todo desde
-# Insomnia, como pidio la profesora.
+# Insomnia para realizar las pruebas del flujo completo..
 app.seed-demo-data=false
