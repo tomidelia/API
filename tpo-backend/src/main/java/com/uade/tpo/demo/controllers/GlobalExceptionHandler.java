@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.uade.tpo.demo.entity.dto.ErrorResponse;
 import com.uade.tpo.demo.exceptions.CartItemNotFoundException;
 import com.uade.tpo.demo.exceptions.CategoryNotFoundException;
+import com.uade.tpo.demo.exceptions.DuplicateUserException;
 import com.uade.tpo.demo.exceptions.EmptyCartException;
 import com.uade.tpo.demo.exceptions.InsufficientStockException;
 import com.uade.tpo.demo.exceptions.InvalidOperationException;
@@ -37,6 +39,20 @@ public class GlobalExceptionHandler {
             InvalidOperationException.class })
     public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateUser(Exception ex) {
+        return build(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    /**
+     * Login fallido. Se responde un mensaje generico a proposito: no se le
+     * aclara al cliente si lo que estuvo mal fue el email o la contrasenia.
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(AuthenticationException ex) {
+        return build(HttpStatus.UNAUTHORIZED, "Email o contrasenia incorrectos");
     }
 
     /** Errores de las validaciones declarativas de los DTO (@NotBlank, @Min...). */

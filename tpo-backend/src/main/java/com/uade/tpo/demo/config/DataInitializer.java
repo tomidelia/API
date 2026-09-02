@@ -1,7 +1,6 @@
 package com.uade.tpo.demo.config;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,26 +8,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.demo.entity.Cart;
 import com.uade.tpo.demo.entity.Category;
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.ProductImage;
 import com.uade.tpo.demo.entity.Role;
 import com.uade.tpo.demo.entity.User;
+import com.uade.tpo.demo.repository.CartRepository;
 import com.uade.tpo.demo.repository.CategoryRepository;
 import com.uade.tpo.demo.repository.ProductRepository;
-import com.uade.tpo.demo.repository.RoleRepository;
 import com.uade.tpo.demo.repository.UserRepository;
 
 /**
  * Carga datos de prueba la primera vez que se levanta la aplicacion, para poder
- * demostrar el CRUD completo desde Insomnia sin tener que cargar todo a mano.
+ * demostrar todo desde Insomnia sin cargar nada a mano.
  *
- * Las contrasenias van en texto plano a proposito: el register con hasheo lo
- * entrega la catedra en la clase de seguridad. Cuando eso se integre, este
- * componente se elimina o se apaga con app.seed-demo-data=false.
+ * La cuenta de la tienda (ADMIN) se crea aca a proposito: el registro publico
+ * siempre da rol USER, asi que un comprador no puede auto-asignarse ADMIN.
+ * Las contrasenias se guardan hasheadas con BCrypt, igual que en el registro.
+ *
+ * Se apaga con app.seed-demo-data=false.
  */
 @Component
 @ConditionalOnProperty(name = "app.seed-demo-data", havingValue = "true", matchIfMissing = true)
@@ -36,20 +39,23 @@ public class DataInitializer implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
-    /** Placeholder que si carga en el navegador, para poder ver la imagen en la demo. */
+    /** Placeholder que si carga en el navegador, para poder ver la imagen. */
     private static final String IMAGE_URL = "https://placehold.co/600x600/1f2937/ffffff?text=";
 
     @Autowired
-    private RoleRepository roleRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private CartRepository cartRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -59,13 +65,9 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        Role user = roleRepository.findByDescription("USER").orElseGet(() -> roleRepository.save(new Role("USER")));
-        Role admin = roleRepository.findByDescription("ADMIN").orElseGet(() -> roleRepository.save(new Role("ADMIN")));
-
-        // La tienda tiene un unico vendedor: la administracion del sitio.
-        User tienda = createUser("admin", "admin@juegosdemesa.com", "Tomas", "Szkarlatiuk", List.of(user, admin));
-        User sofia = createUser("sofia", "sofia@mail.com", "Sofia", "Gomez", List.of(user));
-        User martin = createUser("martin", "martin@mail.com", "Martin", "Alvarez", List.of(user));
+        createUser("admin", "admin@juegosdemesa.com", "Tienda", "Juegos de Mesa", Role.ADMIN);
+        createUser("sofia", "sofia@mail.com", "Sofia", "Gomez", Role.USER);
+        createUser("martin", "martin@mail.com", "Martin", "Alvarez", Role.USER);
 
         Category estrategia = createCategory("Estrategia");
         Category familiar = createCategory("Familiar");
@@ -88,20 +90,25 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("15400.00"), 25, 20, cartas, List.of("Virus"));
 
         log.info("Datos de prueba cargados.");
-        log.info("Usuarios -> admin (la tienda) id={} | sofia id={} | martin id={}",
-                tienda.getId(), sofia.getId(), martin.getId());
+        log.info("Cuentas: admin@juegosdemesa.com (ADMIN) | sofia@mail.com (USER) | martin@mail.com (USER)");
+        log.info("Contrasenia de todas: 123456");
         log.info("Nota: 'Uno' se carga con stock 0 a proposito, para probar la validacion del carrito.");
     }
 
-    private User createUser(String username, String email, String name, String surname, List<Role> roles) {
-        User u = new User();
-        u.setUsername(username);
-        u.setEmail(email);
-        u.setPassword("123456");
-        u.setName(name);
-        u.setSurname(surname);
-        u.setRoles(new ArrayList<>(roles));
-        return userRepository.save(u);
+    private void createUser(String nickname, String email, String name, String surname, Role role) {
+        User user = new User();
+        user.setNickname(nickname);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode("123456"));
+        user.setName(name);
+        user.setSurname(surname);
+        user.setRole(role);
+
+        User saved = userRepository.save(user);
+
+        // Igual que en el registro: el carrito se crea junto con el usuario.
+        if (role == Role.USER)
+            cartRepository.save(new Cart(saved));
     }
 
     private Category createCategory(String description) {

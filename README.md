@@ -21,8 +21,8 @@ El frontend se va a sumar como `tpo-frontend/`.
 | Catálogo, búsqueda y filtros | ✅ |
 | Carrito y checkout | ✅ |
 | Gestión de productos, stock y descuentos | ✅ |
-| Seguridad (login, register, permisos) | ⏳ |
-| Frontend | ⏳ |
+| Seguridad: registro, login y roles con JWT | ✅ |
+| Frontend | ⏳ pendiente |
 
 ## Cómo arrancar
 

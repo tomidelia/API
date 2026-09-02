@@ -10,7 +10,10 @@ import com.uade.tpo.demo.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUsername(String username);
-
+    /** Con el email se hace el login: es el username para Spring Security. */
     Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByNickname(String nickname);
 }

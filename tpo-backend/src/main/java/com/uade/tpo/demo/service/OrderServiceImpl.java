@@ -101,8 +101,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public OrderResponse getOrderById(Long orderId) throws OrderNotFoundException {
+    public OrderResponse getOrderById(Long orderId, Long userId) throws OrderNotFoundException {
+        // Se filtra por usuario antes de responder: si la orden es de otro,
+        // devuelve 404 igual que si no existiera.
         Order order = orderRepository.findById(orderId)
+                .filter(o -> o.getUser().getId().equals(userId))
                 .orElseThrow(() -> new OrderNotFoundException("No existe la orden con id " + orderId));
 
         return OrderResponse.from(order);
