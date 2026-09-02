@@ -30,5 +30,15 @@ spring.jackson.serialization.write-dates-as-timestamps=false
 application.security.jwt.secretKey=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
 application.security.jwt.expiration=86400000
 
-# Carga los datos de prueba la primera vez. Poner en false para desactivarla.
-app.seed-demo-data=true
+# ---------------------------------------------------------------------------
+# Cuenta de la tienda (ADMIN)
+# Se crea sola la primera vez que arranca, si todavia no existe. Hace falta
+# porque el registro publico siempre da rol USER: sin esta cuenta nadie podria
+# cargar el primer producto.
+# ---------------------------------------------------------------------------
+app.admin.email=admin@juegosdemesa.com
+app.admin.password=admin1234
+
+# Catalogo de ejemplo para desarrollo. Apagado: para la demo se crea todo desde
+# Insomnia, como pidio la profesora.
+app.seed-demo-data=false

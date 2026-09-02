@@ -15,8 +15,8 @@ import com.uade.tpo.demo.exceptions.CartItemNotFoundException;
 import com.uade.tpo.demo.exceptions.CategoryNotFoundException;
 import com.uade.tpo.demo.exceptions.DuplicateUserException;
 import com.uade.tpo.demo.exceptions.EmptyCartException;
+import com.uade.tpo.demo.exceptions.ForbiddenActionException;
 import com.uade.tpo.demo.exceptions.InsufficientStockException;
-import com.uade.tpo.demo.exceptions.InvalidOperationException;
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.exceptions.UserNotFoundException;
@@ -35,10 +35,14 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    @ExceptionHandler({ InsufficientStockException.class, EmptyCartException.class,
-            InvalidOperationException.class })
+    @ExceptionHandler({ InsufficientStockException.class, EmptyCartException.class })
     public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenActionException.class)
+    public ResponseEntity<ErrorResponse> handleForbidden(Exception ex) {
+        return build(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     @ExceptionHandler(DuplicateUserException.class)

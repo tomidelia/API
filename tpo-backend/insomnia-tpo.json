@@ -9,7 +9,7 @@
       "_type": "workspace",
       "parentId": null,
       "name": "TPO - E-commerce de juegos de mesa",
-      "description": "API REST del TPO de Aplicaciones Interactivas.\n\nCOMO USARLA:\n1) Levantar el backend (puerto 4002) con la base recien creada.\n2) Carpeta 00: correr 'Login TIENDA' y copiar el access_token.\n   Pegarlo en la variable token_admin del Base Environment.\n3) Correr 'Login COMPRADOR' y pegar su token en token_user.\n4) A partir de ahi, correr las carpetas en orden, de la 01 a la 05.\n\nPara editar las variables: menu del environment (arriba a la izquierda) -> Base Environment.\n\nLas requests que empiezan con [400], [401], [403], [404] o [409] fallan A PROPOSITO: son las validaciones de negocio y las reglas de seguridad.",
+      "description": "API REST del TPO de Aplicaciones Interactivas.\n\nLa base arranca VACIA: lo unico que existe al levantar la app es la cuenta de la tienda. Todo lo demas (categorias, productos, compradores) se crea desde aca, corriendo las carpetas en orden de la 00 a la 08.\n\nCOMO EMPEZAR:\n1) Levantar el backend (puerto 4002) con la base recien creada.\n2) Carpeta 00 -> 'Login TIENDA'. Copiar el access_token y pegarlo en la variable token_admin del Base Environment.\n3) Carpeta 00 -> 'Registrar comprador'. Copiar su token en token_user.\n4) Seguir con las carpetas 01, 02, 03... en orden.\n\nPara editar las variables: menu del environment (arriba a la izquierda) -> Base Environment.\n\nLas requests que empiezan con [400], [401], [403], [404], [409] o [204] fallan A PROPOSITO: son las validaciones de negocio y las reglas de seguridad.",
       "scope": "collection"
     },
     {
@@ -30,7 +30,7 @@
       "metaSortKey": 1
     },
     {
-      "_id": "fld_auth",
+      "_id": "f0",
       "_type": "request_group",
       "parentId": "wrk_tpo",
       "name": "00 - Autenticacion (empezar aca)",
@@ -39,56 +39,83 @@
       "metaSortKey": 1000
     },
     {
-      "_id": "fld_publico",
+      "_id": "f1",
       "_type": "request_group",
       "parentId": "wrk_tpo",
-      "name": "01 - Catalogo publico (sin token)",
+      "name": "01 - Categorias (las crea la TIENDA)",
       "description": "",
       "environment": {},
       "metaSortKey": 2000
     },
     {
-      "_id": "fld_sintoken",
+      "_id": "f2",
       "_type": "request_group",
       "parentId": "wrk_tpo",
-      "name": "02 - Sin token no se pasa",
+      "name": "02 - Cargar el catalogo (TIENDA)",
       "description": "",
       "environment": {},
       "metaSortKey": 3000
     },
     {
-      "_id": "fld_admin",
+      "_id": "f3",
       "_type": "request_group",
       "parentId": "wrk_tpo",
-      "name": "03 - Gestion de productos (TIENDA / ADMIN)",
+      "name": "03 - Catalogo publico (sin token)",
       "description": "",
       "environment": {},
       "metaSortKey": 4000
     },
     {
-      "_id": "fld_carrito",
+      "_id": "f4",
       "_type": "request_group",
       "parentId": "wrk_tpo",
-      "name": "04 - Carrito (COMPRADOR / USER)",
+      "name": "04 - Sin token no se pasa",
       "description": "",
       "environment": {},
       "metaSortKey": 5000
     },
     {
-      "_id": "fld_orden",
+      "_id": "f5",
       "_type": "request_group",
       "parentId": "wrk_tpo",
-      "name": "05 - Checkout y ordenes (COMPRADOR)",
+      "name": "05 - Gestion de productos (TIENDA)",
       "description": "",
       "environment": {},
       "metaSortKey": 6000
     },
     {
+      "_id": "f6",
+      "_type": "request_group",
+      "parentId": "wrk_tpo",
+      "name": "06 - Carrito (COMPRADOR)",
+      "description": "",
+      "environment": {},
+      "metaSortKey": 7000
+    },
+    {
+      "_id": "f7",
+      "_type": "request_group",
+      "parentId": "wrk_tpo",
+      "name": "07 - Checkout y ordenes (COMPRADOR)",
+      "description": "",
+      "environment": {},
+      "metaSortKey": 8000
+    },
+    {
+      "_id": "f8",
+      "_type": "request_group",
+      "parentId": "wrk_tpo",
+      "name": "08 - Administracion de cuentas (TIENDA)",
+      "description": "",
+      "environment": {},
+      "metaSortKey": 9000
+    },
+    {
       "_id": "req_001",
       "_type": "request",
-      "parentId": "fld_auth",
+      "parentId": "f0",
       "name": "Login TIENDA (copiar token a token_admin)",
-      "description": "200. Devuelve access_token. Copiar el string SIN las comillas y pegarlo en la variable token_admin del Base Environment.",
+      "description": "200. La cuenta de la tienda es la unica que existe al arrancar: la crea AdminBootstrap porque el registro publico siempre da rol USER.\n\nCopiar el access_token SIN comillas y pegarlo en token_admin.",
       "method": "POST",
       "url": "http://localhost:4002/api/v1/auth/authenticate",
       "headers": [
@@ -108,17 +135,17 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"email\": \"admin@juegosdemesa.com\",\n  \"password\": \"123456\"\n}"
+        "text": "{\n  \"email\": \"admin@juegosdemesa.com\",\n  \"password\": \"admin1234\"\n}"
       }
     },
     {
       "_id": "req_002",
       "_type": "request",
-      "parentId": "fld_auth",
-      "name": "Login COMPRADOR (copiar token a token_user)",
-      "description": "200. Mismo procedimiento, pero pegando el token en token_user.",
+      "parentId": "f0",
+      "name": "Registrar comprador (copiar token a token_user)",
+      "description": "200. Devuelve el token ya listo. Fijarse que role viene SIEMPRE en USER: el registro no deja elegir rol. Ademas le crea el carrito en el acto.\n\nCopiar el access_token y pegarlo en token_user.",
       "method": "POST",
-      "url": "http://localhost:4002/api/v1/auth/authenticate",
+      "url": "http://localhost:4002/api/v1/auth/register",
       "headers": [
         {
           "name": "Content-Type",
@@ -136,15 +163,15 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"email\": \"sofia@mail.com\",\n  \"password\": \"123456\"\n}"
+        "text": "{\n  \"username\": \"sofia\",\n  \"email\": \"sofia@mail.com\",\n  \"password\": \"123456\",\n  \"name\": \"Sofia\",\n  \"surname\": \"Gomez\"\n}"
       }
     },
     {
       "_id": "req_003",
       "_type": "request",
-      "parentId": "fld_auth",
-      "name": "Registrar un comprador nuevo",
-      "description": "200. Devuelve el token ya listo. Fijarse que role viene SIEMPRE en USER: el registro no deja elegir rol, porque la tienda tiene un unico vendedor. Ademas le crea el carrito en el mismo momento.",
+      "parentId": "f0",
+      "name": "Registrar un segundo comprador",
+      "description": "200. Sirve despues para probar que un comprador no ve las ordenes de otro.",
       "method": "POST",
       "url": "http://localhost:4002/api/v1/auth/register",
       "headers": [
@@ -164,17 +191,17 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"username\": \"juanp\",\n  \"email\": \"juan@mail.com\",\n  \"password\": \"123456\",\n  \"name\": \"Juan\",\n  \"surname\": \"Perez\"\n}"
+        "text": "{\n  \"username\": \"martin\",\n  \"email\": \"martin@mail.com\",\n  \"password\": \"123456\",\n  \"name\": \"Martin\",\n  \"surname\": \"Alvarez\"\n}"
       }
     },
     {
       "_id": "req_004",
       "_type": "request",
-      "parentId": "fld_auth",
-      "name": "[409] Registrar el mismo email dos veces",
-      "description": "409 Conflict. El email es unico.",
+      "parentId": "f0",
+      "name": "Login COMPRADOR",
+      "description": "200. Devuelve un token nuevo cada vez que se llama.",
       "method": "POST",
-      "url": "http://localhost:4002/api/v1/auth/register",
+      "url": "http://localhost:4002/api/v1/auth/authenticate",
       "headers": [
         {
           "name": "Content-Type",
@@ -192,15 +219,15 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"username\": \"juanp2\",\n  \"email\": \"juan@mail.com\",\n  \"password\": \"123456\",\n  \"name\": \"Juan\",\n  \"surname\": \"Perez\"\n}"
+        "text": "{\n  \"email\": \"sofia@mail.com\",\n  \"password\": \"123456\"\n}"
       }
     },
     {
       "_id": "req_005",
       "_type": "request",
-      "parentId": "fld_auth",
-      "name": "[400] Registro con datos invalidos",
-      "description": "400 con el detalle de cada campo mal.",
+      "parentId": "f0",
+      "name": "[409] Registrar el mismo email dos veces",
+      "description": "409 Conflict. El email es unico.",
       "method": "POST",
       "url": "http://localhost:4002/api/v1/auth/register",
       "headers": [
@@ -220,17 +247,17 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"username\": \"\",\n  \"email\": \"esto-no-es-un-mail\",\n  \"password\": \"123\"\n}"
+        "text": "{\n  \"username\": \"sofia2\",\n  \"email\": \"sofia@mail.com\",\n  \"password\": \"123456\",\n  \"name\": \"Sofia\",\n  \"surname\": \"Gomez\"\n}"
       }
     },
     {
       "_id": "req_006",
       "_type": "request",
-      "parentId": "fld_auth",
-      "name": "[401] Login con contrasenia incorrecta",
-      "description": "401. El mensaje es generico a proposito: no aclara si fallo el email o la contrasenia, para no darle pistas a nadie.",
+      "parentId": "f0",
+      "name": "[400] Registro con datos invalidos",
+      "description": "400 con el detalle de cada campo mal.",
       "method": "POST",
-      "url": "http://localhost:4002/api/v1/auth/authenticate",
+      "url": "http://localhost:4002/api/v1/auth/register",
       "headers": [
         {
           "name": "Content-Type",
@@ -248,18 +275,23 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"email\": \"sofia@mail.com\",\n  \"password\": \"equivocada\"\n}"
+        "text": "{\n  \"username\": \"\",\n  \"email\": \"esto-no-es-un-mail\",\n  \"password\": \"123\"\n}"
       }
     },
     {
       "_id": "req_007",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Todos los productos",
-      "description": "200 SIN token. El catalogo se navega sin estar registrado, igual que en Mercado Libre. Mirar finalPrice y available.",
-      "method": "GET",
-      "url": "http://localhost:4002/products",
-      "headers": [],
+      "parentId": "f0",
+      "name": "[401] Login con contrasenia incorrecta",
+      "description": "401. Mensaje generico a proposito: no aclara si fallo el email o la contrasenia.",
+      "method": "POST",
+      "url": "http://localhost:4002/api/v1/auth/authenticate",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
       "authentication": {},
       "metaSortKey": 700,
@@ -269,19 +301,32 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"sofia@mail.com\",\n  \"password\": \"equivocada\"\n}"
+      }
     },
     {
       "_id": "req_008",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Con paginado",
-      "description": "200 sin token.",
-      "method": "GET",
-      "url": "http://localhost:4002/products?page=0&size=2",
-      "headers": [],
+      "parentId": "f1",
+      "name": "Crear categoria Estrategia",
+      "description": "201. Queda con id 1.",
+      "method": "POST",
+      "url": "http://localhost:4002/categories",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 800,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -289,19 +334,32 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Estrategia\"\n}"
+      }
     },
     {
       "_id": "req_009",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Filtrar por categoria",
-      "description": "200 sin token.",
-      "method": "GET",
-      "url": "http://localhost:4002/products?categoryId=1",
-      "headers": [],
+      "parentId": "f1",
+      "name": "Crear categoria Familiar",
+      "description": "201. Queda con id 2.",
+      "method": "POST",
+      "url": "http://localhost:4002/categories",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 900,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -309,19 +367,32 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Familiar\"\n}"
+      }
     },
     {
       "_id": "req_010",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Filtrar por rango de precio",
-      "description": "200 sin token.",
-      "method": "GET",
-      "url": "http://localhost:4002/products?minPrice=10000&maxPrice=50000",
-      "headers": [],
+      "parentId": "f1",
+      "name": "Crear categoria Cartas",
+      "description": "201. Queda con id 3.",
+      "method": "POST",
+      "url": "http://localhost:4002/categories",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 1000,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -329,19 +400,32 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Cartas\"\n}"
+      }
     },
     {
       "_id": "req_011",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Buscar por texto",
-      "description": "200 sin token.",
-      "method": "GET",
-      "url": "http://localhost:4002/products?search=cartas",
-      "headers": [],
+      "parentId": "f1",
+      "name": "Crear categoria Party games",
+      "description": "201. Queda con id 4.",
+      "method": "POST",
+      "url": "http://localhost:4002/categories",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 1100,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -349,19 +433,32 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Party games\"\n}"
+      }
     },
     {
       "_id": "req_012",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Buscar sin resultados",
-      "description": "200 con content vacio. No es un error.",
-      "method": "GET",
-      "url": "http://localhost:4002/products?search=ajedrez",
-      "headers": [],
+      "parentId": "f1",
+      "name": "[403] Un comprador intenta crear categoria",
+      "description": "403. Esta autenticado pero no autorizado: crear categorias es solo del ADMIN.",
+      "method": "POST",
+      "url": "http://localhost:4002/categories",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_user }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 1200,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -369,19 +466,32 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Pirata\"\n}"
+      }
     },
     {
       "_id": "req_013",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Solo productos con stock",
-      "description": "200. Uno desaparece porque tiene stock 0.",
-      "method": "GET",
-      "url": "http://localhost:4002/products?onlyAvailable=true",
-      "headers": [],
+      "parentId": "f1",
+      "name": "[400] Categoria duplicada",
+      "description": "400. La categoria que se intenta agregar esta duplicada.",
+      "method": "POST",
+      "url": "http://localhost:4002/categories",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 1300,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -389,16 +499,19 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Estrategia\"\n}"
+      }
     },
     {
       "_id": "req_014",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Detalle del producto",
-      "description": "200 sin token. Los links de images abren en el navegador.",
+      "parentId": "f1",
+      "name": "Listar categorias (paginado)",
+      "description": "200 sin token. Ejemplo de paginado que dejo la profesora.",
       "method": "GET",
-      "url": "http://localhost:4002/products/1",
+      "url": "http://localhost:4002/categories?page=0&size=10",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -414,11 +527,11 @@
     {
       "_id": "req_015",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "[404] Producto inexistente",
-      "description": "404.",
+      "parentId": "f1",
+      "name": "Categoria por id",
+      "description": "200 sin token.",
       "method": "GET",
-      "url": "http://localhost:4002/products/9999",
+      "url": "http://localhost:4002/categories/1",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -434,11 +547,11 @@
     {
       "_id": "req_016",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "Listar categorias",
-      "description": "200 sin token.",
+      "parentId": "f1",
+      "name": "[204] Categoria inexistente",
+      "description": "204 No Content. El controller de la catedra responde asi en lugar de un 404. Es codigo de ella, lo dejamos tal cual.",
       "method": "GET",
-      "url": "http://localhost:4002/categories?page=0&size=10",
+      "url": "http://localhost:4002/categories/9999",
       "headers": [],
       "parameters": [],
       "authentication": {},
@@ -454,89 +567,9 @@
     {
       "_id": "req_017",
       "_type": "request",
-      "parentId": "fld_publico",
-      "name": "[204] Categoria inexistente",
-      "description": "204 No Content. El controller de la catedra responde asi en lugar de un 404. Es codigo de ella, lo dejamos tal cual.",
-      "method": "GET",
-      "url": "http://localhost:4002/categories/9999",
-      "headers": [],
-      "parameters": [],
-      "authentication": {},
-      "metaSortKey": 1700,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {}
-    },
-    {
-      "_id": "req_018",
-      "_type": "request",
-      "parentId": "fld_sintoken",
-      "name": "[403] Ver el carrito sin token",
-      "description": "403. El carrito exige estar logueado.",
-      "method": "GET",
-      "url": "http://localhost:4002/carts",
-      "headers": [],
-      "parameters": [],
-      "authentication": {},
-      "metaSortKey": 1800,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {}
-    },
-    {
-      "_id": "req_019",
-      "_type": "request",
-      "parentId": "fld_sintoken",
-      "name": "[403] Hacer checkout sin token",
-      "description": "403.",
-      "method": "POST",
-      "url": "http://localhost:4002/orders/checkout",
-      "headers": [],
-      "parameters": [],
-      "authentication": {},
-      "metaSortKey": 1900,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {}
-    },
-    {
-      "_id": "req_020",
-      "_type": "request",
-      "parentId": "fld_sintoken",
-      "name": "[403] Ver mis ordenes sin token",
-      "description": "403.",
-      "method": "GET",
-      "url": "http://localhost:4002/orders/my",
-      "headers": [],
-      "parameters": [],
-      "authentication": {},
-      "metaSortKey": 2000,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {}
-    },
-    {
-      "_id": "req_021",
-      "_type": "request",
-      "parentId": "fld_sintoken",
-      "name": "[403] Publicar un producto sin token",
-      "description": "403. Ni siquiera llega al controller: lo frena el filtro de JWT.",
+      "parentId": "f2",
+      "name": "Alta: Catan",
+      "description": "201. Producto 1, con dos fotos.",
       "method": "POST",
       "url": "http://localhost:4002/products",
       "headers": [
@@ -546,7 +579,144 @@
         }
       ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 1700,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Catan\",\n  \"description\": \"Juego de estrategia y negociacion para 3 a 4 jugadores. Edicion en espaniol.\",\n  \"price\": 54999.0,\n  \"stock\": 12,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Catan\",\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Catan+caja\"\n  ]\n}"
+      }
+    },
+    {
+      "_id": "req_018",
+      "_type": "request",
+      "parentId": "f2",
+      "name": "Alta: Carcassonne (15% off)",
+      "description": "201. Producto 2. Ver finalPrice: 42500 con 15% = 36125.",
+      "method": "POST",
+      "url": "http://localhost:4002/products",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 1800,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Carcassonne\",\n  \"description\": \"Juego de colocacion de losetas. Incluye la expansion Rio.\",\n  \"price\": 42500.0,\n  \"stock\": 7,\n  \"discount\": 15,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Carcassonne\"\n  ]\n}"
+      }
+    },
+    {
+      "_id": "req_019",
+      "_type": "request",
+      "parentId": "f2",
+      "name": "Alta: Dixit",
+      "description": "201. Producto 3, con poco stock.",
+      "method": "POST",
+      "url": "http://localhost:4002/products",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 1900,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Dixit\",\n  \"description\": \"Juego de cartas ilustradas y asociacion de ideas para toda la familia.\",\n  \"price\": 61000.0,\n  \"stock\": 4,\n  \"discount\": 0,\n  \"categoryId\": 2,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Dixit\"\n  ]\n}"
+      }
+    },
+    {
+      "_id": "req_020",
+      "_type": "request",
+      "parentId": "f2",
+      "name": "Alta: Uno (SIN stock)",
+      "description": "201. Producto 4, con stock 0 a proposito: sirve para probar que no se puede agregar al carrito.",
+      "method": "POST",
+      "url": "http://localhost:4002/products",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 2000,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Uno\",\n  \"description\": \"El clasico juego de cartas. Mazo de 108 cartas.\",\n  \"price\": 8900.0,\n  \"stock\": 0,\n  \"discount\": 0,\n  \"categoryId\": 3,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Uno\"\n  ]\n}"
+      }
+    },
+    {
+      "_id": "req_021",
+      "_type": "request",
+      "parentId": "f2",
+      "name": "Alta: Virus! (20% off)",
+      "description": "201. Producto 5. 15400 con 20% = 12320.",
+      "method": "POST",
+      "url": "http://localhost:4002/products",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 2100,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -556,20 +726,30 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Juego pirata\",\n  \"description\": \"No deberia entrar.\",\n  \"price\": 1000,\n  \"stock\": 1,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "text": "{\n  \"name\": \"Virus!\",\n  \"description\": \"Juego de cartas rapido para 2 a 6 jugadores.\",\n  \"price\": 15400.0,\n  \"stock\": 25,\n  \"discount\": 20,\n  \"categoryId\": 3,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Virus\"\n  ]\n}"
       }
     },
     {
       "_id": "req_022",
       "_type": "request",
-      "parentId": "fld_sintoken",
-      "name": "[403] Borrar un producto sin token",
-      "description": "403.",
-      "method": "DELETE",
-      "url": "http://localhost:4002/products/1",
-      "headers": [],
+      "parentId": "f2",
+      "name": "[403] Un comprador intenta publicar",
+      "description": "403. Autenticado pero sin permisos de tienda.",
+      "method": "POST",
+      "url": "http://localhost:4002/products",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "parameters": [],
-      "authentication": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_user }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
       "metaSortKey": 2200,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -577,14 +757,17 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {}
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Juego pirata\",\n  \"description\": \"No deberia poder crearse.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+      }
     },
     {
       "_id": "req_023",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "Publicar producto",
-      "description": "201. Con la base recien cargada devuelve id 6, que usan las de abajo.",
+      "parentId": "f2",
+      "name": "[400] Sin los campos obligatorios",
+      "description": "400 con el detalle de cada campo que falta.",
       "method": "POST",
       "url": "http://localhost:4002/products",
       "headers": [
@@ -609,15 +792,15 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Aventureros al Tren\",\n  \"description\": \"Juego de rutas ferroviarias para 2 a 5 jugadores.\",\n  \"price\": 70000.0,\n  \"stock\": 5,\n  \"discount\": 10,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros\",\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros+caja\"\n  ]\n}"
+        "text": "{\n  \"name\": \"\"\n}"
       }
     },
     {
       "_id": "req_024",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[403] Un comprador intenta publicar",
-      "description": "403. Esta logueado, pero su rol es USER y publicar es solo del ADMIN. Esta es la diferencia entre autenticacion y autorizacion.",
+      "parentId": "f2",
+      "name": "[400] Sin ninguna imagen",
+      "description": "400. Todo producto tiene que tener al menos una imagen.",
       "method": "POST",
       "url": "http://localhost:4002/products",
       "headers": [
@@ -629,7 +812,7 @@
       "parameters": [],
       "authentication": {
         "type": "bearer",
-        "token": "{{ _.token_user }}",
+        "token": "{{ _.token_admin }}",
         "prefix": "Bearer",
         "disabled": false
       },
@@ -642,15 +825,15 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Juego pirata\",\n  \"description\": \"No deberia poder.\",\n  \"price\": 1000,\n  \"stock\": 1,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "text": "{\n  \"name\": \"Juego sin foto\",\n  \"description\": \"Prueba de validacion.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": []\n}"
       }
     },
     {
       "_id": "req_025",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[400] Sin los campos obligatorios",
-      "description": "400 con el detalle de cada campo que falta.",
+      "parentId": "f2",
+      "name": "[400] Precio negativo",
+      "description": "400.",
       "method": "POST",
       "url": "http://localhost:4002/products",
       "headers": [
@@ -675,15 +858,15 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"\"\n}"
+        "text": "{\n  \"name\": \"Mal cargado\",\n  \"description\": \"Prueba.\",\n  \"price\": -500.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
       }
     },
     {
       "_id": "req_026",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[400] Sin ninguna imagen",
-      "description": "400. Todo producto tiene que tener al menos una imagen.",
+      "parentId": "f2",
+      "name": "[400] Descuento mayor a 100",
+      "description": "400.",
       "method": "POST",
       "url": "http://localhost:4002/products",
       "headers": [
@@ -708,15 +891,15 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Juego sin foto\",\n  \"description\": \"Prueba de validacion.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"categoryId\": 1,\n  \"images\": []\n}"
+        "text": "{\n  \"name\": \"Mal cargado\",\n  \"description\": \"Prueba.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 150,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
       }
     },
     {
       "_id": "req_027",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[400] Precio negativo",
-      "description": "400.",
+      "parentId": "f2",
+      "name": "[404] Categoria inexistente",
+      "description": "404.",
       "method": "POST",
       "url": "http://localhost:4002/products",
       "headers": [
@@ -741,30 +924,20 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Mal cargado\",\n  \"description\": \"Prueba.\",\n  \"price\": -500.0,\n  \"stock\": 1,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "text": "{\n  \"name\": \"Sin categoria\",\n  \"description\": \"Prueba.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 9999,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
       }
     },
     {
       "_id": "req_028",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[400] Descuento mayor a 100",
-      "description": "400.",
-      "method": "POST",
+      "parentId": "f3",
+      "name": "Todos los productos",
+      "description": "200 SIN token. El catalogo se navega sin estar registrado, igual que en Mercado Libre. Mirar finalPrice y available.",
+      "method": "GET",
       "url": "http://localhost:4002/products",
-      "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json"
-        }
-      ],
+      "headers": [],
       "parameters": [],
-      "authentication": {
-        "type": "bearer",
-        "token": "{{ _.token_admin }}",
-        "prefix": "Bearer",
-        "disabled": false
-      },
+      "authentication": {},
       "metaSortKey": 2800,
       "settingStoreCookies": true,
       "settingSendCookies": true,
@@ -772,17 +945,322 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Mal cargado\",\n  \"description\": \"Prueba.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 150,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
-      }
+      "body": {}
     },
     {
       "_id": "req_029",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[404] Categoria inexistente",
+      "parentId": "f3",
+      "name": "Con paginado",
+      "description": "200 sin token.",
+      "method": "GET",
+      "url": "http://localhost:4002/products?page=0&size=2",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 2900,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_030",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "Filtrar por categoria",
+      "description": "200. Estrategia: Catan y Carcassonne.",
+      "method": "GET",
+      "url": "http://localhost:4002/products?categoryId=1",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3000,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_031",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "Filtrar por rango de precio",
+      "description": "200. Carcassonne y Virus!.",
+      "method": "GET",
+      "url": "http://localhost:4002/products?minPrice=10000&maxPrice=50000",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3100,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_032",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "Buscar por texto",
+      "description": "200. Busca en nombre y descripcion, sin distinguir mayusculas.",
+      "method": "GET",
+      "url": "http://localhost:4002/products?search=cartas",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3200,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_033",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "Buscar sin resultados",
+      "description": "200 con content vacio. No es un error.",
+      "method": "GET",
+      "url": "http://localhost:4002/products?search=ajedrez",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3300,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_034",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "Solo productos con stock",
+      "description": "200. Uno desaparece porque tiene stock 0.",
+      "method": "GET",
+      "url": "http://localhost:4002/products?onlyAvailable=true",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3400,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_035",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "Filtros combinados",
+      "description": "200. Todos los filtros se combinan entre si.",
+      "method": "GET",
+      "url": "http://localhost:4002/products?search=cartas&maxPrice=20000&onlyAvailable=true",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3500,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_036",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "Detalle del producto",
+      "description": "200 sin token. Los links de images abren en el navegador.",
+      "method": "GET",
+      "url": "http://localhost:4002/products/1",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3600,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_037",
+      "_type": "request",
+      "parentId": "f3",
+      "name": "[404] Producto inexistente",
       "description": "404.",
+      "method": "GET",
+      "url": "http://localhost:4002/products/9999",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3700,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_038",
+      "_type": "request",
+      "parentId": "f4",
+      "name": "[403] Ver el carrito sin token",
+      "description": "403.",
+      "method": "GET",
+      "url": "http://localhost:4002/carts",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3800,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_039",
+      "_type": "request",
+      "parentId": "f4",
+      "name": "[403] Hacer checkout sin token",
+      "description": "403.",
+      "method": "POST",
+      "url": "http://localhost:4002/orders/checkout",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 3900,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_040",
+      "_type": "request",
+      "parentId": "f4",
+      "name": "[403] Ver mis ordenes sin token",
+      "description": "403.",
+      "method": "GET",
+      "url": "http://localhost:4002/orders/my",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 4000,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_041",
+      "_type": "request",
+      "parentId": "f4",
+      "name": "[403] Publicar un producto sin token",
+      "description": "403. Ni siquiera llega al controller: lo frena el filtro de JWT.",
+      "method": "POST",
+      "url": "http://localhost:4002/products",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 4100,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Pirata\",\n  \"description\": \"No deberia entrar.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+      }
+    },
+    {
+      "_id": "req_042",
+      "_type": "request",
+      "parentId": "f4",
+      "name": "[403] Borrar un producto sin token",
+      "description": "403.",
+      "method": "DELETE",
+      "url": "http://localhost:4002/products/1",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 4200,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_043",
+      "_type": "request",
+      "parentId": "f4",
+      "name": "[403] Ver las cuentas sin token",
+      "description": "403.",
+      "method": "GET",
+      "url": "http://localhost:4002/users",
+      "headers": [],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 4300,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_044",
+      "_type": "request",
+      "parentId": "f5",
+      "name": "Publicar un producto para administrar",
+      "description": "201. Queda con id 6: es el que se modifica y se da de baja abajo.",
       "method": "POST",
       "url": "http://localhost:4002/products",
       "headers": [
@@ -798,7 +1276,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 2900,
+      "metaSortKey": 4400,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -807,14 +1285,14 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Sin categoria\",\n  \"description\": \"Prueba.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"categoryId\": 9999,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "text": "{\n  \"name\": \"Aventureros al Tren\",\n  \"description\": \"Juego de rutas ferroviarias para 2 a 5 jugadores.\",\n  \"price\": 70000.0,\n  \"stock\": 5,\n  \"discount\": 10,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros\",\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros+caja\"\n  ]\n}"
       }
     },
     {
-      "_id": "req_030",
+      "_id": "req_045",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "Modificar publicacion",
+      "parentId": "f5",
+      "name": "Modificar la publicacion",
       "description": "200. Solo se actualiza lo que viaja en el body.",
       "method": "PUT",
       "url": "http://localhost:4002/products/6",
@@ -831,7 +1309,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3000,
+      "metaSortKey": 4500,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -844,9 +1322,9 @@
       }
     },
     {
-      "_id": "req_031",
+      "_id": "req_046",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "[404] Modificar producto inexistente",
       "description": "404.",
       "method": "PUT",
@@ -864,7 +1342,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3100,
+      "metaSortKey": 4600,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -877,9 +1355,9 @@
       }
     },
     {
-      "_id": "req_032",
+      "_id": "req_047",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "Manejar el stock",
       "description": "200.",
       "method": "PATCH",
@@ -897,7 +1375,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3200,
+      "metaSortKey": 4700,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -910,9 +1388,9 @@
       }
     },
     {
-      "_id": "req_033",
+      "_id": "req_048",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "[400] Stock negativo",
       "description": "400.",
       "method": "PATCH",
@@ -930,7 +1408,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3300,
+      "metaSortKey": 4800,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -943,9 +1421,9 @@
       }
     },
     {
-      "_id": "req_034",
+      "_id": "req_049",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "[404] Stock de producto inexistente",
       "description": "404.",
       "method": "PATCH",
@@ -963,7 +1441,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3400,
+      "metaSortKey": 4900,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -976,11 +1454,11 @@
       }
     },
     {
-      "_id": "req_035",
+      "_id": "req_050",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "Aplicar descuento",
-      "description": "200. Ver como cambia finalPrice.",
+      "description": "200. Ver como cambia finalPrice: 75000 con 25% = 56250.",
       "method": "PATCH",
       "url": "http://localhost:4002/products/6/discount",
       "headers": [
@@ -996,7 +1474,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3500,
+      "metaSortKey": 5000,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1009,9 +1487,9 @@
       }
     },
     {
-      "_id": "req_036",
+      "_id": "req_051",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "[400] Descuento invalido",
       "description": "400.",
       "method": "PATCH",
@@ -1029,7 +1507,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3600,
+      "metaSortKey": 5100,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1042,9 +1520,9 @@
       }
     },
     {
-      "_id": "req_037",
+      "_id": "req_052",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "Cambiar las fotos",
       "description": "200. La lista images reemplaza por completo las fotos.",
       "method": "PUT",
@@ -1062,7 +1540,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3700,
+      "metaSortKey": 5200,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1075,9 +1553,9 @@
       }
     },
     {
-      "_id": "req_038",
+      "_id": "req_053",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "[400] Dejarlo sin fotos",
       "description": "400.",
       "method": "PUT",
@@ -1095,7 +1573,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 3800,
+      "metaSortKey": 5300,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1108,110 +1586,11 @@
       }
     },
     {
-      "_id": "req_039",
+      "_id": "req_054",
       "_type": "request",
-      "parentId": "fld_admin",
-      "name": "Crear categoria",
-      "description": "201.",
-      "method": "POST",
-      "url": "http://localhost:4002/categories",
-      "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json"
-        }
-      ],
-      "parameters": [],
-      "authentication": {
-        "type": "bearer",
-        "token": "{{ _.token_admin }}",
-        "prefix": "Bearer",
-        "disabled": false
-      },
-      "metaSortKey": 3900,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"description\": \"Eurogames\"\n}"
-      }
-    },
-    {
-      "_id": "req_040",
-      "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[403] Un comprador intenta crear categoria",
-      "description": "403.",
-      "method": "POST",
-      "url": "http://localhost:4002/categories",
-      "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json"
-        }
-      ],
-      "parameters": [],
-      "authentication": {
-        "type": "bearer",
-        "token": "{{ _.token_user }}",
-        "prefix": "Bearer",
-        "disabled": false
-      },
-      "metaSortKey": 4000,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"description\": \"Pirata\"\n}"
-      }
-    },
-    {
-      "_id": "req_041",
-      "_type": "request",
-      "parentId": "fld_admin",
-      "name": "[400] Categoria duplicada",
-      "description": "400.",
-      "method": "POST",
-      "url": "http://localhost:4002/categories",
-      "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json"
-        }
-      ],
-      "parameters": [],
-      "authentication": {
-        "type": "bearer",
-        "token": "{{ _.token_admin }}",
-        "prefix": "Bearer",
-        "disabled": false
-      },
-      "metaSortKey": 4100,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"description\": \"Estrategia\"\n}"
-      }
-    },
-    {
-      "_id": "req_042",
-      "_type": "request",
-      "parentId": "fld_admin",
-      "name": "Eliminar publicacion",
-      "description": "204. Sale del catalogo pero se conserva para no romper las ordenes.",
+      "parentId": "f5",
+      "name": "Eliminar la publicacion",
+      "description": "204. Baja logica: sale del catalogo pero se conserva para no romper las ordenes que ya lo compraron.",
       "method": "DELETE",
       "url": "http://localhost:4002/products/6",
       "headers": [],
@@ -1222,7 +1601,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 4200,
+      "metaSortKey": 5400,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1232,9 +1611,9 @@
       "body": {}
     },
     {
-      "_id": "req_043",
+      "_id": "req_055",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "[404] Eliminar dos veces",
       "description": "404.",
       "method": "DELETE",
@@ -1247,7 +1626,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 4300,
+      "metaSortKey": 5500,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1257,9 +1636,9 @@
       "body": {}
     },
     {
-      "_id": "req_044",
+      "_id": "req_056",
       "_type": "request",
-      "parentId": "fld_admin",
+      "parentId": "f5",
       "name": "El eliminado ya no aparece",
       "description": "200 sin token. Vuelven a ser 5 productos.",
       "method": "GET",
@@ -1267,7 +1646,7 @@
       "headers": [],
       "parameters": [],
       "authentication": {},
-      "metaSortKey": 4400,
+      "metaSortKey": 5600,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1277,9 +1656,9 @@
       "body": {}
     },
     {
-      "_id": "req_045",
+      "_id": "req_057",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "Ver mi carrito",
       "description": "200. El carrito sale del token: no hace falta pasar ningun userId.",
       "method": "GET",
@@ -1292,7 +1671,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 4500,
+      "metaSortKey": 5700,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1302,9 +1681,9 @@
       "body": {}
     },
     {
-      "_id": "req_046",
+      "_id": "req_058",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[403] La tienda no usa carrito",
       "description": "403. El ADMIN vende, no compra: el carrito es solo del rol USER.",
       "method": "GET",
@@ -1317,7 +1696,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 4600,
+      "metaSortKey": 5800,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1327,34 +1706,9 @@
       "body": {}
     },
     {
-      "_id": "req_047",
+      "_id": "req_059",
       "_type": "request",
-      "parentId": "fld_carrito",
-      "name": "Vaciar el carrito (arrancar de cero)",
-      "description": "200.",
-      "method": "DELETE",
-      "url": "http://localhost:4002/carts",
-      "headers": [],
-      "parameters": [],
-      "authentication": {
-        "type": "bearer",
-        "token": "{{ _.token_user }}",
-        "prefix": "Bearer",
-        "disabled": false
-      },
-      "metaSortKey": 4700,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "body": {}
-    },
-    {
-      "_id": "req_048",
-      "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[400] Agregar producto SIN stock",
       "description": "400. Producto 4 = Uno, stock 0. Estar logueado no saltea la validacion de negocio.",
       "method": "POST",
@@ -1372,7 +1726,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 4800,
+      "metaSortKey": 5900,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1385,9 +1739,9 @@
       }
     },
     {
-      "_id": "req_049",
+      "_id": "req_060",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[404] Agregar producto inexistente",
       "description": "404.",
       "method": "POST",
@@ -1405,7 +1759,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 4900,
+      "metaSortKey": 6000,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1418,9 +1772,9 @@
       }
     },
     {
-      "_id": "req_050",
+      "_id": "req_061",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[400] Cantidad cero",
       "description": "400.",
       "method": "POST",
@@ -1438,7 +1792,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5000,
+      "metaSortKey": 6100,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1451,9 +1805,9 @@
       }
     },
     {
-      "_id": "req_051",
+      "_id": "req_062",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "Agregar Catan x2",
       "description": "200. 54999 x 2 = 109998.",
       "method": "POST",
@@ -1471,7 +1825,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5100,
+      "metaSortKey": 6200,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1484,9 +1838,9 @@
       }
     },
     {
-      "_id": "req_052",
+      "_id": "req_063",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "Agregar Catan otra vez (acumula)",
       "description": "200. No crea una linea nueva: suma a la que ya existe. Queda en 3 unidades.",
       "method": "POST",
@@ -1504,7 +1858,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5200,
+      "metaSortKey": 6300,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1517,9 +1871,9 @@
       }
     },
     {
-      "_id": "req_053",
+      "_id": "req_064",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "Agregar Virus! x1",
       "description": "200. Virus! tiene 20% off: 15400 pasa a 12320.",
       "method": "POST",
@@ -1537,7 +1891,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5300,
+      "metaSortKey": 6400,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1550,9 +1904,9 @@
       }
     },
     {
-      "_id": "req_054",
+      "_id": "req_065",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[400] Agregar mas que el stock",
       "description": "400. Dixit tiene stock 4.",
       "method": "POST",
@@ -1570,7 +1924,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5400,
+      "metaSortKey": 6500,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1583,9 +1937,9 @@
       }
     },
     {
-      "_id": "req_055",
+      "_id": "req_066",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "Modificar cantidad de una linea",
       "description": "200. OJO: el 1 es el id de la LINEA del carrito, no del producto.",
       "method": "PUT",
@@ -1603,7 +1957,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5500,
+      "metaSortKey": 6600,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1616,9 +1970,9 @@
       }
     },
     {
-      "_id": "req_056",
+      "_id": "req_067",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[400] Cantidad mayor al stock",
       "description": "400.",
       "method": "PUT",
@@ -1636,7 +1990,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5600,
+      "metaSortKey": 6700,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1649,9 +2003,9 @@
       }
     },
     {
-      "_id": "req_057",
+      "_id": "req_068",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[404] Modificar linea inexistente",
       "description": "404.",
       "method": "PUT",
@@ -1669,7 +2023,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5700,
+      "metaSortKey": 6800,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1682,9 +2036,9 @@
       }
     },
     {
-      "_id": "req_058",
+      "_id": "req_069",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "Eliminar una linea",
       "description": "200. Se va Virus! y el total baja.",
       "method": "DELETE",
@@ -1697,7 +2051,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5800,
+      "metaSortKey": 6900,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1707,9 +2061,9 @@
       "body": {}
     },
     {
-      "_id": "req_059",
+      "_id": "req_070",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "[404] Eliminar linea inexistente",
       "description": "404.",
       "method": "DELETE",
@@ -1722,7 +2076,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 5900,
+      "metaSortKey": 7000,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1732,9 +2086,9 @@
       "body": {}
     },
     {
-      "_id": "req_060",
+      "_id": "req_071",
       "_type": "request",
-      "parentId": "fld_carrito",
+      "parentId": "f6",
       "name": "Ver el carrito antes de comprar",
       "description": "200. Total 164997.",
       "method": "GET",
@@ -1747,7 +2101,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 6000,
+      "metaSortKey": 7100,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1757,9 +2111,9 @@
       "body": {}
     },
     {
-      "_id": "req_061",
+      "_id": "req_072",
       "_type": "request",
-      "parentId": "fld_orden",
+      "parentId": "f7",
       "name": "Checkout",
       "description": "201. Valida stock, calcula el total con descuentos, descuenta stock y vacia el carrito. Todo en una unica transaccion (@Transactional).",
       "method": "POST",
@@ -1772,7 +2126,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 6100,
+      "metaSortKey": 7200,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1782,9 +2136,9 @@
       "body": {}
     },
     {
-      "_id": "req_062",
+      "_id": "req_073",
       "_type": "request",
-      "parentId": "fld_orden",
+      "parentId": "f7",
       "name": "Verificar que bajo el stock",
       "description": "200 sin token. Catan tenia 12; despues de comprar 3 queda en 9.",
       "method": "GET",
@@ -1792,7 +2146,7 @@
       "headers": [],
       "parameters": [],
       "authentication": {},
-      "metaSortKey": 6200,
+      "metaSortKey": 7300,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1802,9 +2156,9 @@
       "body": {}
     },
     {
-      "_id": "req_063",
+      "_id": "req_074",
       "_type": "request",
-      "parentId": "fld_orden",
+      "parentId": "f7",
       "name": "El carrito quedo vacio",
       "description": "200 con items vacio.",
       "method": "GET",
@@ -1817,7 +2171,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 6300,
+      "metaSortKey": 7400,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1827,9 +2181,9 @@
       "body": {}
     },
     {
-      "_id": "req_064",
+      "_id": "req_075",
       "_type": "request",
-      "parentId": "fld_orden",
+      "parentId": "f7",
       "name": "[400] Checkout con carrito vacio",
       "description": "400.",
       "method": "POST",
@@ -1842,7 +2196,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 6400,
+      "metaSortKey": 7500,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1852,9 +2206,9 @@
       "body": {}
     },
     {
-      "_id": "req_065",
+      "_id": "req_076",
       "_type": "request",
-      "parentId": "fld_orden",
+      "parentId": "f7",
       "name": "Mi historial de compras",
       "description": "200. Solo devuelve las ordenes del usuario del token.",
       "method": "GET",
@@ -1867,7 +2221,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 6500,
+      "metaSortKey": 7600,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1877,9 +2231,9 @@
       "body": {}
     },
     {
-      "_id": "req_066",
+      "_id": "req_077",
       "_type": "request",
-      "parentId": "fld_orden",
+      "parentId": "f7",
       "name": "Detalle de mi orden",
       "description": "200. Guarda el precio y el descuento del momento de la compra.",
       "method": "GET",
@@ -1892,7 +2246,7 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 6600,
+      "metaSortKey": 7700,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1902,9 +2256,9 @@
       "body": {}
     },
     {
-      "_id": "req_067",
+      "_id": "req_078",
       "_type": "request",
-      "parentId": "fld_orden",
+      "parentId": "f7",
       "name": "[404] Orden inexistente",
       "description": "404.",
       "method": "GET",
@@ -1917,7 +2271,206 @@
         "prefix": "Bearer",
         "disabled": false
       },
-      "metaSortKey": 6700,
+      "metaSortKey": 7800,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_079",
+      "_type": "request",
+      "parentId": "f8",
+      "name": "Listar cuentas",
+      "description": "200. Requisito del enunciado: administracion de cuentas de usuario. Nunca devuelve contrasenias.",
+      "method": "GET",
+      "url": "http://localhost:4002/users?page=0&size=10",
+      "headers": [],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 7900,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_080",
+      "_type": "request",
+      "parentId": "f8",
+      "name": "Ver una cuenta",
+      "description": "200.",
+      "method": "GET",
+      "url": "http://localhost:4002/users/2",
+      "headers": [],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 8000,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_081",
+      "_type": "request",
+      "parentId": "f8",
+      "name": "[403] Un comprador intenta ver las cuentas",
+      "description": "403.",
+      "method": "GET",
+      "url": "http://localhost:4002/users",
+      "headers": [],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_user }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 8100,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {}
+    },
+    {
+      "_id": "req_082",
+      "_type": "request",
+      "parentId": "f8",
+      "name": "Asignar permisos (dar rol ADMIN)",
+      "description": "200. Requisito del enunciado: asignacion de permisos. El usuario 3 es el segundo comprador.",
+      "method": "PATCH",
+      "url": "http://localhost:4002/users/3/role",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 8200,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"role\": \"ADMIN\"\n}"
+      }
+    },
+    {
+      "_id": "req_083",
+      "_type": "request",
+      "parentId": "f8",
+      "name": "Volver el rol a USER",
+      "description": "200. Se deja la cuenta como estaba.",
+      "method": "PATCH",
+      "url": "http://localhost:4002/users/3/role",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 8300,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"role\": \"USER\"\n}"
+      }
+    },
+    {
+      "_id": "req_084",
+      "_type": "request",
+      "parentId": "f8",
+      "name": "[403] Un admin no puede cambiarse su propio rol",
+      "description": "403. Si pudiera, la tienda podria quedarse sin ningun administrador.",
+      "method": "PATCH",
+      "url": "http://localhost:4002/users/1/role",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 8400,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"role\": \"USER\"\n}"
+      }
+    },
+    {
+      "_id": "req_085",
+      "_type": "request",
+      "parentId": "f8",
+      "name": "[404] Cuenta inexistente",
+      "description": "404.",
+      "method": "GET",
+      "url": "http://localhost:4002/users/9999",
+      "headers": [],
+      "parameters": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_admin }}",
+        "prefix": "Bearer",
+        "disabled": false
+      },
+      "metaSortKey": 8500,
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,

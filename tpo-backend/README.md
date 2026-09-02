@@ -104,42 +104,44 @@ Contra H2 en memoria, sin necesidad de MySQL:
 $env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd test
 ```
 
-Son **24 tests**: catálogo, filtros, publicación, stock, carrito, checkout y toda la
-capa de seguridad (registro, login, tokens manipulados y separación de roles).
+Son **28 tests**: catálogo, filtros, publicación, stock, carrito, checkout, toda la capa
+de seguridad (registro, login, tokens manipulados, separación de roles) y la
+administración de cuentas.
 
 ---
 
-## 5. Datos de prueba
+## 5. Con qué arranca la base
 
-Se cargan la primera vez que arranca (`config/DataInitializer.java`). Se apaga con
-`app.seed-demo-data=false`.
+**La base arranca vacía.** Lo único que existe al levantar la aplicación por primera vez
+es la cuenta de la tienda, que crea `config/AdminBootstrap`.
 
-**Cuentas** — la contraseña de todas es `123456`, guardada hasheada con BCrypt:
+Eso no es "cargar datos hardcodeados": es el arranque en frío del sistema. Como el
+registro público **siempre** da rol USER, sin esa cuenta no existiría ningún ADMIN y nadie
+podría cargar el primer producto. El email y la contraseña salen del
+`application.properties`, no del código:
 
-| email | rol | quién es |
-|---|---|---|
-| admin@juegosdemesa.com | ADMIN | la tienda |
-| sofia@mail.com | USER | compradora |
-| martin@mail.com | USER | comprador |
+```properties
+app.admin.email=admin@juegosdemesa.com
+app.admin.password=admin1234
+```
 
-> La cuenta ADMIN se crea acá a propósito: el registro público **siempre** da rol USER,
-> así nadie puede auto-asignarse permisos de tienda.
+**Todo lo demás se crea desde Insomnia**, como pidió la profesora: las categorías, los
+productos y los compradores. La colección (sección 8) hace ese recorrido completo.
 
-**Categorías:** Estrategia, Familiar, Cartas, Party games.
+### Catálogo de ejemplo (opcional, apagado)
 
-**Productos:** Catan, Carcassonne (15% off), Dixit, Uno (**stock 0 a propósito**, para
-mostrar la validación) y Virus! (20% off).
+`config/DemoDataLoader` puede cargar un catálogo de ejemplo para desarrollo. Viene
+**apagado**; se enciende con `app.seed-demo-data=true`. Los tests automáticos sí lo usan,
+porque ahí es un fixture de test y no datos de la aplicación.
 
 ### Sobre las fotos
 
-La API guarda la **URL** de cada foto. Los productos de prueba usan `placehold.co`, que
-son placeholders que sí cargan en el navegador.
+La API guarda la **URL** de cada foto. Las de ejemplo usan `placehold.co`, que sí cargan en
+el navegador.
 
-**Todo producto tiene que tener al menos una imagen**, validado tanto al crear como al
-modificar. Para poner fotos reales se manda la URL real en `images`; también acepta base64
+**Todo producto tiene que tener al menos una imagen**, validado al crear y al modificar.
+Para fotos reales se manda la URL real en `images`; también acepta base64
 (`data:image/png;base64,...`).
-
----
 
 ## 6. Seguridad
 
@@ -170,6 +172,7 @@ Está todo en **`controllers/config/SecurityConfig.java`**:
 | Pública | `GET /categories`, `GET /categories/{id}` | cualquiera, sin token |
 | Tienda | `POST/PUT/PATCH/DELETE /products/**` | sólo **ADMIN** |
 | Tienda | `POST /categories` | sólo **ADMIN** |
+| Tienda | `/users/**` (administración de cuentas) | sólo **ADMIN** |
 | Compradores | `/carts/**` | sólo **USER** |
 | Compradores | `/orders/**` | sólo **USER** |
 | Todo lo demás | — | autenticado (red de seguridad) |
@@ -252,6 +255,26 @@ Base: `http://localhost:4002`
   "images": ["https://placehold.co/600x600?text=Aventureros"] }
 ```
 
+### Administración de cuentas (ADMIN)
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| GET | `/users` | Listado de cuentas, paginado |
+| GET | `/users/{id}` | Una cuenta |
+| PATCH | `/users/{id}/role` | Asignación de permisos |
+
+```json
+{ "role": "ADMIN" }
+```
+
+Nunca devuelve contraseñas, ni siquiera hasheadas. Un administrador no puede cambiarse el
+rol a sí mismo: si pudiera, la tienda podría quedarse sin ninguna cuenta capaz de
+administrar productos.
+
+> El **registro y el login no están acá**: son el código de la cátedra y viven en
+> `/api/v1/auth`. Este controller cubre la "administración de cuentas de usuario,
+> incluyendo la asignación de permisos" que pide el enunciado.
+
 ### Carrito (USER)
 
 | Método | Ruta | Qué hace |
@@ -274,45 +297,50 @@ Base: `http://localhost:4002`
 
 ## 8. Probar todo con Insomnia
 
-En el proyecto está **`insomnia-tpo.json`**: una colección con **67 requests** que cubre
-todos los endpoints, todos los caminos de error y todas las reglas de seguridad.
+En el proyecto está **`insomnia-tpo.json`**: una colección con **85 requests** que cubre
+todos los endpoints, todos los caminos de error y todas las reglas de seguridad. De esas,
+**38 son casos de error**.
+
+La colección **crea todo desde cero**: arranca con la base vacía y va creando las
+categorías, los productos y los compradores. No hay ningún dato precargado.
 
 **Importarla:** Insomnia → menú `File` (o botón `Create`) → **Import** → **From File**.
 
 ### Cómo arrancar
 
-1. Abrí la carpeta **`00 - Autenticacion`** y corré **`Login TIENDA`**.
-2. Copiá el `access_token` de la respuesta (el string, sin las comillas).
-3. Abrí el **Base Environment** y pegalo en la variable `token_admin`.
-4. Corré **`Login COMPRADOR`** y pegá su token en `token_user`.
-5. Ya podés correr las carpetas 01 a 05 en orden: cada request usa el token que le toca.
+1. Carpeta **`00 - Autenticacion`** → correr **`Login TIENDA`**.
+2. Copiar el `access_token` de la respuesta (el string, sin las comillas).
+3. Abrir el **Base Environment** y pegarlo en la variable `token_admin`.
+4. Correr **`Registrar comprador`** y pegar su token en `token_user`.
+5. Seguir con las carpetas 01 a 08 **en orden**.
 
 | Carpeta | Qué muestra |
 |---|---|
-| 00 - Autenticación | Registro, login, y sus errores (401, 409, 400) |
-| 01 - Catálogo público | Todo lo que se ve **sin token** |
-| 02 - Sin token no se pasa | Los 403 de lo protegido |
-| 03 - Gestión (ADMIN) | Publicar, stock, descuentos, baja, y el 403 del comprador |
-| 04 - Carrito (USER) | Agregar, modificar, eliminar, y el 403 del admin |
-| 05 - Checkout | La compra, el descuento de stock y el historial |
+| 00 - Autenticación | Login, registro, y sus errores (401, 409, 400) |
+| 01 - Categorías | La tienda crea las categorías; el comprador no puede |
+| 02 - Cargar el catálogo | La tienda da de alta los 5 juegos + todas las validaciones |
+| 03 - Catálogo público | Todo lo que se ve **sin token** |
+| 04 - Sin token no se pasa | Los 403 de lo protegido |
+| 05 - Gestión de productos | Modificar, stock, descuentos, fotos y baja |
+| 06 - Carrito | Agregar, modificar, eliminar, y el 403 del admin |
+| 07 - Checkout | La compra, el descuento de stock y el historial |
+| 08 - Administración de cuentas | Listado de cuentas y asignación de permisos |
 
 Las requests marcadas con **[400]**, **[401]**, **[403]**, **[404]**, **[409]** o
 **[204]** fallan **a propósito**: son las validaciones de negocio y las reglas de
-seguridad. De las 67, hay **34 casos de error** cubiertos.
+seguridad.
 
 ### Antes de la demo
 
-Los IDs de la colección asumen la base recién cargada. Antes de la clase: apagá la app,
+Los IDs de la colección asumen la base recién creada. Antes de la clase: apagá la app,
 corré el reset y volvé a levantarla.
 
 ```bash
 & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -pTU_PASSWORD -e "DROP DATABASE ecommerce; CREATE DATABASE ecommerce;"
 ```
 
-Ojo: al resetear la base, los tokens viejos dejan de servir (los usuarios se recrean).
-Hay que volver a loguearse y pegar los tokens nuevos en el environment.
-
----
+Al resetear, los tokens viejos dejan de servir. Hay que volver a hacer los dos primeros
+pasos (Login TIENDA y Registrar comprador) y pegar los tokens nuevos.
 
 ## 9. Guion para la demo en clase
 
