@@ -132,7 +132,7 @@ Para fotos reales se manda la URL real en `images`; también acepta base64
 
 ## 6. Seguridad
 
-Implementada siguiendo el modelo que dio la cátedra: JWT, sin sesiones, política
+Implementada mediante JWT, sin sesiones y con política
 `STATELESS`. El token viaja en el header `Authorization: Bearer <token>` de cada request.
 
 ### Cómo obtener el token
@@ -179,7 +179,7 @@ La autenticación es necesaria al momento de utilizar el carrito.
 | `service/AuthenticationService` | Lógica de registro y login |
 
 `User` implementa `UserDetails` y `Role` es un enum (`USER`, `ADMIN`), igual que en el
-modelo de la cátedra. Para Spring Security el "username" es el **email**: es con lo que se
+modelo de autenticación. Para Spring Security el "username" es el **email**: es con lo que se
 loguea y lo que viaja en el `subject` del token.
 
 ### Decisiones propias de nuestro negocio
@@ -360,7 +360,7 @@ com.uade.tpo.demo
 │   ├── auth/             Registro y login + sus DTO
 │   ├── config/           Spring Security: SecurityConfig, JwtService,
 │   │                     JwtAuthenticationFilter, ApplicationConfig
-│   ├── CategoriesController        (de la cátedra)
+│   ├── CategoriesController        
 │   ├── ProductsController
 │   ├── CartsController
 │   ├── OrdersController
@@ -383,7 +383,7 @@ com.uade.tpo.demo
 | OneToMany / ManyToOne | `Category` → `Product`, `User` → `Order`, `Cart` → `CartItem`, `Order` → `OrderItem`, `Product` → `ProductImage` |
 
 `Role` dejó de ser una entidad y pasó a ser un **enum**, igual que en el modelo de la
-cátedra: así `SecurityConfig` puede escribir `hasAuthority(Role.ADMIN.name())` y no hace
+implementación: así `SecurityConfig` puede escribir `hasAuthority(Role.ADMIN.name())` y no hace
 falta ni tabla ni repositorio de roles. Con eso desapareció el ManyToMany
 `User` ↔ `Role` que había antes.
 
@@ -411,6 +411,5 @@ falta ni tabla ni repositorio de roles. Con eso desapareció el ManyToMany
 ## 11. Pendiente
 
 - **Frontend** (React + Vite). El backend ya tiene CORS habilitado para `localhost:5173`.
-- **Subida de imágenes por multipart.** Hoy la API guarda URLs. La cátedra subió un
-  ejemplo de cómo recibir un `file` y guardarlo como Blob, devolviéndolo en base64; se
-  puede sumar más adelante si el frontend lo necesita.
+- **Subida de imágenes por multipart.** Actualmente la API guarda URLs de imágenes. 
+La carga directa de archivos mediante `multipart/form-data` puede incorporarse más adelante si el frontend lo requiere.

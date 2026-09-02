@@ -932,7 +932,7 @@
       "_type": "request",
       "parentId": "f3",
       "name": "Todos los productos",
-      "description": "200 SIN token. El catalogo se navega sin estar registrado, igual que en Mercado Libre. Mirar finalPrice y available.",
+      "description": "200 SIN token. El catalogo se navega sin estar registrado. Mirar finalPrice y available.",
       "method": "GET",
       "url": "http://localhost:4002/products",
       "headers": [],
