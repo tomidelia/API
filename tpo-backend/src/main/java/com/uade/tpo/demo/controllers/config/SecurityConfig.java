@@ -66,6 +66,9 @@ public class SecurityConfig {
                         // Solo la tienda define el arbol de categorias.
                         .requestMatchers(HttpMethod.POST, "/categories").hasAuthority(Role.ADMIN.name())
 
+                        // Administracion de cuentas y asignacion de permisos.
+                        .requestMatchers("/users/**").hasAuthority(Role.ADMIN.name())
+
                         // ---------------- SOLO COMPRADORES (USER) ----------------
                         // El carrito y las compras son del comprador. La tienda
                         // no compra, asi que el ADMIN queda afuera a proposito.

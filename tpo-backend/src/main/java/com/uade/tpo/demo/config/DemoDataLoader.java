@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,22 +25,20 @@ import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.repository.UserRepository;
 
 /**
- * Carga datos de prueba la primera vez que se levanta la aplicacion, para poder
- * demostrar todo desde Insomnia sin cargar nada a mano.
+ * Carga un catalogo de ejemplo para desarrollo y para los tests automaticos.
  *
- * La cuenta de la tienda (ADMIN) se crea aca a proposito: el registro publico
- * siempre da rol USER, asi que un comprador no puede auto-asignarse ADMIN.
- * Las contrasenias se guardan hasheadas con BCrypt, igual que en el registro.
+ * VIENE APAGADO (app.seed-demo-data=false). Para la demo de la materia todo se
+ * crea desde Insomnia, como pidio la profesora: la coleccion arranca con la
+ * base vacia y va creando categorias, productos y compradores.
  *
- * Se apaga con app.seed-demo-data=false.
+ * Se enciende con app.seed-demo-data=true cuando conviene tener datos a mano.
  */
 @Component
-@ConditionalOnProperty(name = "app.seed-demo-data", havingValue = "true", matchIfMissing = true)
-public class DataInitializer implements CommandLineRunner {
+@Order(2)
+@ConditionalOnProperty(name = "app.seed-demo-data", havingValue = "true")
+public class DemoDataLoader implements CommandLineRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
-
-    /** Placeholder que si carga en el navegador, para poder ver la imagen. */
+    private static final Logger log = LoggerFactory.getLogger(DemoDataLoader.class);
     private static final String IMAGE_URL = "https://placehold.co/600x600/1f2937/ffffff?text=";
 
     @Autowired
@@ -60,14 +59,13 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (userRepository.count() > 0) {
-            log.info("Ya hay datos cargados, no se vuelven a generar los datos de prueba.");
+        if (productRepository.count() > 0) {
+            log.info("Ya hay productos cargados, no se generan los de ejemplo.");
             return;
         }
 
-        createUser("admin", "admin@juegosdemesa.com", "Tienda", "Juegos de Mesa", Role.ADMIN);
-        createUser("sofia", "sofia@mail.com", "Sofia", "Gomez", Role.USER);
-        createUser("martin", "martin@mail.com", "Martin", "Alvarez", Role.USER);
+        createBuyer("sofia", "sofia@mail.com", "Sofia", "Gomez");
+        createBuyer("martin", "martin@mail.com", "Martin", "Alvarez");
 
         Category estrategia = createCategory("Estrategia");
         Category familiar = createCategory("Familiar");
@@ -89,26 +87,22 @@ public class DataInitializer implements CommandLineRunner {
         createProduct("Virus!", "Juego de cartas rapido para 2 a 6 jugadores.",
                 new BigDecimal("15400.00"), 25, 20, cartas, List.of("Virus"));
 
-        log.info("Datos de prueba cargados.");
-        log.info("Cuentas: admin@juegosdemesa.com (ADMIN) | sofia@mail.com (USER) | martin@mail.com (USER)");
-        log.info("Contrasenia de todas: 123456");
-        log.info("Nota: 'Uno' se carga con stock 0 a proposito, para probar la validacion del carrito.");
+        log.info("Catalogo de ejemplo cargado (app.seed-demo-data=true).");
     }
 
-    private void createUser(String nickname, String email, String name, String surname, Role role) {
+    private void createBuyer(String nickname, String email, String name, String surname) {
+        if (userRepository.existsByEmail(email))
+            return;
+
         User user = new User();
         user.setNickname(nickname);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode("123456"));
         user.setName(name);
         user.setSurname(surname);
-        user.setRole(role);
+        user.setRole(Role.USER);
 
-        User saved = userRepository.save(user);
-
-        // Igual que en el registro: el carrito se crea junto con el usuario.
-        if (role == Role.USER)
-            cartRepository.save(new Cart(saved));
+        cartRepository.save(new Cart(userRepository.save(user)));
     }
 
     private Category createCategory(String description) {

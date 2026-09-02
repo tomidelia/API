@@ -44,7 +44,7 @@ class ApiEndpointsTests {
     }
 
     private String tokenAdmin() {
-        return tokenDe("admin@juegosdemesa.com", "123456");
+        return tokenDe("admin@juegosdemesa.com", "admin1234");
     }
 
     private String tokenComprador() {
@@ -270,5 +270,67 @@ class ApiEndpointsTests {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().get("message").toString()).contains("stock");
+    }
+
+    // ------------------------------------------------- administracion de cuentas
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    void laTiendaPuedeListarLasCuentas() {
+        ResponseEntity<Map> response = conToken(tokenAdmin(), HttpMethod.GET, "/users", null);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        // Nunca expone contrasenias, ni siquiera hasheadas.
+        assertThat(response.getBody().toString()).doesNotContain("password");
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    void unCompradorNoPuedeVerLasCuentas() {
+        assertThat(conToken(tokenComprador(), HttpMethod.GET, "/users", null)
+                .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    void laTiendaPuedeAsignarPermisos() {
+        String admin = tokenAdmin();
+
+        ResponseEntity<Map> alta = rest.postForEntity("/api/v1/auth/register", Map.of(
+                "username", "ascendido", "email", "ascendido@mail.com", "password", "123456",
+                "name", "Lucia", "surname", "Diaz"), Map.class);
+        assertThat(alta.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        ResponseEntity<Map> usuarios = conToken(admin, HttpMethod.GET, "/users", null);
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> content = (List<Map<String, Object>>) usuarios.getBody().get("content");
+        Object id = content.stream()
+                .filter(u -> "ascendido@mail.com".equals(u.get("email")))
+                .findFirst().orElseThrow().get("id");
+
+        ResponseEntity<Map> cambio = conToken(admin, HttpMethod.PATCH, "/users/" + id + "/role",
+                Map.of("role", "ADMIN"));
+
+        assertThat(cambio.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(cambio.getBody().get("role")).isEqualTo("ADMIN");
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    void unAdminNoPuedeCambiarseElRolASiMismo() {
+        String admin = tokenAdmin();
+
+        ResponseEntity<Map> usuarios = conToken(admin, HttpMethod.GET, "/users", null);
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> content = (List<Map<String, Object>>) usuarios.getBody().get("content");
+        Object id = content.stream()
+                .filter(u -> "admin@juegosdemesa.com".equals(u.get("email")))
+                .findFirst().orElseThrow().get("id");
+
+        ResponseEntity<Map> cambio = conToken(admin, HttpMethod.PATCH, "/users/" + id + "/role",
+                Map.of("role", "USER"));
+
+        // Si pudiera, la tienda podria quedarse sin ningun administrador.
+        assertThat(cambio.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }

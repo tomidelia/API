@@ -1,7 +1,6 @@
 package com.uade.tpo.demo.repository;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,5 +34,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("search") String search,
             Pageable pageable);
 
-    List<Product> findByCategoryIdAndActiveTrue(Long categoryId);
 }
