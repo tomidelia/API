@@ -408,4 +408,39 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
         // Si pudiera, la tienda podria quedarse sin ningun administrador.
         assertThat(cambio.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
+
+    @SuppressWarnings("rawtypes")
+@Test
+void noSePuedeCrearProductoConImagenVacia() {
+
+    String admin = tokenAdmin();
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    headers.setBearerAuth(admin);
+
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("name", "Producto sin imagen");
+    body.add("description", "Debe fallar porque la imagen esta vacia.");
+    body.add("price", "1000");
+    body.add("stock", "1");
+    body.add("categoryId", "1");
+
+    ByteArrayResource image = new ByteArrayResource(new byte[] {}) {
+        @Override
+        public String getFilename() {
+            return "vacia.jpg";
+        }
+    };
+
+    body.add("images", image);
+
+    ResponseEntity<Map> response = rest.exchange(
+            "/products",
+            HttpMethod.POST,
+            new HttpEntity<>(body, headers),
+            Map.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+}
 }
