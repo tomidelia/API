@@ -28,6 +28,7 @@ import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.repository.CartItemRepository;
 import com.uade.tpo.demo.repository.CategoryRepository;
 import com.uade.tpo.demo.repository.ProductRepository;
+import com.uade.tpo.demo.exceptions.InvalidImageException;
 
 /**
  * La tienda tiene un unico vendedor: cualquier alta, modificacion o baja
@@ -188,31 +189,34 @@ public class ProductServiceImpl implements ProductService {
      * Reemplaza las imagenes del producto convirtiendo cada archivo recibido
      * mediante multipart en un Blob para almacenarlo en la base de datos.
      */
-    private void replaceImages(
-            Product product,
-            List<MultipartFile> files) {
+    private void replaceImages(Product product, List<MultipartFile> files) {
 
-        product.getImages().clear();
+    if (files == null)
+        return;
 
-        if (files == null)
-            return;
+    if (files.isEmpty()) {
+        throw new InvalidImageException(
+                "El producto tiene que tener al menos una imagen");
+    }
 
-        for (MultipartFile file : files) {
-
-            if (file == null || file.isEmpty())
-                continue;
-
-            try {
-                byte[] bytes = file.getBytes();
-                Blob blob = new SerialBlob(bytes);
-
-                product.getImages().add(
-                        new ProductImage(blob, product));
-
-            } catch (IOException | SQLException e) {
-                throw new IllegalStateException(
-                        "No se pudo procesar la imagen del producto", e);
-            }
+    for (MultipartFile file : files) {
+        if (file == null || file.isEmpty()) {
+            throw new InvalidImageException(
+                    "La imagen del producto no puede estar vacia");
         }
     }
+
+    product.getImages().clear();
+
+    for (MultipartFile file : files) {
+        try {
+            byte[] bytes = file.getBytes();
+            Blob blob = new SerialBlob(bytes);
+            product.getImages().add(new ProductImage(blob, product));
+        } catch (IOException | SQLException e) {
+            throw new InvalidImageException(
+                    "No se pudo procesar la imagen del producto");
+        }
+    }
+}
 }

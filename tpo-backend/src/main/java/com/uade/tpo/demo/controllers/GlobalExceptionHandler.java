@@ -2,6 +2,7 @@ package com.uade.tpo.demo.controllers;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import com.uade.tpo.demo.exceptions.InsufficientStockException;
 import com.uade.tpo.demo.exceptions.OrderNotFoundException;
 import com.uade.tpo.demo.exceptions.ProductNotFoundException;
 import com.uade.tpo.demo.exceptions.UserNotFoundException;
+import com.uade.tpo.demo.exceptions.InvalidImageException;
 
 /**
  * Centraliza el manejo de errores: cada excepcion de negocio se traduce a un
@@ -77,4 +79,13 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(status).body(body);
     }
+
+    @ExceptionHandler(InvalidImageException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidImage(
+        InvalidImageException exception) {
+
+    return ResponseEntity
+            .badRequest()
+            .body(Map.of("error", exception.getMessage()));
+}
 }
