@@ -2,6 +2,11 @@ package com.uade.tpo.demo.config;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Base64;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +44,8 @@ import com.uade.tpo.demo.repository.UserRepository;
 public class DemoDataLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DemoDataLoader.class);
-    private static final String IMAGE_URL = "https://placehold.co/600x600/1f2937/ffffff?text=";
+    private static final String SAMPLE_IMAGE_BASE64 =
+        "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKQAH//Z";
 
     @Autowired
     private UserRepository userRepository;
@@ -123,8 +129,17 @@ public class DemoDataLoader implements CommandLineRunner {
         product.setCategory(category);
         product.setActive(true);
 
-        for (String label : imageLabels)
-            product.getImages().add(new ProductImage(IMAGE_URL + label, product));
+        for (String ignored : imageLabels) {
+    try {
+        byte[] bytes = Base64.getDecoder().decode(SAMPLE_IMAGE_BASE64);
+        Blob blob = new SerialBlob(bytes);
+
+        product.getImages().add(new ProductImage(blob, product));
+    } catch (SQLException e) {
+        throw new IllegalStateException(
+                "No se pudo crear la imagen de prueba", e);
+    }
+}
 
         productRepository.save(product);
     }

@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
@@ -36,7 +38,9 @@ public class ProductRequest {
     @NotNull(message = "La categoria es obligatoria")
     private Long categoryId;
 
-/** Una o mas URLs de fotos del producto. Al menos una. */
-    @NotEmpty(message = "El producto tiene que tener al menos una imagen")
-    private List<@NotBlank(message = "La imagen no puede estar vacia") String> images = new ArrayList<>();
+    /**
+ * Una o mas imagenes recibidas mediante multipart/form-data.
+ */
+@NotEmpty(message = "El producto tiene que tener al menos una imagen")
+private List<MultipartFile> images = new ArrayList<>();
 }

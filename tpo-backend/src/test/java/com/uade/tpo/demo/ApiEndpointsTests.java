@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Levanta la API en un puerto real y le pega por HTTP, igual que Insomnia.
@@ -138,15 +144,40 @@ class ApiEndpointsTests {
         assertThat(rest.getForEntity("/orders/my", Map.class).getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
-    @SuppressWarnings("rawtypes")
-    @Test
-    void sinTokenNoSePuedePublicarNiBorrarProductos() {
-        assertThat(rest.postForEntity("/products", Map.of("name", "x"), Map.class)
-                .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+@SuppressWarnings("rawtypes")
+@Test
+void sinTokenNoSePuedePublicarNiBorrarProductos() {
 
-        assertThat(conToken(null, HttpMethod.DELETE, "/products/1", null)
-                .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    }
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("name", "Producto sin autorizacion");
+    body.add("description", "No deberia poder crearse.");
+    body.add("price", "1000");
+    body.add("stock", "1");
+    body.add("categoryId", "1");
+
+    ByteArrayResource image = new ByteArrayResource(new byte[] { 1, 2, 3 }) {
+        @Override
+        public String getFilename() {
+            return "producto.jpg";
+        }
+    };
+
+    body.add("images", image);
+
+    ResponseEntity<Map> response = rest.exchange(
+            "/products",
+            HttpMethod.POST,
+            new HttpEntity<>(body, headers),
+            Map.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
+    assertThat(conToken(null, HttpMethod.DELETE, "/products/1", null)
+            .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+}
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -160,16 +191,38 @@ class ApiEndpointsTests {
 
     // ------------------------------------------------- separacion de roles
 
-    @SuppressWarnings("rawtypes")
-    @Test
-    void unCompradorNoPuedePublicarProductos() {
-        ResponseEntity<Map> response = conToken(tokenComprador(), HttpMethod.POST, "/products", Map.of(
-                "name", "Juego pirata", "description", "No deberia poder crearse.",
-                "price", 1000, "stock", 1, "categoryId", 1,
-                "images", List.of("https://placehold.co/600x600?text=X")));
+@SuppressWarnings("rawtypes")
+@Test
+void unCompradorNoPuedePublicarProductos() {
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    }
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    headers.setBearerAuth(tokenComprador());
+
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("name", "Juego pirata");
+    body.add("description", "No deberia poder crearse.");
+    body.add("price", "1000");
+    body.add("stock", "1");
+    body.add("categoryId", "1");
+
+    ByteArrayResource image = new ByteArrayResource(new byte[] { 1, 2, 3 }) {
+        @Override
+        public String getFilename() {
+            return "pirata.jpg";
+        }
+    };
+
+    body.add("images", image);
+
+    ResponseEntity<Map> response = rest.exchange(
+            "/products",
+            HttpMethod.POST,
+            new HttpEntity<>(body, headers),
+            Map.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+}
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -186,28 +239,50 @@ class ApiEndpointsTests {
                 .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
-    @SuppressWarnings("rawtypes")
-    @Test
-    void laTiendaSiPuedePublicarYAdministrarProductos() {
-        String admin = tokenAdmin();
+@SuppressWarnings("rawtypes")
+@Test
+void laTiendaSiPuedePublicarYAdministrarProductos() {
+    String admin = tokenAdmin();
 
-        ResponseEntity<Map> creado = conToken(admin, HttpMethod.POST, "/products", Map.of(
-                "name", "Aventureros al Tren", "description", "Juego de rutas ferroviarias.",
-                "price", 70000.00, "stock", 5, "discount", 10, "categoryId", 1,
-                "images", List.of("https://placehold.co/600x600?text=Ticket")));
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    headers.setBearerAuth(admin);
 
-        assertThat(creado.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Object id = creado.getBody().get("id");
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("name", "Aventureros al Tren");
+    body.add("description", "Juego de rutas ferroviarias.");
+    body.add("price", "70000.00");
+    body.add("stock", "5");
+    body.add("discount", "10");
+    body.add("categoryId", "1");
 
-        assertThat(conToken(admin, HttpMethod.PATCH, "/products/" + id + "/stock", Map.of("stock", 20))
-                .getStatusCode()).isEqualTo(HttpStatus.OK);
+    ByteArrayResource image = new ByteArrayResource(new byte[] { 1, 2, 3, 4 }) {
+        @Override
+        public String getFilename() {
+            return "ticket.jpg";
+        }
+    };
 
-        assertThat(conToken(admin, HttpMethod.PATCH, "/products/" + id + "/discount", Map.of("discount", 25))
-                .getStatusCode()).isEqualTo(HttpStatus.OK);
+    body.add("images", image);
 
-        assertThat(conToken(admin, HttpMethod.DELETE, "/products/" + id, null)
-                .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
+    ResponseEntity<Map> creado = rest.exchange(
+            "/products",
+            HttpMethod.POST,
+            new HttpEntity<>(body, headers),
+            Map.class);
+
+    assertThat(creado.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    Object id = creado.getBody().get("id");
+
+    assertThat(conToken(admin, HttpMethod.PATCH, "/products/" + id + "/stock", Map.of("stock", 20))
+            .getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    assertThat(conToken(admin, HttpMethod.PATCH, "/products/" + id + "/discount", Map.of("discount", 25))
+            .getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    assertThat(conToken(admin, HttpMethod.DELETE, "/products/" + id, null)
+            .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+}
 
     // ------------------------------------------------- flujo de compra
 

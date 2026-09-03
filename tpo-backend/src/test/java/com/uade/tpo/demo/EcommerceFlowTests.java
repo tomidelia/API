@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.uade.tpo.demo.entity.Product;
 import com.uade.tpo.demo.entity.dto.CartItemRequest;
@@ -107,8 +108,18 @@ class EcommerceFlowTests {
         request.setStock(3);
         request.setDiscount(10);
         request.setCategoryId(productRepository.findAll().get(0).getCategory().getId());
-        request.setImages(List.of("https://placehold.co/600x600?text=Ticket1",
-                "https://placehold.co/600x600?text=Ticket2"));
+        request.setImages(List.of(
+        new MockMultipartFile(
+                "images",
+                "foto1.jpg",
+                "image/jpeg",
+                new byte[] { 1, 2, 3 }),
+        new MockMultipartFile(
+                "images",
+                "foto2.jpg",
+                "image/jpeg",
+                new byte[] { 4, 5, 6 })
+));
 
         ProductResponse creado = productService.createProduct(request);
 
