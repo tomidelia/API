@@ -1,5 +1,7 @@
 package com.uade.tpo.demo.entity;
 
+import java.sql.Blob;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -8,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -24,8 +27,8 @@ public class ProductImage {
     public ProductImage() {
     }
 
-    public ProductImage(String url, Product product) {
-        this.url = url;
+    public ProductImage(Blob image, Product product) {
+        this.image = image;
         this.product = product;
     }
 
@@ -33,11 +36,14 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-/** URL de la foto del producto. */
-    @Column(nullable = false, length = 5000)
-    private String url;
+    /**
+     * Archivo de imagen almacenado como Blob en la base de datos.
+     */
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGBLOB")
+    private Blob image;
 
-    // Relacion ManyToOne: muchas fotos pertenecen a un mismo producto.
+    // Muchas imagenes pueden pertenecer a un mismo producto.
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.uade.tpo.demo.entity.dto.DiscountRequest;
 import com.uade.tpo.demo.entity.dto.ProductRequest;
@@ -66,19 +68,20 @@ public class ProductsController {
     }
 
     /** Alta de una publicacion. Con seguridad, queda restringido al rol ADMIN. */
-    @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest)
-            throws CategoryNotFoundException {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> createProduct(
+        @Valid @ModelAttribute ProductRequest productRequest)
+        throws CategoryNotFoundException {
 
         ProductResponse result = productService.createProduct(productRequest);
         return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }
 
     /** Modificacion de la publicacion. */
-    @PutMapping("/{productId}")
+    @PutMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> updateProduct(
-            @PathVariable Long productId,
-            @Valid @RequestBody ProductUpdateRequest productRequest)
+        @PathVariable Long productId,
+        @Valid @ModelAttribute ProductUpdateRequest productRequest)
             throws ProductNotFoundException, CategoryNotFoundException {
 
         return ResponseEntity.ok(productService.updateProduct(productId, productRequest));

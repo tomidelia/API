@@ -1,8 +1,12 @@
 package com.uade.tpo.demo.entity.dto;
 
 import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Base64;
 
 import com.uade.tpo.demo.entity.CartItem;
+import com.uade.tpo.demo.entity.ProductImage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,12 +36,23 @@ public class CartItemResponse {
                 .productName(item.getProduct().getName())
                 .image(item.getProduct().getImages().isEmpty()
                         ? null
-                        : item.getProduct().getImages().get(0).getUrl())
+                        : toBase64(item.getProduct().getImages().get(0)))
                 .unitPrice(item.getProduct().getFinalPrice())
                 .discount(item.getProduct().getDiscount())
                 .quantity(item.getQuantity())
                 .stock(item.getProduct().getStock())
                 .subtotal(item.getSubtotal())
                 .build();
+    }
+
+    private static String toBase64(ProductImage productImage) {
+        try {
+            Blob blob = productImage.getImage();
+            byte[] bytes = blob.getBytes(1, (int) blob.length());
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (SQLException e) {
+            throw new IllegalStateException(
+                    "No se pudo leer la imagen del producto", e);
+        }
     }
 }

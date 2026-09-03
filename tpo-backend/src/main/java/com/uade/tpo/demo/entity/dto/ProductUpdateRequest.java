@@ -3,13 +3,13 @@ package com.uade.tpo.demo.entity.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
 
 /** Todos los campos son opcionales: solo se actualiza lo que llega. */
 @Data
@@ -33,5 +33,5 @@ public class ProductUpdateRequest {
 
     /** Si viene la lista, reemplaza por completo las fotos del producto. */
     @Size(min = 1, message = "El producto tiene que tener al menos una imagen")
-    private List<@NotBlank(message = "La imagen no puede estar vacia") String> images;
+    private List<MultipartFile> images;
 }

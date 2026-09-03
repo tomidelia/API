@@ -1,13 +1,19 @@
 package com.uade.tpo.demo.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.uade.tpo.demo.entity.Category;
 import com.uade.tpo.demo.entity.Product;
@@ -24,7 +30,8 @@ import com.uade.tpo.demo.repository.CategoryRepository;
 import com.uade.tpo.demo.repository.ProductRepository;
 
 /**
- * La tienda tiene un unico vendedor: cualquier alta, modificacion o baja la hace el ADMIN. 
+ * La tienda tiene un unico vendedor: cualquier alta, modificacion o baja
+ * la realiza el ADMIN.
  */
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -40,8 +47,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductResponse> getProducts(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice,
-            boolean onlyAvailable, String search, PageRequest pageRequest) {
+    public Page<ProductResponse> getProducts(
+            Long categoryId,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            boolean onlyAvailable,
+            String search,
+            PageRequest pageRequest) {
 
         String term = (search == null || search.isBlank()) ? null : search.trim();
 
@@ -52,13 +64,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductResponse getProductById(Long productId) throws ProductNotFoundException {
+    public ProductResponse getProductById(Long productId)
+            throws ProductNotFoundException {
+
         return ProductResponse.from(findActiveProduct(productId));
     }
 
     @Override
     @Transactional
-    public ProductResponse createProduct(ProductRequest productRequest) throws CategoryNotFoundException {
+    public ProductResponse createProduct(ProductRequest productRequest)
+            throws CategoryNotFoundException {
 
         Category category = findCategory(productRequest.getCategoryId());
 
@@ -67,9 +82,11 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
-        product.setDiscount(productRequest.getDiscount() == null ? 0 : productRequest.getDiscount());
+        product.setDiscount(
+                productRequest.getDiscount() == null ? 0 : productRequest.getDiscount());
         product.setCategory(category);
         product.setActive(true);
+
         replaceImages(product, productRequest.getImages());
 
         return ProductResponse.from(productRepository.save(product));
@@ -77,7 +94,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateProduct(Long productId, ProductUpdateRequest productRequest)
+    public ProductResponse updateProduct(
+            Long productId,
+            ProductUpdateRequest productRequest)
             throws ProductNotFoundException, CategoryNotFoundException {
 
         Product product = findActiveProduct(productId);
@@ -108,7 +127,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateStock(Long productId, StockRequest stockRequest)
+    public ProductResponse updateStock(
+            Long productId,
+            StockRequest stockRequest)
             throws ProductNotFoundException {
 
         Product product = findActiveProduct(productId);
@@ -119,7 +140,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateDiscount(Long productId, DiscountRequest discountRequest)
+    public ProductResponse updateDiscount(
+            Long productId,
+            DiscountRequest discountRequest)
             throws ProductNotFoundException {
 
         Product product = findActiveProduct(productId);
@@ -130,36 +153,66 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(Long productId) throws ProductNotFoundException {
+    public void deleteProduct(Long productId)
+            throws ProductNotFoundException {
 
         Product product = findActiveProduct(productId);
 
-        // Se saca de los carritos donde este cargado y se le hace una baja logica,
-        // para no romper las ordenes ya cerradas que apuntan a este producto.
-        cartItemRepository.deleteAll(cartItemRepository.findByProductId(productId));
+        cartItemRepository.deleteAll(
+                cartItemRepository.findByProductId(productId));
+
         product.setActive(false);
         productRepository.save(product);
     }
 
-    private Product findActiveProduct(Long productId) throws ProductNotFoundException {
+    private Product findActiveProduct(Long productId)
+            throws ProductNotFoundException {
+
         return productRepository.findById(productId)
                 .filter(Product::getActive)
-                .orElseThrow(() -> new ProductNotFoundException("No existe el producto con id " + productId));
+                .orElseThrow(() ->
+                        new ProductNotFoundException(
+                                "No existe el producto con id " + productId));
     }
 
-    private Category findCategory(Long categoryId) throws CategoryNotFoundException {
+    private Category findCategory(Long categoryId)
+            throws CategoryNotFoundException {
+
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("No existe la categoria con id " + categoryId));
+                .orElseThrow(() ->
+                        new CategoryNotFoundException(
+                                "No existe la categoria con id " + categoryId));
     }
 
-    private void replaceImages(Product product, List<String> urls) {
+    /**
+     * Reemplaza las imagenes del producto convirtiendo cada archivo recibido
+     * mediante multipart en un Blob para almacenarlo en la base de datos.
+     */
+    private void replaceImages(
+            Product product,
+            List<MultipartFile> files) {
+
         product.getImages().clear();
-        if (urls == null)
+
+        if (files == null)
             return;
 
-        for (String url : urls) {
-            if (url != null && !url.isBlank())
-                product.getImages().add(new ProductImage(url.trim(), product));
+        for (MultipartFile file : files) {
+
+            if (file == null || file.isEmpty())
+                continue;
+
+            try {
+                byte[] bytes = file.getBytes();
+                Blob blob = new SerialBlob(bytes);
+
+                product.getImages().add(
+                        new ProductImage(blob, product));
+
+            } catch (IOException | SQLException e) {
+                throw new IllegalStateException(
+                        "No se pudo procesar la imagen del producto", e);
+            }
         }
     }
 }
