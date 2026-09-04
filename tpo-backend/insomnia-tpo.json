@@ -19,14 +19,16 @@
       "name": "Base Environment",
       "data": {
         "token_admin": "PEGAR_ACA_EL_TOKEN_DE_LA_TIENDA",
-        "token_user": "PEGAR_ACA_EL_TOKEN_DEL_COMPRADOR"
+        "token_user": "PEGAR_ACA_EL_TOKEN_DEL_COMPRADOR",
+        "admin_password": "CAMBIAR_POR_LA_PASSWORD_DE_LA_TIENDA"
       },
       "dataPropertyOrder": {
         "&": [
           "token_admin",
-          "token_user"
+          "token_user",
+          "admin_password"
         ]
-      },
+      },,
       "metaSortKey": 1
     },
     {
@@ -135,7 +137,7 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"email\": \"admin@juegosdemesa.com\",\n  \"password\": \"admin1234\"\n}"
+        "text": "{\n  \"email\": \"admin@juegosdemesa.com\",\n  \"password\": \"{{ _.admin_password }}\"\n}"
       }
     },
     {

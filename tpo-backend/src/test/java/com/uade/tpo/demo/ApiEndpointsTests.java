@@ -50,7 +50,7 @@ class ApiEndpointsTests {
     }
 
     private String tokenAdmin() {
-        return tokenDe("admin@juegosdemesa.com", "admin1234");
+        return tokenDe("admin@juegosdemesa.com", "TestAdminPassword123!");
     }
 
     private String tokenComprador() {
@@ -444,3 +444,4 @@ void noSePuedeCrearProductoConImagenVacia() {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 }
 }
+
