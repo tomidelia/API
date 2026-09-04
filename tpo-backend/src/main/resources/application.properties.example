@@ -14,7 +14,7 @@ spring.datasource.password=CAMBIAR_POR_TU_PASSWORD
 # Hibernate crea y actualiza las tablas a partir de las entidades.
 spring.jpa.hibernate.ddl-auto=update
 
-# Muestra en consola el SQL que genera el ORM (util para mostrar en clase).
+# Muestra en consola el SQL que genera el ORM para facilitar la depuracion.
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
@@ -27,7 +27,7 @@ spring.jackson.serialization.write-dates-as-timestamps=false
 # datos sensibles escritos adentro del codigo.
 # La expiracion esta en milisegundos: 86400000 = 24 horas.
 # ---------------------------------------------------------------------------
-application.security.jwt.secretKey=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+application.security.jwt.secretKey=CAMBIAR_POR_UNA_CLAVE_SECRETA_DE_AL_MENOS_32_CARACTERES
 application.security.jwt.expiration=86400000
 
 # ---------------------------------------------------------------------------
@@ -37,8 +37,12 @@ application.security.jwt.expiration=86400000
 # cargar el primer producto.
 # ---------------------------------------------------------------------------
 app.admin.email=admin@juegosdemesa.com
-app.admin.password=admin1234
+app.admin.password=CAMBIAR_POR_UNA_PASSWORD_SEGURA
 
 # Catalogo de ejemplo para desarrollo. Apagado: para la demo se crea todo desde
 # Insomnia para realizar las pruebas del flujo completo..
 app.seed-demo-data=false
+
+# Limites para la carga de imagenes
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=20MB
