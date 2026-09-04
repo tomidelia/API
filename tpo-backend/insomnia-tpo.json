@@ -575,7 +575,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -593,8 +593,61 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Catan\",\n  \"description\": \"Juego de estrategia y negociacion para 3 a 4 jugadores. Edicion en espaniol.\",\n  \"price\": 54999.0,\n  \"stock\": 12,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Catan\",\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Catan+caja\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Catan",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Juego de estrategia y negociacion para 3 a 4 jugadores. Edicion en espaniol.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "54999",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "12",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -608,7 +661,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -626,8 +679,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Carcassonne\",\n  \"description\": \"Juego de colocacion de losetas. Incluye la expansion Rio.\",\n  \"price\": 42500.0,\n  \"stock\": 7,\n  \"discount\": 15,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Carcassonne\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Carcassonne",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Juego de colocacion de losetas. Incluye la expansion Rio.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "42500",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "7",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "15",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -641,7 +739,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -659,8 +757,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Dixit\",\n  \"description\": \"Juego de cartas ilustradas y asociacion de ideas para toda la familia.\",\n  \"price\": 61000.0,\n  \"stock\": 4,\n  \"discount\": 0,\n  \"categoryId\": 2,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Dixit\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Dixit",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Juego de cartas ilustradas y asociacion de ideas para toda la familia.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "61000",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "4",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "2",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -674,7 +817,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -692,8 +835,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Uno\",\n  \"description\": \"El clasico juego de cartas. Mazo de 108 cartas.\",\n  \"price\": 8900.0,\n  \"stock\": 0,\n  \"discount\": 0,\n  \"categoryId\": 3,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Uno\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Uno",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "El clasico juego de cartas. Mazo de 108 cartas.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "8900",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "3",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -707,7 +895,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -725,8 +913,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Virus!\",\n  \"description\": \"Juego de cartas rapido para 2 a 6 jugadores.\",\n  \"price\": 15400.0,\n  \"stock\": 25,\n  \"discount\": 20,\n  \"categoryId\": 3,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Virus\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Virus!",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Juego de cartas rapido para 2 a 6 jugadores.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "15400",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "25",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "20",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "3",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -740,7 +973,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -758,8 +991,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Juego pirata\",\n  \"description\": \"No deberia poder crearse.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Juego pirata",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "No deberia poder crearse.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "1000",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -773,7 +1051,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -791,8 +1069,9 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"\"\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+        ]
       }
     },
     {
@@ -806,7 +1085,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -824,8 +1103,45 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Juego sin foto\",\n  \"description\": \"Prueba de validacion.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": []\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Juego sin foto",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Prueba de validacion.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "1000",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          }
+        ]
       }
     },
     {
@@ -839,7 +1155,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -857,8 +1173,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Mal cargado\",\n  \"description\": \"Prueba.\",\n  \"price\": -500.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Mal cargado",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Prueba.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "-500",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -872,7 +1233,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -890,8 +1251,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Mal cargado\",\n  \"description\": \"Prueba.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 150,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Mal cargado",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Prueba.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "1000",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "150",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -905,7 +1311,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -923,8 +1329,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Sin categoria\",\n  \"description\": \"Prueba.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 9999,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Sin categoria",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Prueba.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "1000",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "9999",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -1198,7 +1649,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -1211,8 +1662,53 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Pirata\",\n  \"description\": \"No deberia entrar.\",\n  \"price\": 1000.0,\n  \"stock\": 1,\n  \"discount\": 0,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=X\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Pirata",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "No deberia entrar.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "1000",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "0",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -1266,7 +1762,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -1284,8 +1780,61 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Aventureros al Tren\",\n  \"description\": \"Juego de rutas ferroviarias para 2 a 5 jugadores.\",\n  \"price\": 70000.0,\n  \"stock\": 5,\n  \"discount\": 10,\n  \"categoryId\": 1,\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros\",\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Aventureros+caja\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "name",
+            "value": "Aventureros al Tren",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "description",
+            "value": "Juego de rutas ferroviarias para 2 a 5 jugadores.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "70000",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "stock",
+            "value": "5",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "discount",
+            "value": "10",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "categoryId",
+            "value": "1",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          },
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -1299,7 +1848,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -1317,8 +1866,21 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"description\": \"Juego de rutas ferroviarias. Incluye la expansion de Europa.\",\n  \"price\": 75000.0\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "description",
+            "value": "Juego de rutas ferroviarias. Incluye la expansion de Europa.",
+            "description": "",
+            "disabled": false
+          },
+          {
+            "name": "price",
+            "value": "75000",
+            "description": "",
+            "disabled": false
+          }
+        ]
       }
     },
     {
@@ -1332,7 +1894,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -1350,8 +1912,15 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"price\": 100.0\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "price",
+            "value": "100",
+            "description": "",
+            "disabled": false
+          }
+        ]
       }
     },
     {
@@ -1530,7 +2099,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -1548,8 +2117,17 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"images\": [\n    \"https://placehold.co/600x600/1f2937/ffffff?text=Foto+nueva\"\n  ]\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
@@ -1563,7 +2141,7 @@
       "headers": [
         {
           "name": "Content-Type",
-          "value": "application/json"
+          "value": "multipart/form-data"
         }
       ],
       "parameters": [],
@@ -1581,8 +2159,17 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "body": {
-        "mimeType": "application/json",
-        "text": "{\n  \"images\": []\n}"
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "images",
+            "value": "",
+            "description": "",
+            "disabled": false,
+            "fileName": "",
+            "type": "file"
+          }
+        ]
       }
     },
     {
