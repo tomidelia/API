@@ -113,7 +113,8 @@ Esta cuenta es necesaria porque el registro público asigna siempre el rol `USER
 
 ```properties
 app.admin.email=admin@juegosdemesa.com
-app.admin.password=admin1234
+app.admin.password=CAMBIAR_POR_UNA_PASSWORD_SEGURA
+```
 
 ### Catálogo de ejemplo (opcional, apagado)
 
@@ -123,12 +124,15 @@ porque ahí es un fixture de test y no datos de la aplicación.
 
 ### Sobre las fotos
 
-La API guarda la **URL** de cada foto. Las de ejemplo usan `placehold.co`, que sí cargan en
-el navegador.
+Las imágenes de los productos se reciben como archivos mediante `multipart/form-data`
+y se almacenan en la base de datos como `BLOB`.
 
-**Todo producto tiene que tener al menos una imagen**, validado al crear y al modificar.
-Para fotos reales se manda la URL real en `images`; también acepta base64
-(`data:image/png;base64,...`).
+**Todo producto tiene que tener al menos una imagen.** Al crear un producto se pueden
+enviar una o más imágenes utilizando el campo `images`. Al modificar un producto, si
+se envían nuevas imágenes, reemplazan por completo las anteriores.
+
+Las respuestas de la API devuelven las imágenes codificadas en Base64 para que puedan
+ser utilizadas por el cliente.
 
 ## 6. Seguridad
 
@@ -236,10 +240,19 @@ Base: `http://localhost:4002`
 | DELETE | `/products/{id}` | Baja |
 | POST | `/categories` | Crear categoría |
 
-```json
-{ "name": "Aventureros al Tren", "description": "Juego de rutas ferroviarias.",
-  "price": 70000.00, "stock": 5, "discount": 10, "categoryId": 1,
-  "images": ["https://placehold.co/600x600?text=Aventureros"] }
+El alta y la modificación de productos utilizan `multipart/form-data`.
+
+Ejemplo de campos para `POST /products`:
+
+```text
+name: Aventureros al Tren
+description: Juego de rutas ferroviarias.
+price: 70000
+stock: 5
+discount: 10
+categoryId: 1
+images: [archivo de imagen]
+images: [otro archivo de imagen]
 ```
 
 ### Administración de cuentas (ADMIN)
@@ -411,5 +424,3 @@ falta ni tabla ni repositorio de roles. Con eso desapareció el ManyToMany
 ## 11. Pendiente
 
 - **Frontend** (React + Vite). El backend ya tiene CORS habilitado para `localhost:5173`.
-- **Subida de imágenes por multipart.** Actualmente la API guarda URLs de imágenes. 
-La carga directa de archivos mediante `multipart/form-data` puede incorporarse más adelante si el frontend lo requiere.
