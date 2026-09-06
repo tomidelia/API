@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public ProductResponse createProduct(ProductRequest productRequest)
             throws CategoryNotFoundException {
 
@@ -94,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public ProductResponse updateProduct(
             Long productId,
             ProductUpdateRequest productRequest)
@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public ProductResponse updateStock(
             Long productId,
             StockRequest stockRequest)
@@ -140,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public ProductResponse updateDiscount(
             Long productId,
             DiscountRequest discountRequest)
@@ -153,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public void deleteProduct(Long productId)
             throws ProductNotFoundException {
 
