@@ -38,13 +38,13 @@ public class CartServiceImpl implements CartService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public CartResponse getCart(Long userId) throws UserNotFoundException {
         return CartResponse.from(findOrCreateCart(userId));
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public CartResponse addItem(Long userId, CartItemRequest cartItemRequest)
             throws UserNotFoundException, ProductNotFoundException, InsufficientStockException {
 
@@ -77,7 +77,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public CartResponse updateItem(Long userId, Long itemId, CartItemUpdateRequest cartItemRequest)
             throws UserNotFoundException, CartItemNotFoundException, InsufficientStockException {
 
@@ -93,7 +93,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public CartResponse removeItem(Long userId, Long itemId)
             throws UserNotFoundException, CartItemNotFoundException {
 
@@ -108,7 +108,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public CartResponse clearCart(Long userId) throws UserNotFoundException {
         Cart cart = findOrCreateCart(userId);
 

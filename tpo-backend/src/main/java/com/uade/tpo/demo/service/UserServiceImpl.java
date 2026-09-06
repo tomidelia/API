@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public UserResponse updateRole(Long userId, Long adminId, RoleRequest roleRequest)
             throws UserNotFoundException, ForbiddenActionException {
 

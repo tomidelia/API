@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
      * stock de ninguna y no queda una orden a medias.
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public OrderResponse checkout(Long userId)
             throws UserNotFoundException, EmptyCartException, InsufficientStockException {
 
