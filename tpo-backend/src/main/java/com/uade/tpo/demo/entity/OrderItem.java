@@ -30,6 +30,8 @@ public class OrderItem {
     public OrderItem() {
     }
 
+    // Aca se congela el precio: la orden guarda con cuanto se compro, no el
+    // precio que el producto tenga mas adelante.
     public OrderItem(Order order, Product product, Integer quantity) {
         this.order = order;
         this.product = product;

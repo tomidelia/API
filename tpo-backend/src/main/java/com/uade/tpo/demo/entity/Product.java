@@ -68,6 +68,7 @@ public class Product {
     private List<ProductImage> images = new ArrayList<>();
 
     /** Precio final ya aplicado el descuento del producto. */
+    // ESLABON 1 de 3 del total: precio con el descuento ya aplicado.
     public BigDecimal getFinalPrice() {
         if (discount == null || discount == 0)
             return price.setScale(2, RoundingMode.HALF_UP);

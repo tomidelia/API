@@ -60,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EmptyCartException("El carrito del usuario " + userId + " esta vacio"));
 
+        // PASO 1: no se puede comprar un carrito vacio.
         if (cart.getItems().isEmpty())
             throw new EmptyCartException("El carrito del usuario " + userId + " esta vacio");
 
@@ -69,14 +70,20 @@ public class OrderServiceImpl implements OrderService {
         for (CartItem cartItem : cart.getItems()) {
             Product product = cartItem.getProduct();
 
+            // PASO 2: se revalida el stock. El carrito ya lo valido al agregar,
+            // pero pudo pasar tiempo y otra persona pudo llevarse las unidades.
             if (product.getStock() < cartItem.getQuantity())
                 throw new InsufficientStockException("Stock insuficiente para " + product.getName()
                         + ". Disponible: " + product.getStock() + ", solicitado: " + cartItem.getQuantity());
 
+            // PASO 3: el OrderItem copia precio y descuento de ahora. Si manana
+            // cambia el precio del producto, esta orden no cambia.
             OrderItem orderItem = new OrderItem(order, product, cartItem.getQuantity());
             order.getItems().add(orderItem);
             total = total.add(orderItem.getSubtotal());
 
+            // PASO 4: se descuenta el stock. Si una linea posterior falla en el
+            // paso 2, el @Transactional revierte tambien este descuento.
             product.setStock(product.getStock() - cartItem.getQuantity());
             productRepository.save(product);
         }
@@ -84,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(total);
         Order saved = orderRepository.save(order);
 
+        // PASO 5: el carrito ya se convirtio en orden, queda vacio.
         cart.getItems().clear();
         cartRepository.save(cart);
 
