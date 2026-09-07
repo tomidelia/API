@@ -50,6 +50,7 @@ public class CartItem {
     @Column(nullable = false)
     private Integer quantity;
 
+    // ESLABON 2 de 3: subtotal de una linea = precio con descuento x cantidad.
     public BigDecimal getSubtotal() {
         return product.getFinalPrice().multiply(BigDecimal.valueOf(quantity));
     }

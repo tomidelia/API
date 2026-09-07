@@ -48,6 +48,8 @@ public class Cart {
     private List<CartItem> items = new ArrayList<>();
 
     /** Total del carrito calculado con el precio con descuento de cada producto. */
+    // ESLABON 3 de 3: total del carrito = suma de los subtotales.
+    // No se guarda en la base: se calcula cada vez que se pide el carrito.
     public BigDecimal getTotal() {
         return items.stream()
                 .map(CartItem::getSubtotal)

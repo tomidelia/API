@@ -60,11 +60,16 @@ public class CartServiceImpl implements CartService {
             throw new InsufficientStockException(
                     "El producto " + product.getName() + " no tiene stock disponible");
 
+        // Si el producto ya estaba en el carrito, no se agrega otra linea:
+        // se suma a la cantidad que ya habia.
         Optional<CartItem> existing = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
         int quantity = cartItemRequest.getQuantity() + existing.map(CartItem::getQuantity).orElse(0);
 
+        // Se valida el TOTAL acumulado, no solo lo que se esta pidiendo ahora.
+        // Con stock 3, tener 2 y pedir 2 mas tiene que fallar.
         validateStock(product, quantity);
 
+        // Reusa la linea si existia; si no, crea una nueva y la mete en el carrito.
         CartItem item = existing.orElseGet(() -> {
             CartItem nuevo = new CartItem(cart, product, 0);
             cart.getItems().add(nuevo);
