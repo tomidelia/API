@@ -28,7 +28,7 @@
           "token_user",
           "admin_password"
         ]
-      },,
+      },
       "metaSortKey": 1
     },
     {
@@ -1072,8 +1072,7 @@
       "settingFollowRedirects": "global",
       "body": {
         "mimeType": "multipart/form-data",
-        "params": [
-        ]
+        "params": []
       }
     },
     {
