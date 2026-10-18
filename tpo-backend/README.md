@@ -5,7 +5,7 @@ API REST con Spring Boot + Spring Data JPA + MySQL + Spring Security (JWT).
 **Modelo:** e-commerce con un vendedor único. La tienda es nuestra; los usuarios que
 se registran son compradores.
 
-**Estado:** backend completo, incluida la capa de seguridad. Falta el frontend.
+**Estado:** backend completo, incluida la capa de seguridad, e integrado con el frontend React.
 
 ---
 
@@ -30,7 +30,7 @@ se registran son compradores.
 | Publicación con descripción, categoría y precio | ✅ |
 | Manejo de stock y descuentos individuales | ✅ |
 | Baja de producto | ✅ |
-| Interfaz de usuario dinámica (frontend) | ⏳ pendiente |
+| Interfaz de usuario dinámica (frontend) | ✅ |
 
 ### Una aclaración sobre el modelo
 
@@ -99,7 +99,7 @@ Contra H2 en memoria, sin necesidad de MySQL:
 $env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd test
 ```
 
-Son **28 tests**: catálogo, filtros, publicación, stock, carrito, checkout, toda la capa
+Son **47 tests**: catálogo, filtros, publicación, stock, carrito, checkout, órdenes, toda la capa
 de seguridad (registro, login, tokens manipulados, separación de roles) y la
 administración de cuentas.
 
@@ -383,9 +383,10 @@ com.uade.tpo.demo
 ├── entity/               Entidades JPA
 │   └── dto/              Request y Response
 ├── exceptions/           Excepciones de negocio
-└── config/
-    ├── DataInitializer   Datos de prueba
-    └── WebConfig         CORS para el futuro frontend (puerto 5173)
+├── config/
+│   ├── AdminBootstrap     Crea la cuenta ADMIN de la tienda
+│   ├── DemoDataLoader     Carga los datos de prueba cuando app.seed-demo-data=true
+│   └── WebConfig          CORS para el frontend (puerto 5173)
 ```
 
 ### Relaciones entre entidades
@@ -421,6 +422,11 @@ falta ni tabla ni repositorio de roles. Con eso desapareció el ManyToMany
 
 ---
 
-## 11. Pendiente
+## 11. Estado actual
 
-- **Frontend** (React + Vite). El backend ya tiene CORS habilitado para `localhost:5173`.
+- **Frontend React + Vite** implementado e integrado con el backend.
+- Comunicación real mediante `fetch`, sin datos mockeados.
+- Autenticación JWT integrada en el frontend.
+- Catálogo, detalle de producto, filtros, carrito, checkout e historial de compras funcionando.
+- Panel ADMIN para gestión de productos, categorías y usuarios.
+- CORS habilitado para `localhost:5173`.
