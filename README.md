@@ -34,8 +34,16 @@ CREATE DATABASE ecommerce;
 ```
 
 **2. El backend.** Copiar `tpo-backend/src/main/resources/application.properties.example`
-a `application.properties` y poner ahí la contraseña del MySQL propio. Después,
+a `application.properties` y completar la configuración local de MySQL. Después,
 desde `tpo-backend/`:
+
+**Windows PowerShell:**
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+**macOS/Linux:**
 
 ```bash
 ./mvnw spring-boot:run

@@ -47,7 +47,7 @@ La relación entre `Category` y `Product` se modeló como `@OneToMany`, ya que u
 
 | Herramienta | Detalle |
 |---|---|
-| JDK 17 o superior | Probado con JDK 17 y 23 |
+| JDK 17 o superior | El proyecto compila con Java 17 (`release 17`) |
 | MySQL Server 8 + Workbench | El servicio tiene que estar corriendo |
 | Maven | No hace falta: el proyecto trae `mvnw` |
 | Insomnia | Para probar los endpoints (ver sección 7) |
@@ -83,10 +83,18 @@ Ahí también están la clave y la expiración del token, que `JwtService` inyec
 
 **VS Code:** abrí `tpo-backend`, abrí `DemoApplication.java` y tocá **Run**.
 
-**Terminal (PowerShell):**
+**Terminal:**
+
+**Windows PowerShell:**
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+**macOS/Linux:**
 
 ```bash
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd spring-boot:run
+./mvnw spring-boot:run
 ```
 
 La API queda en **http://localhost:4002**.
@@ -95,8 +103,16 @@ La API queda en **http://localhost:4002**.
 
 Contra H2 en memoria, sin necesidad de MySQL:
 
+**Windows PowerShell:**
+
+```powershell
+.\mvnw.cmd test
+```
+
+**macOS/Linux:**
+
 ```bash
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-23"; .\mvnw.cmd test
+./mvnw test
 ```
 
 Son **47 tests**: catálogo, filtros, publicación, stock, carrito, checkout, órdenes, toda la capa

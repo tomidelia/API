@@ -15,6 +15,14 @@ Hacen falta **tres cosas corriendo a la vez**:
 
 **2. El backend**, desde `tpo-backend/`:
 
+**Windows PowerShell:**
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+**macOS/Linux:**
+
 ```bash
 ./mvnw spring-boot:run
 ```
@@ -97,9 +105,9 @@ dio la cátedra. Sin axios: `fetch` pelado, como se vio en clase.
 
 **Estado local, no Redux.** El estado que comparten varias vistas (la sesión y el
 carrito) vive en `App.jsx` y baja por props. Es el flujo unidireccional de React:
-el padre manda los datos, el hijo avisa los eventos. Para la tercera entrega esto
-se reemplaza por Redux, y por eso todos los `fetch` están concentrados en `api/`:
-ese refactor toca esos archivos y no las once vistas.
+el padre manda los datos y el hijo comunica los eventos. Los `fetch` están
+concentrados en `api/`, lo que mantiene separada la comunicación con el backend
+de la lógica de las vistas y facilita futuros cambios en el manejo del estado.
 
 **Sin librería de estilos.** La profesora pidió elegir una sola y no mezclarlas.
 Elegimos no usar ninguna: CSS propio con variables, así el frontend queda liviano.
@@ -130,10 +138,3 @@ cada parte. Es el único endpoint que se sale del molde.
 
 Las fotos vuelven en Base64 dentro de `images`, y se muestran directo con
 `src={`data:image/*;base64,${imagen}`}`, sin pedir otro endpoint.
-
-## Nota sobre `npm audit`
-
-`npm audit` reporta un aviso de `esbuild` que viene arrastrado de Vite 5. Solo
-afecta al servidor de desarrollo (permite que una web abierta en el mismo
-navegador le haga requests), no al build de producción. Nos quedamos en Vite 5
-para usar la misma versión que la cátedra; resolverlo obliga a saltar a Vite 8.
