@@ -1,14 +1,21 @@
-# Mesa Llena — TPO Aplicaciones Interactivas
+# Mesa Llena — TPO Aplicaciones Interactivas (backend)
 
 E-commerce de venta de **juegos de mesa**. Tienda única: nosotros somos el
 vendedor y los usuarios que se registran son compradores.
 UADE — Ingeniería Informática — 2º cuatrimestre 2026.
 
-## Estructura
+## Los dos repositorios
+
+El proyecto son dos aplicaciones separadas, cada una en su propio repositorio.
+Se levantan a la par, pero se desarrollan y se publican por separado.
+
+| | Repositorio |
+|---|---|
+| **Backend** (este) — API REST con Spring Boot + Spring Data JPA + MySQL | https://github.com/tomidelia/API |
+| **Frontend** — interfaz de usuario con React + Vite | https://github.com/tomasszk/mesa-llena-frontend |
 
 ```
-tpo-backend/     API REST con Spring Boot + Spring Data JPA + MySQL
-client/          Interfaz de usuario con React + Vite
+tpo-backend/     El proyecto de Spring Boot
 ```
 
 ## Estado
@@ -21,7 +28,7 @@ client/          Interfaz de usuario con React + Vite
 | Carrito y checkout | ✅ |
 | Gestión de productos, stock y descuentos | ✅ |
 | Seguridad: registro, login y roles con JWT | ✅ |
-| Interfaz de usuario conectada al backend | ✅ |
+| Interfaz de usuario conectada al backend | ✅ (en el otro repo) |
 
 ## Cómo arrancar
 
@@ -56,14 +63,14 @@ La primera vez que arranca contra la base vacía se carga solo el catálogo inic
 de ejemplo (`sofia@mail.com` y `martin@mail.com`, contraseña `123456`). No hay que
 cargar nada a mano.
 
-**3. El frontend.** Desde `client/`:
+> El catálogo inicial solo se carga si la tabla de productos está **vacía**, para
+> no pisar datos que ya existan. Si tu base quedó a medio llenar y querés empezar
+> de cero: `DROP DATABASE ecommerce; CREATE DATABASE ecommerce;` y volvé a levantar.
+
+**3. El frontend.** Clonar el otro repositorio y seguir su README:
 
 ```bash
-npm install
-```
-
-```bash
-npm run dev
+git clone https://github.com/tomasszk/mesa-llena-frontend.git
 ```
 
 Abre en `http://localhost:5173`, que es el puerto que el backend tiene habilitado
@@ -75,6 +82,7 @@ en el CORS.
 ## Documentación
 
 - **[`tpo-backend/README.md`](tpo-backend/README.md)** — requisitos, configuración
-  de la base, lista de endpoints y la colección de Insomnia para probar la API.
-- **[`client/README.md`](client/README.md)** — estructura del frontend, las vistas,
-  los roles y las decisiones de diseño.
+  de la base, el catálogo inicial, la lista de endpoints y la colección de Insomnia
+  para probar la API.
+- **[README del frontend](https://github.com/tomasszk/mesa-llena-frontend)** —
+  estructura, vistas, roles y decisiones de diseño.

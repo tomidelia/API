@@ -477,7 +477,8 @@ falta ni tabla ni repositorio de roles. Con eso desapareció el ManyToMany
 
 ## 11. Estado actual
 
-- **Frontend React + Vite** implementado e integrado con el backend.
+- **Frontend React + Vite** implementado e integrado con el backend. Vive en su
+  propio repositorio: https://github.com/tomasszk/mesa-llena-frontend
 - Comunicación real mediante `fetch`, sin datos mockeados.
 - Autenticación JWT integrada en el frontend.
 - Catálogo, detalle de producto, filtros, carrito, checkout e historial de compras funcionando.
