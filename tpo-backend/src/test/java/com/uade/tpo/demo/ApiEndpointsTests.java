@@ -291,24 +291,25 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
     void flujoCompletoDeCompraConToken() {
         String comprador = tokenDe("martin@mail.com", "123456");
 
-        ResponseEntity<Map> productos = rest.getForEntity("/products?search=Virus", Map.class);
+        ResponseEntity<Map> productos = rest.getForEntity("/products?search=Dixit", Map.class);
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> content = (List<Map<String, Object>>) productos.getBody().get("content");
-        Object virusId = content.get(0).get("id");
+        Object dixitId = content.get(0).get("id");
 
-        // 15400 con 20% de descuento = 12320 por unidad
+        // 44900 con 20% de descuento = 35920 por unidad
         ResponseEntity<Map> carrito = conToken(comprador, HttpMethod.POST, "/carts/items",
-                Map.of("productId", virusId, "quantity", 3));
+                Map.of("productId", dixitId, "quantity", 3));
         assertThat(carrito.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(new BigDecimal(carrito.getBody().get("total").toString()))
-                .isEqualByComparingTo(new BigDecimal("36960.00"));
+                .isEqualByComparingTo(new BigDecimal("107760.00"));
 
         ResponseEntity<Map> orden = conToken(comprador, HttpMethod.POST, "/orders/checkout", null);
         assertThat(orden.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(new BigDecimal(orden.getBody().get("total").toString()))
-                .isEqualByComparingTo(new BigDecimal("36960.00"));
+                .isEqualByComparingTo(new BigDecimal("107760.00"));
 
-        assertThat(rest.getForEntity("/products/" + virusId, Map.class).getBody().get("stock")).isEqualTo(22);
+        // Dixit arranca con stock 9: despues de comprar 3 tienen que quedar 6.
+        assertThat(rest.getForEntity("/products/" + dixitId, Map.class).getBody().get("stock")).isEqualTo(6);
 
         @SuppressWarnings("unchecked")
         List<Object> items = (List<Object>) conToken(comprador, HttpMethod.GET, "/carts", null)
@@ -334,8 +335,8 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
     @SuppressWarnings("rawtypes")
     @Test
     void elCarritoValidaElStockAunEstandoLogueado() {
-        // "Uno" se carga con stock 0 en los datos de prueba.
-        ResponseEntity<Map> productos = rest.getForEntity("/products?search=Uno", Map.class);
+        // "Azul" se carga con stock 0 en el catalogo inicial.
+        ResponseEntity<Map> productos = rest.getForEntity("/products?search=Azul", Map.class);
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> content = (List<Map<String, Object>>) productos.getBody().get("content");
         Object unoId = content.get(0).get("id");

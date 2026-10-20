@@ -123,20 +123,57 @@ administración de cuentas.
 
 ## 5. Con qué arranca la base
 
-**La base arranca vacía.** Al iniciar la aplicación por primera vez se crea únicamente la cuenta administrativa de la tienda mediante `config/AdminBootstrap`.
+Al iniciar la aplicación contra un esquema vacío se cargan dos cosas.
 
-Esta cuenta es necesaria porque el registro público asigna siempre el rol `USER`, por lo que se requiere un usuario `ADMIN` inicial para gestionar el catálogo. El email y la contraseña se obtienen desde `application.properties` y no quedan escritos directamente en el código.
+### La cuenta de la tienda
+
+`config/AdminBootstrap` crea la cuenta `ADMIN`. Es necesaria porque el registro público
+asigna siempre el rol `USER`: sin ella nadie podría cargar el primer producto. El email y
+la contraseña se leen de `application.properties` y no quedan escritos en el código.
 
 ```properties
 app.admin.email=admin@juegosdemesa.com
 app.admin.password=CAMBIAR_POR_UNA_PASSWORD_SEGURA
 ```
 
-### Catálogo de ejemplo (opcional, apagado)
+### El catálogo inicial
 
-`config/DemoDataLoader` puede cargar un catálogo de ejemplo para desarrollo. Viene
-**apagado**; se enciende con `app.seed-demo-data=true`. Los tests automáticos sí lo usan,
-porque ahí es un fixture de test y no datos de la aplicación.
+`config/DemoDataLoader` carga **8 juegos con sus fotos, las 4 categorías y dos compradores
+de ejemplo**. Viene **encendido** (`app.seed-demo-data=true`).
+
+Existe porque los productos viven en la base de datos, no en el repositorio: sin esto,
+cada integrante que clona el proyecto levanta la tienda vacía y tiene que cargar todo a
+mano antes de poder ver nada. Los tests automáticos usan el mismo catálogo como fixture.
+
+Las fotos están en `src/main/resources/demo-images/` y se leen como recursos del
+*classpath*, así que siguen funcionando cuando el proyecto se empaqueta en un `.jar`.
+
+| Juego | Categoría | Precio | Stock | Descuento |
+|---|---|---|---|---|
+| Catan | Estrategia | 54.999 | 12 | 15% |
+| Carcassonne | Estrategia | 42.500 | 7 | 10% |
+| Ticket to Ride | Estrategia | 48.900 | 5 | — |
+| Azul | Estrategia | 39.500 | **0** | — |
+| Dixit | Cartas | 44.900 | 9 | 20% |
+| Uno | Cartas | 9.900 | 40 | — |
+| Codenames | Party games | 29.900 | 14 | — |
+| Jenga | Familiar | 18.500 | 22 | 5% |
+
+Azul va con stock 0 a propósito: sirve para mostrar que el catálogo lo marca como agotado
+y que no se puede agregar al carrito.
+
+Los dos compradores de ejemplo son `sofia@mail.com` y `martin@mail.com`, los dos con
+contraseña `123456`.
+
+> **Si ya tenías la base cargada, el catálogo inicial NO se carga.** El loader solo corre
+> cuando la tabla de productos está vacía, para no pisar nunca datos que ya existen. Si
+> tenés una base a medio llenar y querés empezar de cero:
+>
+> ```sql
+> DROP DATABASE ecommerce; CREATE DATABASE ecommerce;
+> ```
+>
+> y volvé a levantar el proyecto.
 
 ### Sobre las fotos
 
@@ -401,7 +438,7 @@ com.uade.tpo.demo
 ├── exceptions/           Excepciones de negocio
 ├── config/
 │   ├── AdminBootstrap     Crea la cuenta ADMIN de la tienda
-│   ├── DemoDataLoader     Carga los datos de prueba cuando app.seed-demo-data=true
+│   ├── DemoDataLoader     Carga el catalogo inicial si la base esta vacia
 │   └── WebConfig          CORS para el frontend (puerto 5173)
 ```
 

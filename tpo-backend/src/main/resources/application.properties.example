@@ -39,9 +39,13 @@ application.security.jwt.expiration=86400000
 app.admin.email=admin@juegosdemesa.com
 app.admin.password=CAMBIAR_POR_UNA_PASSWORD_SEGURA
 
-# Catalogo de ejemplo para desarrollo. Apagado: para la demo se crea todo desde
-# Insomnia para realizar las pruebas del flujo completo..
-app.seed-demo-data=false
+# Catalogo inicial.
+# Los productos viven en la base de datos, no en el repositorio: sin esto, quien
+# clona el proyecto levanta la tienda vacia. Con esto encendido, la primera vez
+# que la aplicacion arranca contra un esquema vacio carga 8 juegos con sus fotos,
+# las 4 categorias y dos compradores de ejemplo.
+# Solo corre si la tabla de productos esta vacia: nunca pisa datos ya cargados.
+app.seed-demo-data=true
 
 # Limites para la carga de imagenes
 spring.servlet.multipart.max-file-size=10MB

@@ -51,6 +51,11 @@ desde `tpo-backend/`:
 
 Queda en `http://localhost:4002`.
 
+La primera vez que arranca contra la base vacía se carga solo el catálogo inicial:
+8 juegos con sus fotos, las 4 categorías, la cuenta de la tienda y dos compradores
+de ejemplo (`sofia@mail.com` y `martin@mail.com`, contraseña `123456`). No hay que
+cargar nada a mano.
+
 **3. El frontend.** Desde `client/`:
 
 ```bash

@@ -67,7 +67,8 @@ class EcommerceFlowTests {
                 null, null, null, false, null, PageRequest.of(0, 10));
 
         assertThat(page.getContent()).extracting(ProductResponse::getName)
-                .contains("Catan", "Carcassonne", "Dixit", "Uno", "Virus!");
+                .contains("Catan", "Carcassonne", "Ticket to Ride", "Azul",
+                        "Dixit", "Uno", "Codenames", "Jenga");
     }
 
     @Test
@@ -79,7 +80,7 @@ class EcommerceFlowTests {
         Page<ProductResponse> baratos = productService.getProducts(
                 null, null, new BigDecimal("20000"), false, null, PageRequest.of(0, 10));
         assertThat(baratos.getContent()).extracting(ProductResponse::getName)
-                .containsExactlyInAnyOrder("Uno", "Virus!");
+                .containsExactlyInAnyOrder("Uno", "Jenga");
     }
 
     @Test
@@ -87,7 +88,8 @@ class EcommerceFlowTests {
         Page<ProductResponse> disponibles = productService.getProducts(
                 null, null, null, true, null, PageRequest.of(0, 10));
 
-        assertThat(disponibles.getContent()).extracting(ProductResponse::getName).doesNotContain("Uno");
+        // "Azul" es el producto que el catalogo inicial carga con stock 0.
+        assertThat(disponibles.getContent()).extracting(ProductResponse::getName).doesNotContain("Azul");
     }
 
     @Test
@@ -95,8 +97,8 @@ class EcommerceFlowTests {
         ProductResponse carcassonne = productService.getProducts(
                 null, null, null, false, "carcassonne", PageRequest.of(0, 1)).getContent().get(0);
 
-        // 42500 con 15% de descuento
-        assertThat(carcassonne.getFinalPrice()).isEqualByComparingTo(new BigDecimal("36125.00"));
+        // 42500 con 10% de descuento
+        assertThat(carcassonne.getFinalPrice()).isEqualByComparingTo(new BigDecimal("38250.00"));
     }
 
     @Test
@@ -132,7 +134,8 @@ class EcommerceFlowTests {
     @Test
     void noSePuedeAgregarAlCarritoUnProductoSinStock() {
         CartItemRequest request = new CartItemRequest();
-        request.setProductId(productId("Uno"));
+        // "Azul" es el producto que el catalogo inicial carga con stock 0.
+        request.setProductId(productId("Azul"));
         request.setQuantity(1);
 
         Assertions.assertThrows(InsufficientStockException.class,
@@ -161,12 +164,13 @@ class EcommerceFlowTests {
 
         CartResponse carrito = cartService.addItem(comprador, request);
         assertThat(carrito.getItems()).hasSize(1);
-        assertThat(carrito.getTotal()).isEqualByComparingTo(new BigDecimal("109998.00"));
+        // Catan sale 54999 con 15% de descuento = 46749.15 la unidad.
+        assertThat(carrito.getTotal()).isEqualByComparingTo(new BigDecimal("93498.30"));
 
         OrderResponse orden = orderService.checkout(comprador);
 
         assertThat(orden.getId()).isNotNull();
-        assertThat(orden.getTotal()).isEqualByComparingTo(new BigDecimal("109998.00"));
+        assertThat(orden.getTotal()).isEqualByComparingTo(new BigDecimal("93498.30"));
         assertThat(orden.getItems()).hasSize(1);
         assertThat(orden.getItems().get(0).getQuantity()).isEqualTo(2);
 
