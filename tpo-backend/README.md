@@ -50,7 +50,7 @@ La relación entre `Category` y `Product` se modeló como `@OneToMany`, ya que u
 | JDK 17 o superior | El proyecto compila con Java 17 (`release 17`) |
 | MySQL Server 8 + Workbench | El servicio tiene que estar corriendo |
 | Maven | No hace falta: el proyecto trae `mvnw` |
-| Insomnia | Para probar los endpoints (ver sección 7) |
+| Insomnia | Para probar los endpoints (ver sección 8) |
 
 **Extensiones de VS Code:** **Extension Pack for Java** (Microsoft) y **Spring Boot
 Extension Pack** (VMware).
