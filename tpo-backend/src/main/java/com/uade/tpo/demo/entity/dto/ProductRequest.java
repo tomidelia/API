@@ -46,7 +46,7 @@ public class ProductRequest {
     @Min(value = 1, message = "El minimo de jugadores es 1")
     private Integer minPlayers;
 
-    @Min(value = 1, message = "El maximo de jugadores es 1")
+    @Min(value = 1, message = "El maximo de jugadores debe ser al menos 1")
     private Integer maxPlayers;
 
     @Min(value = 1, message = "La duracion tiene que ser de al menos 1 minuto")

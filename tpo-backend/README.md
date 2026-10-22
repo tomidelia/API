@@ -354,8 +354,9 @@ En el proyecto está **`insomnia-tpo.json`**: una colección con **85 requests**
 todos los endpoints, todos los caminos de error y todas las reglas de seguridad. De esas,
 **38 son casos de error**.
 
-La colección **crea todo desde cero**: arranca con la base vacía y va creando las
-categorías, los productos y los compradores. No hay ningún dato precargado.
+La colección está preparada para **crear sus propios datos desde cero**. Para usarla con
+los IDs esperados, desactivá antes la carga automática del catálogo demo poniendo
+`app.seed-demo-data=false` en `application.properties` y arrancá con la base vacía.
 
 **Importarla:** Insomnia → menú `File` (o botón `Create`) → **Import** → **From File**.
 
@@ -373,7 +374,7 @@ categorías, los productos y los compradores. No hay ningún dato precargado.
 | 01 - Categorías | La tienda crea las categorías; el comprador no puede |
 | 02 - Cargar el catálogo | La tienda da de alta los 5 juegos + todas las validaciones |
 | 03 - Catálogo público | Todo lo que se ve **sin token** |
-| 04 - Sin token no se pasa | Los 403 de lo protegido |
+| 04 - Sin token no se pasa | Los 401 de requests sin autenticación |
 | 05 - Gestión de productos | Modificar, stock, descuentos, fotos y baja |
 | 06 - Carrito | Agregar, modificar, eliminar, y el 403 del admin |
 | 07 - Checkout | La compra, el descuento de stock y el historial |
@@ -385,8 +386,9 @@ seguridad.
 
 ### Antes de la demo
 
-Los IDs de la colección asumen la base recién creada. Antes de la clase: apagá la app,
-corré el reset y volvé a levantarla.
+Los IDs de la colección asumen la base recién creada y sin el catálogo demo automático.
+Antes de la clase, configurá `app.seed-demo-data=false`, apagá la app, corré el reset
+y volvé a levantarla.
 
 ```bash
 & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -pTU_PASSWORD -e "DROP DATABASE ecommerce; CREATE DATABASE ecommerce;"
@@ -398,9 +400,9 @@ pasos (Login TIENDA y Registrar comprador) y pegar los tokens nuevos.
 ## 9. Guion para la demo en clase
 
 1. **Catálogo sin token** → `GET /products`. Se ve `finalPrice` con el descuento y
-   `available: false` en Uno. Nadie se registró todavía.
+   `available: false` en Uno, que la colección carga con stock 0.
 2. **Filtros** → `search=cartas&maxPrice=20000` y `onlyAvailable=true`.
-3. **Chocar con la seguridad** → `GET /carts` sin token: **403**.
+3. **Chocar con la seguridad** → `GET /carts` sin token: **401**.
 4. **Registro** → `POST /api/v1/auth/register`. Devuelve el token y `role: USER`.
 5. **Login de la tienda** → token de ADMIN.
 6. **Publicar** → `POST /products` con el token de ADMIN: **201**.
@@ -408,10 +410,10 @@ pasos (Login TIENDA y Registrar comprador) y pegar los tokens nuevos.
    autenticado, pero no autorizado.
 8. **Stock y descuento** → `PATCH /products/6/stock` y `/discount`.
 9. **Sin stock** → agregar Uno al carrito: **400**.
-10. **Carrito** → agregar Catan x2, ver el total, cambiar cantidad.
+10. **Carrito** → agregar Catan x2 y luego otra unidad; queda en 3 unidades.
 11. **Checkout** → **201** con el total. El stock de Catan baja de 12 a 9.
 12. **Historial** → `GET /orders/my`.
-13. **Token manipulado** → cambiarle una letra al token: **403**.
+13. **Token manipulado** → cambiarle una letra al token: **401**.
 
 ---
 
