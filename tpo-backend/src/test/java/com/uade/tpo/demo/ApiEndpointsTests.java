@@ -138,10 +138,14 @@ class ApiEndpointsTests {
     @SuppressWarnings("rawtypes")
     @Test
     void sinTokenNoSePuedeUsarElCarritoNiComprar() {
-        assertThat(rest.getForEntity("/carts", Map.class).getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        // 401 y no 403: el problema no es que la cuenta no alcance, es que no
+        // hay ninguna cuenta. Asi el cliente sabe que tiene que loguearse.
+        assertThat(rest.getForEntity("/carts", Map.class).getStatusCode())
+                .isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(rest.postForEntity("/orders/checkout", null, Map.class)
-                .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(rest.getForEntity("/orders/my", Map.class).getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+                .getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(rest.getForEntity("/orders/my", Map.class).getStatusCode())
+                .isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
 @SuppressWarnings("rawtypes")
@@ -173,10 +177,10 @@ void sinTokenNoSePuedePublicarNiBorrarProductos() {
             new HttpEntity<>(body, headers),
             Map.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 
     assertThat(conToken(null, HttpMethod.DELETE, "/products/1", null)
-            .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            .getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 }
 
     @SuppressWarnings("rawtypes")
@@ -186,7 +190,7 @@ void sinTokenNoSePuedePublicarNiBorrarProductos() {
         String manipulado = token.substring(0, token.length() - 4) + "AAAA";
 
         assertThat(conToken(manipulado, HttpMethod.GET, "/carts", null)
-                .getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+                .getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     // ------------------------------------------------- separacion de roles

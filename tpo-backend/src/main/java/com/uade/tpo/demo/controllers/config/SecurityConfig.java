@@ -10,10 +10,13 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.uade.tpo.demo.entity.Role;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -80,6 +83,12 @@ public class SecurityConfig {
 
                 // Sin sesiones: el estado del usuario viaja en el token, no
                 // queda guardado en la memoria del servidor.
+                // Sin esto Spring responde 403 a todo: tanto a quien no mando
+                // token como a quien mando uno valido pero sin el rol que hace
+                // falta. Son dos situaciones distintas y el cliente necesita
+                // poder distinguirlas: con 401 sabe que tiene que volver a
+                // loguearse, y con 403 que esa cuenta no alcanza.
+                .exceptionHandling(manejo -> manejo.authenticationEntryPoint(sinAutenticar()))
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
 
@@ -88,5 +97,22 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    /**
+     * Que responder cuando la request no trae una autenticacion valida: no
+     * mando token, lo mando vencido, o lo mando adulterado.
+     *
+     * Devuelve 401 con el mismo cuerpo de error que usa el resto de la API,
+     * para que el cliente lea siempre el mismo formato.
+     */
+    @Bean
+    public AuthenticationEntryPoint sinAutenticar() {
+        return (request, response, excepcion) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("""
+                    {"status":401,"error":"Unauthorized",                    "message":"Tenes que iniciar sesion para hacer esto."}""");
+        };
     }
 }
