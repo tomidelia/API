@@ -35,6 +35,13 @@ public class ProductResponse {
     private Long categoryId;
     private String categoryDescription;
 
+    /* --- Ficha tecnica del juego (puede venir vacia en productos viejos) --- */
+    private Integer minPlayers;
+    private Integer maxPlayers;
+    private Integer durationMinutes;
+    private Integer minAge;
+    private String howToPlay;
+
     /**
      * Imagenes devueltas en Base64 para poder mostrarlas desde el frontend.
      */
@@ -52,6 +59,11 @@ public class ProductResponse {
                 .available(product.isAvailable())
                 .categoryId(product.getCategory().getId())
                 .categoryDescription(product.getCategory().getDescription())
+                .minPlayers(product.getMinPlayers())
+                .maxPlayers(product.getMaxPlayers())
+                .durationMinutes(product.getDurationMinutes())
+                .minAge(product.getMinAge())
+                .howToPlay(product.getHowToPlay())
                 .images(product.getImages().stream()
                         .map(ProductResponse::toBase64)
                         .collect(Collectors.toList()))

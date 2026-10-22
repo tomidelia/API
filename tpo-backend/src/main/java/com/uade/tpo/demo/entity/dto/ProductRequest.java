@@ -38,6 +38,27 @@ public class ProductRequest {
     @NotNull(message = "La categoria es obligatoria")
     private Long categoryId;
 
+    /* ----------------------------------------------------------------------
+       Ficha tecnica del juego. Todos opcionales: si no vienen, el producto se
+       guarda igual y el frontend no muestra ese dato.
+       ---------------------------------------------------------------------- */
+
+    @Min(value = 1, message = "El minimo de jugadores es 1")
+    private Integer minPlayers;
+
+    @Min(value = 1, message = "El maximo de jugadores es 1")
+    private Integer maxPlayers;
+
+    @Min(value = 1, message = "La duracion tiene que ser de al menos 1 minuto")
+    private Integer durationMinutes;
+
+    @Min(value = 0, message = "La edad no puede ser negativa")
+    private Integer minAge;
+
+    /** Explicacion breve de como se juega. */
+    private String howToPlay;
+
+
     /**
  * Una o mas imagenes recibidas mediante multipart/form-data.
  */

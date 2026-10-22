@@ -88,6 +88,14 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
         product.setActive(true);
 
+        // Ficha tecnica: es opcional, si no viene queda en null y el frontend
+        // simplemente no muestra ese dato.
+        product.setMinPlayers(productRequest.getMinPlayers());
+        product.setMaxPlayers(productRequest.getMaxPlayers());
+        product.setDurationMinutes(productRequest.getDurationMinutes());
+        product.setMinAge(productRequest.getMinAge());
+        product.setHowToPlay(productRequest.getHowToPlay());
+
         replaceImages(product, productRequest.getImages());
 
         return ProductResponse.from(productRepository.save(product));
@@ -119,6 +127,23 @@ public class ProductServiceImpl implements ProductService {
 
         if (productRequest.getCategoryId() != null)
             product.setCategory(findCategory(productRequest.getCategoryId()));
+
+        // Ficha tecnica. Igual que el resto: solo se toca lo que llega, asi
+        // una modificacion parcial no borra los datos que ya tenia cargados.
+        if (productRequest.getMinPlayers() != null)
+            product.setMinPlayers(productRequest.getMinPlayers());
+
+        if (productRequest.getMaxPlayers() != null)
+            product.setMaxPlayers(productRequest.getMaxPlayers());
+
+        if (productRequest.getDurationMinutes() != null)
+            product.setDurationMinutes(productRequest.getDurationMinutes());
+
+        if (productRequest.getMinAge() != null)
+            product.setMinAge(productRequest.getMinAge());
+
+        if (productRequest.getHowToPlay() != null)
+            product.setHowToPlay(productRequest.getHowToPlay());
 
         if (productRequest.getImages() != null)
             replaceImages(product, productRequest.getImages());

@@ -49,6 +49,35 @@ public class Product {
     @Column(nullable = false)
     private Integer discount = 0;
 
+    /* ----------------------------------------------------------------------
+       Ficha tecnica del juego.
+
+       Son los datos que cualquiera mira antes de comprar un juego de mesa:
+       para cuantos es, cuanto dura una partida y desde que edad se puede
+       jugar. Van en la base y no escritos en el frontend, porque son datos
+       del producto: cuando la tienda publique un juego nuevo los carga igual
+       que el precio o el stock.
+
+       Son opcionales: un producto viejo o uno cargado a las apuradas puede no
+       tenerlos, y el frontend simplemente no muestra ese dato.
+       ---------------------------------------------------------------------- */
+
+    /** Cantidad minima de jugadores. */
+    private Integer minPlayers;
+
+    /** Cantidad maxima de jugadores. */
+    private Integer maxPlayers;
+
+    /** Cuanto dura una partida, en minutos. */
+    private Integer durationMinutes;
+
+    /** Edad desde la que se recomienda. */
+    private Integer minAge;
+
+    /** Explicacion breve de como se juega. */
+    @Column(length = 4000)
+    private String howToPlay;
+
     /**
      * Baja logica. Al eliminar una publicacion el producto deja de verse en el
      * catalogo, pero se conserva para no romper las ordenes ya realizadas que
