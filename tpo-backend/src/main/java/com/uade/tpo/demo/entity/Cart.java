@@ -37,18 +37,18 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relacion OneToOne: un carrito pertenece a un unico usuario.
+    // Relación OneToOne: un carrito pertenece a un único usuario.
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    // Relacion OneToMany: un carrito tiene muchas lineas.
+    // Relación OneToMany: un carrito tiene muchas líneas.
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
     /** Total del carrito calculado con el precio con descuento de cada producto. */
-    // ESLABON 3 de 3: total del carrito = suma de los subtotales.
+    // ESLABÓN 3 de 3: total del carrito = suma de los subtotales.
     // No se guarda en la base: se calcula cada vez que se pide el carrito.
     public BigDecimal getTotal() {
         return items.stream()

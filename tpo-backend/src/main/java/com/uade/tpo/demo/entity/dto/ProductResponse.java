@@ -35,7 +35,7 @@ public class ProductResponse {
     private Long categoryId;
     private String categoryDescription;
 
-    /* --- Ficha tecnica del juego (puede venir vacia en productos viejos) --- */
+    /* --- Ficha técnica del juego (puede venir vacía en productos viejos) --- */
     private Integer minPlayers;
     private Integer maxPlayers;
     private Integer durationMinutes;
@@ -43,7 +43,7 @@ public class ProductResponse {
     private String howToPlay;
 
     /**
-     * Imagenes devueltas en Base64 para poder mostrarlas desde el frontend.
+     * Imágenes devueltas en Base64 para poder mostrarlas desde el frontend.
      */
     private List<String> images;
 

@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateRole(Long userId, Long adminId, RoleRequest roleRequest)
             throws UserNotFoundException, ForbiddenActionException {
 
-        // Si un admin pudiera bajarse el rol a si mismo, la tienda podria
+        // Si un admin pudiera bajarse el rol a sí mismo, la tienda podría
         // quedarse sin ninguna cuenta capaz de administrar productos.
         if (userId.equals(adminId))
             throw new ForbiddenActionException("Un administrador no puede cambiar su propio rol");

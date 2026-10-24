@@ -50,10 +50,10 @@ public class Product {
     private Integer discount = 0;
 
     /* ----------------------------------------------------------------------
-       Ficha tecnica del juego.
+       Ficha técnica del juego.
 
        Son los datos que cualquiera mira antes de comprar un juego de mesa:
-       para cuantos es, cuanto dura una partida y desde que edad se puede
+       para cuántos es, cuánto dura una partida y desde qué edad se puede
        jugar. Van en la base y no escritos en el frontend, porque son datos
        del producto: cuando la tienda publique un juego nuevo los carga igual
        que el precio o el stock.
@@ -62,42 +62,42 @@ public class Product {
        tenerlos, y el frontend simplemente no muestra ese dato.
        ---------------------------------------------------------------------- */
 
-    /** Cantidad minima de jugadores. */
+    /** Cantidad mínima de jugadores. */
     private Integer minPlayers;
 
-    /** Cantidad maxima de jugadores. */
+    /** Cantidad máxima de jugadores. */
     private Integer maxPlayers;
 
-    /** Cuanto dura una partida, en minutos. */
+    /** Cuánto dura una partida, en minutos. */
     private Integer durationMinutes;
 
     /** Edad desde la que se recomienda. */
     private Integer minAge;
 
-    /** Explicacion breve de como se juega. */
+    /** Explicación breve de cómo se juega. */
     @Column(length = 4000)
     private String howToPlay;
 
     /**
-     * Baja logica. Al eliminar una publicacion el producto deja de verse en el
-     * catalogo, pero se conserva para no romper las ordenes ya realizadas que
+     * Baja lógica. Al eliminar una publicación el producto deja de verse en el
+     * catálogo, pero se conserva para no romper las órdenes ya realizadas que
      * lo referencian.
      */
     @Column(nullable = false)
     private Boolean active = true;
 
-    // Relacion ManyToOne: muchos productos pertenecen a una categoria.
+    // Relación ManyToOne: muchos productos pertenecen a una categoría.
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    // Relacion OneToMany: un producto tiene una o mas fotos.
+    // Relación OneToMany: un producto tiene una o más fotos.
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
 
     /** Precio final ya aplicado el descuento del producto. */
-    // ESLABON 1 de 3 del total: precio con el descuento ya aplicado.
+    // ESLABÓN 1 de 3 del total: precio con el descuento ya aplicado.
     public BigDecimal getFinalPrice() {
         if (discount == null || discount == 0)
             return price.setScale(2, RoundingMode.HALF_UP);

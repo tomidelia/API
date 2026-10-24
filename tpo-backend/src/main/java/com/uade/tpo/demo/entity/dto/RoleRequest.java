@@ -5,7 +5,7 @@ import com.uade.tpo.demo.entity.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-/** Asignacion de permisos: el rol nuevo que se le da a una cuenta. */
+/** Asignación de permisos: el rol nuevo que se le da a una cuenta. */
 @Data
 public class RoleRequest {
 

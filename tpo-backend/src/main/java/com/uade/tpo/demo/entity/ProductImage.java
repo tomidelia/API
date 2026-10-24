@@ -43,7 +43,7 @@ public class ProductImage {
     @Column(nullable = false, columnDefinition = "LONGBLOB")
     private Blob image;
 
-    // Muchas imagenes pueden pertenecer a un mismo producto.
+    // Muchas imágenes pueden pertenecer a un mismo producto.
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)

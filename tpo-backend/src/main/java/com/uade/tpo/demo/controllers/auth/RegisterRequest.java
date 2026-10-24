@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * Datos necesarios para registrar un nuevo usuario:
- * nombre de usuario, email, contrasenia, nombre y apellido.
+ * nombre de usuario, email, contraseña, nombre y apellido.
  *
- * El rol no se solicita durante el registro. La aplicacion utiliza un unico
+ * El rol no se solicita durante el registro. La aplicación utiliza un único
  * vendedor, por lo que todos los nuevos usuarios se registran como compradores.
  * El rol correspondiente se asigna desde el servicio.
  */

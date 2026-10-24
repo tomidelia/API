@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Para el login solo hacen falta el email y la contrasenia. */
+/** Para el login solo hacen falta el email y la contraseña. */
 @Data
 @Builder
 @AllArgsConstructor

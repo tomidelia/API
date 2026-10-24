@@ -19,7 +19,7 @@ import com.uade.tpo.demo.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-/** Registro y login de la aplicacion. */
+/** Registro y login de la aplicación. */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -36,14 +36,14 @@ public class AuthenticationService {
      * Dos decisiones de negocio importantes:
      *
      * 1) El rol NO llega en el request: se fuerza a USER. Somos una tienda con
-     *    un unico vendedor, asi que todo el que se registra es comprador y no
+     *    un único vendedor, así que todo el que se registra es comprador y no
      *    puede auto-asignarse ADMIN. La cuenta de la tienda se crea aparte.
      *
      * 2) Se le crea el carrito en el mismo momento del registro, para que la
      *    primera vez que agregue un producto ya lo tenga.
      *
-     * Va todo en una unica transaccion: si algo falla, no queda ni el usuario
-     * a medias ni un carrito huerfano.
+     * Va todo en una única transacción: si algo falla, no queda ni el usuario
+     * a medias ni un carrito huérfano.
      */
     @Transactional(rollbackFor = Throwable.class)
     public AuthenticationResponse register(RegisterRequest request) throws DuplicateUserException {
@@ -70,7 +70,7 @@ public class AuthenticationService {
 
     /**
      * Login. El AuthenticationManager es el que compara el email y la
-     * contrasenia contra la base; si no coinciden lanza la excepcion el.
+     * contraseña contra la base; si no coinciden lanza la excepción él.
      */
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 

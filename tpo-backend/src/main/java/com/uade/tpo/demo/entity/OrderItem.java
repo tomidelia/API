@@ -17,8 +17,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Guarda el precio y el descuento con los que se compro el producto, para que
- * la orden no cambie si despues el vendedor modifica el precio.
+ * Guarda el precio y el descuento con los que se compró el producto, para que
+ * la orden no cambie si después el vendedor modifica el precio.
  */
 @Data
 @EqualsAndHashCode(of = "id")
@@ -30,8 +30,8 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    // Aca se congela el precio: la orden guarda con cuanto se compro, no el
-    // precio que el producto tenga mas adelante.
+    // Acá se congela el precio: la orden guarda con cuánto se compró, no el
+    // precio que el producto tenga más adelante.
     public OrderItem(Order order, Product product, Integer quantity) {
         this.order = order;
         this.product = product;
@@ -45,13 +45,13 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relacion ManyToOne: muchas lineas pertenecen a una misma orden.
+    // Relación ManyToOne: muchas líneas pertenecen a una misma orden.
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    // Relacion ManyToOne: muchas lineas pueden apuntar al mismo producto.
+    // Relación ManyToOne: muchas líneas pueden apuntar al mismo producto.
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;

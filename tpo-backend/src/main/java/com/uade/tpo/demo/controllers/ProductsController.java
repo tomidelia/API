@@ -39,7 +39,7 @@ public class ProductsController {
     private ProductService productService;
 
     /**
-     * Catalogo con paginado y filtros opcionales.
+     * Catálogo con paginado y filtros opcionales.
      * Ej: /products?page=0&size=10&categoryId=1&minPrice=5000&search=catan
      */
     @GetMapping
@@ -60,14 +60,14 @@ public class ProductsController {
                 categoryId, minPrice, maxPrice, onlyAvailable, search, pageRequest));
     }
 
-    /** Detalle del producto: imagenes, descripcion, precio y disponibilidad. */
+    /** Detalle del producto: imágenes, descripción, precio y disponibilidad. */
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long productId)
             throws ProductNotFoundException {
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
-    /** Alta de una publicacion. Con seguridad, queda restringido al rol ADMIN. */
+    /** Alta de una publicación. Con seguridad, queda restringido al rol ADMIN. */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> createProduct(
         @Valid @ModelAttribute ProductRequest productRequest)
@@ -77,7 +77,7 @@ public class ProductsController {
         return ResponseEntity.created(URI.create("/products/" + result.getId())).body(result);
     }
 
-    /** Modificacion de la publicacion. */
+    /** Modificación de la publicación. */
     @PutMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> updateProduct(
         @PathVariable Long productId,
@@ -96,7 +96,7 @@ public class ProductsController {
         return ResponseEntity.ok(productService.updateStock(productId, stockRequest));
     }
 
-    /** Gestion de descuentos sobre un producto individual. */
+    /** Gestión de descuentos sobre un producto individual. */
     @PatchMapping("/{productId}/discount")
     public ResponseEntity<ProductResponse> updateDiscount(
             @PathVariable Long productId,
@@ -105,7 +105,7 @@ public class ProductsController {
         return ResponseEntity.ok(productService.updateDiscount(productId, discountRequest));
     }
 
-    /** Baja de la publicacion. */
+    /** Baja de la publicación. */
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) throws ProductNotFoundException {
 

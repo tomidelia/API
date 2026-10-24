@@ -21,14 +21,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Define quien puede entrar a cada endpoint.
+ * Define quién puede entrar a cada endpoint.
  *
- * El recorrido esta pensado como el de cualquier e-commerce: se puede mirar el
- * catalogo sin estar registrado, pero para comprar hay que loguearse, y para
+ * El recorrido está pensado como el de cualquier e-commerce: se puede mirar el
+ * catálogo sin estar registrado, pero para comprar hay que loguearse, y para
  * administrar los productos hay que ser la tienda.
  *
- * IMPORTANTE: el ultimo anyRequest().authenticated() es la red de seguridad.
- * Cualquier endpoint que nos olvidemos de listar aca arriba cae ahi y pide
+ * IMPORTANTE: el último anyRequest().authenticated() es la red de seguridad.
+ * Cualquier endpoint que nos olvidemos de listar acá arriba cae ahí y pide
  * token, en vez de quedar abierto por accidente.
  */
 @Configuration
@@ -46,35 +46,35 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(req -> req
 
-                        // ---------------- PUBLICO (sin token) ----------------
+                        // ---------------- PÚBLICO (sin token) ----------------
                         // Registro y login: no se puede pedir token a quien
-                        // todavia no lo tiene.
+                        // todavía no lo tiene.
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/error/**").permitAll()
 
-                        // El catalogo se navega sin estar registrado, igual que
-                        // Catalogo publico: home, filtros y detalle del producto.
+                        // El catálogo se navega sin estar registrado, igual que
+                        // Catálogo público: home, filtros y detalle del producto.
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categories").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
 
                         // ---------------- SOLO LA TIENDA (ADMIN) ----------------
-                        // Alta, modificacion, stock, descuentos y baja de productos.
+                        // Alta, modificación, stock, descuentos y baja de productos.
                         .requestMatchers(HttpMethod.POST, "/products").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH, "/products/**").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasAuthority(Role.ADMIN.name())
 
-                        // Solo la tienda define el arbol de categorias.
+                        // Solo la tienda define el árbol de categorías.
                         .requestMatchers(HttpMethod.POST, "/categories").hasAuthority(Role.ADMIN.name())
 
-                        // Administracion de cuentas y asignacion de permisos.
+                        // Administración de cuentas y asignación de permisos.
                         .requestMatchers("/users/**").hasAuthority(Role.ADMIN.name())
 
                         // ---------------- SOLO COMPRADORES (USER) ----------------
                         // El carrito y las compras son del comprador. La tienda
-                        // no compra, asi que el ADMIN queda afuera a proposito.
+                        // no compra, así que el ADMIN queda afuera a propósito.
                         .requestMatchers("/carts/**").hasAuthority(Role.USER.name())
                         .requestMatchers("/orders/**").hasAuthority(Role.USER.name())
 
@@ -83,8 +83,8 @@ public class SecurityConfig {
 
                 // Sin sesiones: el estado del usuario viaja en el token, no
                 // queda guardado en la memoria del servidor.
-                // Sin esto Spring responde 403 a todo: tanto a quien no mando
-                // token como a quien mando uno valido pero sin el rol que hace
+                // Sin esto Spring responde 403 a todo: tanto a quien no mandó
+                // token como a quien mandó uno válido pero sin el rol que hace
                 // falta. Son dos situaciones distintas y el cliente necesita
                 // poder distinguirlas: con 401 sabe que tiene que volver a
                 // loguearse, y con 403 que esa cuenta no alcanza.
@@ -92,7 +92,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
 
-                // El filtro de JWT corre ANTES que todo lo demas: si el token no
+                // El filtro de JWT corre ANTES que todo lo demás: si el token no
                 // pasa, la request no llega nunca al controller.
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -100,8 +100,8 @@ public class SecurityConfig {
     }
 
     /**
-     * Que responder cuando la request no trae una autenticacion valida: no
-     * mando token, lo mando vencido, o lo mando adulterado.
+     * Qué responder cuando la request no trae una autenticación válida: no
+     * mandó token, lo mandó vencido, o lo mandó adulterado.
      *
      * Devuelve 401 con el mismo cuerpo de error que usa el resto de la API,
      * para que el cliente lea siempre el mismo formato.

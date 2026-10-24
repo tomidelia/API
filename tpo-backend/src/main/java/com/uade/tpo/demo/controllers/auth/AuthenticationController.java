@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Los dos unicos endpoints publicos de la aplicacion: sin ellos nadie podria
+ * Los dos únicos endpoints públicos de la aplicación: sin ellos nadie podría
  * conseguir un token.
  */
 @RestController
@@ -30,7 +30,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
 
-    /** Login por email y contrasenia. */
+    /** Login por email y contraseña. */
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));

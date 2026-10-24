@@ -28,8 +28,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * Transaccional para cumplir con la atomicidad de A.C.I.D.: si la creacion
-     * falla despues del save, no queda la categoria a medias.
+     * Transaccional para cumplir con la atomicidad de A.C.I.D.: si la creación
+     * falla después del save, no queda la categoría a medias.
      */
     @Transactional(rollbackFor = Throwable.class)
     public Category createCategory(String description) throws CategoryDuplicateException {

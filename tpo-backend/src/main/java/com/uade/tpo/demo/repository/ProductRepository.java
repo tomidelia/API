@@ -15,8 +15,8 @@ import com.uade.tpo.demo.entity.Product;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     /**
-     * Busqueda y filtrado del catalogo. Todos los filtros son opcionales: si el
-     * parametro llega en null la condicion se ignora, asi un unico endpoint
+     * Búsqueda y filtrado del catálogo. Todos los filtros son opcionales: si el
+     * parámetro llega en null la condición se ignora, así un único endpoint
      * resuelve "traer todo" y "traer filtrado".
      */
     @Query("select p from Product p "

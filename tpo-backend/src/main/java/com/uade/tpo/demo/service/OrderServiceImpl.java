@@ -41,12 +41,12 @@ public class OrderServiceImpl implements OrderService {
     /**
      * Checkout sin procesamiento de pago:
      * 1) valida que el carrito tenga productos,
-     * 2) valida el stock de cada linea,
+     * 2) valida el stock de cada línea,
      * 3) calcula el total aplicando los descuentos vigentes,
      * 4) descuenta el stock, y
-     * 5) vacia el carrito.
+     * 5) vacía el carrito.
      *
-     * Va todo en una unica transaccion: si falla una linea, no se descuenta
+     * Va todo en una única transacción: si falla una línea, no se descuenta
      * stock de ninguna y no queda una orden a medias.
      */
     @Override
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EmptyCartException("El carrito del usuario " + userId + " está vacío"));
 
-        // PASO 1: no se puede comprar un carrito vacio.
+        // PASO 1: no se puede comprar un carrito vacío.
         if (cart.getItems().isEmpty())
             throw new EmptyCartException("El carrito del usuario " + userId + " está vacío");
 
@@ -70,20 +70,20 @@ public class OrderServiceImpl implements OrderService {
         for (CartItem cartItem : cart.getItems()) {
             Product product = cartItem.getProduct();
 
-            // PASO 2: se revalida el stock. El carrito ya lo valido al agregar,
+            // PASO 2: se revalida el stock. El carrito ya lo validó al agregar,
             // pero pudo pasar tiempo y otra persona pudo llevarse las unidades.
             if (product.getStock() < cartItem.getQuantity())
                 throw new InsufficientStockException("Stock insuficiente para " + product.getName()
                         + ". Disponible: " + product.getStock() + ", solicitado: " + cartItem.getQuantity());
 
-            // PASO 3: el OrderItem copia precio y descuento de ahora. Si manana
+            // PASO 3: el OrderItem copia precio y descuento de ahora. Si mañana
             // cambia el precio del producto, esta orden no cambia.
             OrderItem orderItem = new OrderItem(order, product, cartItem.getQuantity());
             order.getItems().add(orderItem);
             total = total.add(orderItem.getSubtotal());
 
-            // PASO 4: se descuenta el stock. Si una linea posterior falla en el
-            // paso 2, el @Transactional revierte tambien este descuento.
+            // PASO 4: se descuenta el stock. Si una línea posterior falla en el
+            // paso 2, el @Transactional revierte también este descuento.
             product.setStock(product.getStock() - cartItem.getQuantity());
             productRepository.save(product);
         }
@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(total);
         Order saved = orderRepository.save(order);
 
-        // PASO 5: el carrito ya se convirtio en orden, queda vacio.
+        // PASO 5: el carrito ya se convirtió en orden, queda vacío.
         cart.getItems().clear();
         cartRepository.save(cart);
 

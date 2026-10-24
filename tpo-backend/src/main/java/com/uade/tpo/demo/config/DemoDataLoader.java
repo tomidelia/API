@@ -31,15 +31,15 @@ import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.repository.UserRepository;
 
 /**
- * Carga el catalogo inicial de Mesa Llena la primera vez que arranca la
- * aplicacion contra una base vacia.
+ * Carga el catálogo inicial de Mesa Llena la primera vez que arranca la
+ * aplicación contra una base vacía.
  *
  * Por que existe: los productos viven en la base de datos, no en el repositorio.
  * Si cada integrante del grupo clona el proyecto y levanta su propio MySQL, se
- * encuentra con un catalogo vacio y tiene que cargar todo a mano antes de poder
+ * encuentra con un catálogo vacío y tiene que cargar todo a mano antes de poder
  * ver nada. Con esto, clonar y levantar alcanza para tener la tienda andando.
  *
- * Solo corre si la tabla de productos esta vacia: nunca pisa datos existentes.
+ * Solo corre si la tabla de productos está vacía: nunca pisa datos existentes.
  * Se puede apagar poniendo app.seed-demo-data=false en application.properties.
  */
 @Component
@@ -49,7 +49,7 @@ public class DemoDataLoader implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DemoDataLoader.class);
 
-    /** Carpeta dentro de resources donde estan las tapas de los juegos. */
+    /** Carpeta dentro de resources donde están las tapas de los juegos. */
     private static final String CARPETA_IMAGENES = "/demo-images/";
 
     @Autowired
@@ -71,8 +71,8 @@ public class DemoDataLoader implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
         // Si ya hay productos, no tocamos nada. Esto hace que arrancar la
-        // aplicacion dos veces no duplique el catalogo, y que los productos que
-        // se carguen despues desde el panel no corran riesgo.
+        // aplicación dos veces no duplique el catálogo, y que los productos que
+        // se carguen después desde el panel no corran riesgo.
         if (productRepository.count() > 0) {
             log.info("La base ya tiene productos: no se carga el catálogo inicial.");
             return;
@@ -81,7 +81,7 @@ public class DemoDataLoader implements CommandLineRunner {
         log.info("Base vacía: cargando el catálogo inicial de Mesa Llena...");
 
         // Dos compradores de ejemplo, para poder probar el carrito sin tener
-        // que registrarse primero. La contrasenia de los dos es 123456.
+        // que registrarse primero. La contraseña de los dos es 123456.
         crearComprador("sofia", "sofia@mail.com", "Sofía", "Gómez");
         crearComprador("martin", "martin@mail.com", "Martín", "Álvarez");
 
@@ -126,7 +126,7 @@ public class DemoDataLoader implements CommandLineRunner {
                         + "termina cuando a alguien le quedan pocos vagones, así que hay que "
                         + "elegir bien el momento de jugar las rutas largas."));
 
-        // Este queda sin stock a proposito: sirve para mostrar que el catalogo
+        // Este queda sin stock a propósito: sirve para mostrar que el catálogo
         // lo marca como agotado y que no se puede agregar al carrito.
         crearProducto("Azul",
                 "Azulejos portugueses, un tablero propio y la tensión de elegir sin "
@@ -212,8 +212,8 @@ public class DemoDataLoader implements CommandLineRunner {
     }
 
     /**
-     * La ficha tecnica de un juego. Va en un record y no en cinco parametros
-     * sueltos para que al leer las altas de arriba se note cual es cual.
+     * La ficha técnica de un juego. Va en un record y no en cinco parámetros
+     * sueltos para que al leer las altas de arriba se note cuál es cuál.
      */
     private record Ficha(int minPlayers, int maxPlayers, int durationMinutes, int minAge,
             String howToPlay) {
@@ -246,9 +246,9 @@ public class DemoDataLoader implements CommandLineRunner {
      * Lee una tapa de src/main/resources/demo-images y la convierte en el Blob
      * que guarda la base.
      *
-     * Se lee como recurso del classpath y no como archivo del disco: asi sigue
-     * funcionando cuando la aplicacion se empaqueta en un .jar, donde las
-     * imagenes quedan adentro del jar y ya no existen como archivos sueltos.
+     * Se lee como recurso del classpath y no como archivo del disco: así sigue
+     * funcionando cuando la aplicación se empaqueta en un .jar, donde las
+     * imágenes quedan adentro del jar y ya no existen como archivos sueltos.
      */
     private Blob leerImagen(String archivo) {
         String ruta = CARPETA_IMAGENES + archivo;

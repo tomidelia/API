@@ -35,8 +35,8 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String description;
 
-    // Relacion OneToMany: una categoria agrupa muchos productos.
-    // El lado duenio de la relacion es Product.category (por eso el mappedBy).
+    // Relación OneToMany: una categoría agrupa muchos productos.
+    // El lado dueño de la relación es Product.category (por eso el mappedBy).
     @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();

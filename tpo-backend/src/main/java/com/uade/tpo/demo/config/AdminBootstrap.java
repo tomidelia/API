@@ -15,15 +15,15 @@ import com.uade.tpo.demo.entity.User;
 import com.uade.tpo.demo.repository.UserRepository;
 
 /**
- * Crea la cuenta de la tienda la primera vez que arranca, si todavia no existe
+ * Crea la cuenta de la tienda la primera vez que arranca, si todavía no existe
  * ninguna.
  *
- * Esto no es "cargar datos hardcodeados": es el arranque en frio del sistema.
- * Como el registro publico siempre da rol USER (somos una tienda con un unico
- * vendedor), sin esta cuenta no habria forma de que exista un ADMIN y nadie
- * podria cargar el primer producto.
+ * Esto no es "cargar datos hardcodeados": es el arranque en frío del sistema.
+ * Como el registro público siempre da rol USER (somos una tienda con un único
+ * vendedor), sin esta cuenta no habría forma de que exista un ADMIN y nadie
+ * podría cargar el primer producto.
  *
- * El email y la contrasenia salen del application.properties, no del codigo.
+ * El email y la contraseña salen del application.properties, no del código.
  */
 @Component
 @Order(1)

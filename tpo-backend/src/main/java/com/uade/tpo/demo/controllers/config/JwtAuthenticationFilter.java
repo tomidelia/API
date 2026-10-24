@@ -18,11 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Primer eslabon de la cadena de responsabilidades: se ejecuta una vez por
+ * Primer eslabón de la cadena de responsabilidades: se ejecuta una vez por
  * request, antes de que llegue a cualquier controller.
  *
- * Si la request no trae token, la deja pasar sin autenticar (despues
- * SecurityConfig decide si ese endpoint es publico o no). Si trae token, lo
+ * Si la request no trae token, la deja pasar sin autenticar (después
+ * SecurityConfig decide si ese endpoint es público o no). Si trae token, lo
  * valida y carga al usuario en el SecurityContextHolder.
  */
 @Component
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // "Bearer " ocupa 7 caracteres: el token es todo lo que viene despues.
+        // "Bearer " ocupa 7 caracteres: el token es todo lo que viene después.
         final String jwt = authHeader.substring(7);
 
         try {

@@ -15,9 +15,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 /**
- * Arma y valida los tokens JWT. La clave secreta y el tiempo de expiracion no
- * se escriben aca: se inyectan desde application.properties con @Value, para no
- * dejar datos sensibles adentro del codigo.
+ * Arma y valida los tokens JWT. La clave secreta y el tiempo de expiración no
+ * se escriben acá: se inyectan desde application.properties con @Value, para no
+ * dejar datos sensibles adentro del código.
  */
 @Service
 public class JwtService {
@@ -33,8 +33,8 @@ public class JwtService {
     }
 
     /**
-     * El payload lleva lo minimo indispensable: el email del usuario (subject),
-     * cuando se creo el token y cuando vence. Con el email despues se recupera
+     * El payload lleva lo mínimo indispensable: el email del usuario (subject),
+     * cuándo se creó el token y cuándo vence. Con el email después se recupera
      * de la base todo el resto, incluido el rol.
      */
     private String buildToken(UserDetails userDetails, long expiration) {
@@ -46,7 +46,7 @@ public class JwtService {
                 .compact();
     }
 
-    /** El token vale si es del mismo usuario y todavia no vencio. */
+    /** El token vale si es del mismo usuario y todavía no venció. */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
@@ -66,8 +66,8 @@ public class JwtService {
     }
 
     /**
-     * Al parsear con verifyWith se chequea la firma: si alguien toco el payload,
-     * la firma no coincide y esto lanza una excepcion.
+     * Al parsear con verifyWith se chequea la firma: si alguien tocó el payload,
+     * la firma no coincide y esto lanza una excepción.
      */
     private Claims extractAllClaims(String token) {
         return Jwts.parser()

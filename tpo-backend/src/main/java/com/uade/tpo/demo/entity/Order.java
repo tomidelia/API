@@ -44,7 +44,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relacion ManyToOne: muchas ordenes pertenecen a un mismo usuario.
+    // Relación ManyToOne: muchas órdenes pertenecen a un mismo usuario.
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -56,7 +56,7 @@ public class Order {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal total = BigDecimal.ZERO;
 
-    // Relacion OneToMany: una orden tiene muchas lineas de detalle.
+    // Relación OneToMany: una orden tiene muchas líneas de detalle.
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 }

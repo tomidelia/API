@@ -9,9 +9,9 @@ import com.uade.tpo.demo.exceptions.ForbiddenActionException;
 import com.uade.tpo.demo.exceptions.UserNotFoundException;
 
 /**
- * Administracion de cuentas de usuario.
+ * Administración de cuentas de usuario.
  *
- * El registro, el login y el hasheo de contrasenias se gestionan
+ * El registro, el login y el hasheo de contraseñas se gestionan
  * en AuthenticationService.
  */
 public interface UserService {
@@ -20,7 +20,7 @@ public interface UserService {
 
     public UserResponse getUserById(Long userId) throws UserNotFoundException;
 
-    /** Asignacion de permisos: cambia el rol de una cuenta. */
+    /** Asignación de permisos: cambia el rol de una cuenta. */
     public UserResponse updateRole(Long userId, Long adminId, RoleRequest roleRequest)
             throws UserNotFoundException, ForbiddenActionException;
 }

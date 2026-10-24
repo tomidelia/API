@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 
 /**
  * El carrito es siempre el del usuario logueado: el id sale del token, nunca de
- * la URL. Asi nadie puede leer ni modificar el carrito de otra persona.
+ * la URL. Así nadie puede leer ni modificar el carrito de otra persona.
  */
 @RestController
 @RequestMapping("carts")
@@ -51,7 +51,7 @@ public class CartsController {
         return ResponseEntity.ok(cartService.addItem(user.getId(), cartItemRequest));
     }
 
-    /** Modifica la cantidad de una linea del carrito. */
+    /** Modifica la cantidad de una línea del carrito. */
     @PutMapping("/items/{itemId}")
     public ResponseEntity<CartResponse> updateItem(
             @AuthenticationPrincipal User user,
@@ -62,7 +62,7 @@ public class CartsController {
         return ResponseEntity.ok(cartService.updateItem(user.getId(), itemId, cartItemRequest));
     }
 
-    /** Elimina una linea del carrito. */
+    /** Elimina una línea del carrito. */
     @DeleteMapping("/items/{itemId}")
     public ResponseEntity<CartResponse> removeItem(
             @AuthenticationPrincipal User user,
@@ -72,7 +72,7 @@ public class CartsController {
         return ResponseEntity.ok(cartService.removeItem(user.getId(), itemId));
     }
 
-    /** Vacia el carrito completo. */
+    /** Vacía el carrito completo. */
     @DeleteMapping
     public ResponseEntity<CartResponse> clearCart(@AuthenticationPrincipal User user) throws UserNotFoundException {
         return ResponseEntity.ok(cartService.clearCart(user.getId()));

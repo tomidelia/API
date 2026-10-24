@@ -31,7 +31,7 @@ import com.uade.tpo.demo.repository.ProductRepository;
 import com.uade.tpo.demo.exceptions.InvalidImageException;
 
 /**
- * La tienda tiene un unico vendedor: cualquier alta, modificacion o baja
+ * La tienda tiene un único vendedor: cualquier alta, modificación o baja
  * la realiza el ADMIN.
  */
 @Service
@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
         product.setActive(true);
 
-        // Ficha tecnica: es opcional, si no viene queda en null y el frontend
+        // Ficha técnica: es opcional, si no viene queda en null y el frontend
         // simplemente no muestra ese dato.
         product.setMinPlayers(productRequest.getMinPlayers());
         product.setMaxPlayers(productRequest.getMaxPlayers());
@@ -128,8 +128,8 @@ public class ProductServiceImpl implements ProductService {
         if (productRequest.getCategoryId() != null)
             product.setCategory(findCategory(productRequest.getCategoryId()));
 
-        // Ficha tecnica. Igual que el resto: solo se toca lo que llega, asi
-        // una modificacion parcial no borra los datos que ya tenia cargados.
+        // Ficha técnica. Igual que el resto: solo se toca lo que llega, así
+        // una modificación parcial no borra los datos que ya tenía cargados.
         if (productRequest.getMinPlayers() != null)
             product.setMinPlayers(productRequest.getMinPlayers());
 
@@ -211,7 +211,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Reemplaza las imagenes del producto convirtiendo cada archivo recibido
+     * Reemplaza las imágenes del producto convirtiendo cada archivo recibido
      * mediante multipart en un Blob para almacenarlo en la base de datos.
      */
     private void replaceImages(Product product, List<MultipartFile> files) {

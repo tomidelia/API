@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Vista de un usuario para la administracion. Nunca expone la contrasenia. */
+/** Vista de un usuario para la administración. Nunca expone la contraseña. */
 @Data
 @Builder
 @AllArgsConstructor

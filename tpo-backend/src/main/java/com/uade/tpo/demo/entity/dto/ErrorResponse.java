@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Cuerpo unico de error, para que el frontend siempre lea el mismo formato. */
+/** Cuerpo único de error, para que el frontend siempre lea el mismo formato. */
 @Data
 @Builder
 @AllArgsConstructor

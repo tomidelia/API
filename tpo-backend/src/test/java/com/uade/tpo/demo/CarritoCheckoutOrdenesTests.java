@@ -35,11 +35,11 @@ import com.uade.tpo.demo.service.OrderService;
 import com.uade.tpo.demo.service.ProductService;
 
 /**
- * Tests del carrito, el checkout y las ordenes.
+ * Tests del carrito, el checkout y las órdenes.
  *
- * Cada test se arma sus propios datos (usuario y productos con nombre unico),
- * asi ninguno depende del orden en que corran ni de lo que hayan dejado los
- * demas.
+ * Cada test se arma sus propios datos (usuario y productos con nombre único),
+ * así ninguno depende del orden en que corran ni de lo que hayan dejado los
+ * demás.
  */
 @SpringBootTest
 @TestPropertySource(properties = {
@@ -148,7 +148,7 @@ class CarritoCheckoutOrdenesTests {
         cartService.addItem(comprador, item(producto, 2));
         CartResponse carrito = cartService.addItem(comprador, item(producto, 3));
 
-        // No se crea una linea nueva: se suma a la que ya existia.
+        // No se crea una línea nueva: se suma a la que ya existía.
         assertThat(carrito.getItems()).hasSize(1);
         assertThat(carrito.getItems().get(0).getQuantity()).isEqualTo(5);
         assertThat(carrito.getTotal()).isEqualByComparingTo(new BigDecimal("5000.00"));
@@ -186,7 +186,7 @@ class CarritoCheckoutOrdenesTests {
         InsufficientStockException error = Assertions.assertThrows(InsufficientStockException.class,
                 () -> cartService.addItem(comprador, item(producto, 4)));
 
-        // El mensaje le dice al usuario cuanto hay disponible.
+        // El mensaje le dice al usuario cuánto hay disponible.
         assertThat(error.getMessage()).contains("Disponible: 3").contains("solicitado: 4");
     }
 
@@ -197,7 +197,7 @@ class CarritoCheckoutOrdenesTests {
 
         cartService.addItem(comprador, item(producto, 2));
 
-        // 2 que ya tenia + 2 nuevas = 4, y solo hay 3.
+        // 2 que ya tenía + 2 nuevas = 4, y solo hay 3.
         Assertions.assertThrows(InsufficientStockException.class,
                 () -> cartService.addItem(comprador, item(producto, 2)));
     }
@@ -301,7 +301,7 @@ class CarritoCheckoutOrdenesTests {
     }
 
     /**
-     * El test mas importante de esta parte: ATOMICIDAD.
+     * El test más importante de esta parte: ATOMICIDAD.
      *
      * Se arma un carrito con dos productos y, antes del checkout, se deja al
      * segundo sin stock suficiente (como si otra persona lo hubiera comprado
@@ -319,7 +319,7 @@ class CarritoCheckoutOrdenesTests {
         cartService.addItem(comprador, item(primero, 2));
         cartService.addItem(comprador, item(segundo, 5));
 
-        // Alguien mas se lleva casi todo el stock del segundo producto.
+        // Alguien más se lleva casi todo el stock del segundo producto.
         Product p = productRepository.findById(segundo).orElseThrow();
         p.setStock(1);
         productRepository.save(p);
@@ -327,13 +327,13 @@ class CarritoCheckoutOrdenesTests {
         Assertions.assertThrows(InsufficientStockException.class,
                 () -> orderService.checkout(comprador));
 
-        // Si la transaccion hizo rollback, el primero sigue intacto en 10.
+        // Si la transacción hizo rollback, el primero sigue intacto en 10.
         assertThat(stockDe(primero)).isEqualTo(10);
-        // Y el carrito no se vacio.
+        // Y el carrito no se vació.
         assertThat(cartService.getCart(comprador).getItems()).hasSize(2);
     }
 
-    // =========================================================== ORDENES
+    // =========================================================== ÓRDENES
 
     @Test
     void laOrdenGuardaElPrecioDelMomentoDeLaCompra() throws Exception {
@@ -343,14 +343,14 @@ class CarritoCheckoutOrdenesTests {
         cartService.addItem(comprador, item(producto, 2));
         OrderResponse orden = orderService.checkout(comprador);
 
-        // Despues de la compra la tienda cambia el precio.
+        // Después de la compra la tienda cambia el precio.
         Product p = productRepository.findById(producto).orElseThrow();
         p.setPrice(new BigDecimal("9999.00"));
         productRepository.save(p);
 
         OrderResponse guardada = orderService.getOrderById(orden.getId(), comprador);
 
-        // La orden no cambia: guarda el precio con el que se compro.
+        // La orden no cambia: guarda el precio con el que se compró.
         assertThat(guardada.getItems().get(0).getUnitPrice()).isEqualByComparingTo(new BigDecimal("1000.00"));
         assertThat(guardada.getTotal()).isEqualByComparingTo(new BigDecimal("2000.00"));
     }

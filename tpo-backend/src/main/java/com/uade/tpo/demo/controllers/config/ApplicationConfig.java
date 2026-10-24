@@ -16,8 +16,8 @@ import com.uade.tpo.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Declara como beans las piezas de Spring Security que despues se inyectan:
- * de donde salen los usuarios, como se comparan las contrasenias y con que
+ * Declara como beans las piezas de Spring Security que después se inyectan:
+ * de dónde salen los usuarios, cómo se comparan las contraseñas y con qué
  * algoritmo se hashean.
  */
 @Configuration
@@ -26,7 +26,7 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
-    /** Le dice a Spring como buscar un usuario a partir del email del token. */
+    /** Le dice a Spring cómo buscar un usuario a partir del email del token. */
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> userRepository.findByEmail(email)
@@ -41,13 +41,13 @@ public class ApplicationConfig {
         return authenticationProvider;
     }
 
-    /** Es el que hace el login: compara email y contrasenia contra la base. */
+    /** Es el que hace el login: compara email y contraseña contra la base. */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    /** Hashea las contrasenias para no guardarlas nunca en texto plano. */
+    /** Hashea las contraseñas para no guardarlas nunca en texto plano. */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

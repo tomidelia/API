@@ -28,7 +28,7 @@ import com.uade.tpo.demo.service.ProductService;
 
 /**
  * Recorre los principales casos de uso contra una base H2 en
- * memoria: catalogo, filtros, publicacion, stock, descuentos, carrito y
+ * memoria: catálogo, filtros, publicación, stock, descuentos, carrito y
  * checkout.
  */
 @SpringBootTest
@@ -88,7 +88,7 @@ class EcommerceFlowTests {
         Page<ProductResponse> disponibles = productService.getProducts(
                 null, null, null, true, null, PageRequest.of(0, 10));
 
-        // "Azul" es el producto que el catalogo inicial carga con stock 0.
+        // "Azul" es el producto que el catálogo inicial carga con stock 0.
         assertThat(disponibles.getContent()).extracting(ProductResponse::getName).doesNotContain("Azul");
     }
 
@@ -134,7 +134,7 @@ class EcommerceFlowTests {
     @Test
     void noSePuedeAgregarAlCarritoUnProductoSinStock() {
         CartItemRequest request = new CartItemRequest();
-        // "Azul" es el producto que el catalogo inicial carga con stock 0.
+        // "Azul" es el producto que el catálogo inicial carga con stock 0.
         request.setProductId(productId("Azul"));
         request.setQuantity(1);
 

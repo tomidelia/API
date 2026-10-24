@@ -27,9 +27,9 @@ import org.springframework.util.MultiValueMap;
 /**
  * Levanta la API en un puerto real y le pega por HTTP, igual que Insomnia.
  *
- * Verifica las tres capas de la seguridad: que el catalogo siga siendo publico,
+ * Verifica las tres capas de la seguridad: que el catálogo siga siendo público,
  * que lo protegido rechace a quien no trae token, y que un comprador no pueda
- * hacer cosas de la tienda aunque este logueado.
+ * hacer cosas de la tienda aunque esté logueado.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {
@@ -115,11 +115,11 @@ class ApiEndpointsTests {
                 Map.of("email", "sofia@mail.com", "password", "equivocada"), Map.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        // No aclara si fallo el email o la contrasenia, a proposito.
+        // No aclara si falló el email o la contraseña, a propósito.
         assertThat(response.getBody().get("message").toString()).isEqualTo("Email o contraseña incorrectos");
     }
 
-    // ------------------------------------------------- endpoints publicos
+    // ------------------------------------------------- endpoints públicos
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -139,7 +139,7 @@ class ApiEndpointsTests {
     @Test
     void sinTokenNoSePuedeUsarElCarritoNiComprar() {
         // 401 y no 403: el problema no es que la cuenta no alcance, es que no
-        // hay ninguna cuenta. Asi el cliente sabe que tiene que loguearse.
+        // hay ninguna cuenta. Así el cliente sabe que tiene que loguearse.
         assertThat(rest.getForEntity("/carts", Map.class).getStatusCode())
                 .isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(rest.postForEntity("/orders/checkout", null, Map.class)
@@ -193,7 +193,7 @@ void sinTokenNoSePuedePublicarNiBorrarProductos() {
                 .getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
-    // ------------------------------------------------- separacion de roles
+    // ------------------------------------------------- separación de roles
 
 @SuppressWarnings("rawtypes")
 @Test
@@ -312,7 +312,7 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
         assertThat(new BigDecimal(orden.getBody().get("total").toString()))
                 .isEqualByComparingTo(new BigDecimal("107760.00"));
 
-        // Dixit arranca con stock 9: despues de comprar 3 tienen que quedar 6.
+        // Dixit arranca con stock 9: después de comprar 3 tienen que quedar 6.
         assertThat(rest.getForEntity("/products/" + dixitId, Map.class).getBody().get("stock")).isEqualTo(6);
 
         @SuppressWarnings("unchecked")
@@ -339,7 +339,7 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
     @SuppressWarnings("rawtypes")
     @Test
     void elCarritoValidaElStockAunEstandoLogueado() {
-        // "Azul" se carga con stock 0 en el catalogo inicial.
+        // "Azul" se carga con stock 0 en el catálogo inicial.
         ResponseEntity<Map> productos = rest.getForEntity("/products?search=Azul", Map.class);
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> content = (List<Map<String, Object>>) productos.getBody().get("content");
@@ -352,7 +352,7 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
         assertThat(response.getBody().get("message").toString()).contains("stock");
     }
 
-    // ------------------------------------------------- administracion de cuentas
+    // ------------------------------------------------- administración de cuentas
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -360,7 +360,7 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
         ResponseEntity<Map> response = conToken(tokenAdmin(), HttpMethod.GET, "/users", null);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        // Nunca expone contrasenias, ni siquiera hasheadas.
+        // Nunca expone contraseñas, ni siquiera hasheadas.
         assertThat(response.getBody().toString()).doesNotContain("password");
     }
 
@@ -410,7 +410,7 @@ void laTiendaSiPuedePublicarYAdministrarProductos() {
         ResponseEntity<Map> cambio = conToken(admin, HttpMethod.PATCH, "/users/" + id + "/role",
                 Map.of("role", "USER"));
 
-        // Si pudiera, la tienda podria quedarse sin ningun administrador.
+        // Si pudiera, la tienda podría quedarse sin ningún administrador.
         assertThat(cambio.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 

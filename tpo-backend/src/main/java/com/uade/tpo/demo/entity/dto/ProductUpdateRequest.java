@@ -32,7 +32,7 @@ public class ProductUpdateRequest {
     private Long categoryId;
 
     /* ----------------------------------------------------------------------
-       Ficha tecnica del juego. Todos opcionales: si no vienen, el producto se
+       Ficha técnica del juego. Todos opcionales: si no vienen, el producto se
        guarda igual y el frontend no muestra ese dato.
        ---------------------------------------------------------------------- */
 
@@ -48,7 +48,7 @@ public class ProductUpdateRequest {
     @Min(value = 0, message = "La edad no puede ser negativa")
     private Integer minAge;
 
-    /** Explicacion breve de como se juega. */
+    /** Explicación breve de cómo se juega. */
     private String howToPlay;
 
 

@@ -26,11 +26,11 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Usuario de la aplicacion.
+ * Usuario de la aplicación.
  *
  * Implementa UserDetails para integrarse con Spring Security.
  * Spring identifica al usuario mediante el valor devuelto por
- * getUsername(): en este caso el email utilizado para iniciar sesion.
+ * getUsername(): en este caso el email utilizado para iniciar sesión.
  */
 @Data
 @EqualsAndHashCode(of = "id")
@@ -48,7 +48,7 @@ public class User implements UserDetails {
 
     /**
 * Nombre de usuario elegido durante el registro.
- * Se guarda en la columna "username", mientras que la autenticacion
+ * Se guarda en la columna "username", mientras que la autenticación
  * se realiza mediante email.
  */
     @Column(name = "username", nullable = false, unique = true)
@@ -72,18 +72,18 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    // Relacion OneToOne: cada usuario tiene un unico carrito.
+    // Relación OneToOne: cada usuario tiene un único carrito.
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
 
-    // Relacion OneToMany: un usuario genera muchas ordenes.
+    // Relación OneToMany: un usuario genera muchas órdenes.
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
     // ---------------------------------------------------------------------
-    // Metodos que exige UserDetails
+    // Métodos que exige UserDetails
     // ---------------------------------------------------------------------
 
     /**

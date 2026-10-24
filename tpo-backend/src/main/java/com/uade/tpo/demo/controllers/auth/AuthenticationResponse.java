@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Lo que devuelven el registro y el login. En lugar del objeto usuario se
- * devuelve el token: es lo unico que el cliente necesita para las proximas
+ * devuelve el token: es lo único que el cliente necesita para las próximas
  * requests.
  */
 @Data

@@ -24,9 +24,9 @@ import com.uade.tpo.demo.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.exceptions.InvalidImageException;
 
 /**
- * Centraliza el manejo de errores: cada excepcion de negocio se traduce a un
+ * Centraliza el manejo de errores: cada excepción de negocio se traduce a un
  * status code HTTP con un cuerpo JSON siempre igual, para que el cliente
- * (Insomnia hoy, el frontend despues) pueda leer el motivo del rechazo.
+ * (Insomnia hoy, el frontend después) pueda leer el motivo del rechazo.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Login fallido. Se responde un mensaje generico a proposito: no se le
-     * aclara al cliente si lo que estuvo mal fue el email o la contrasenia.
+     * Login fallido. Se responde un mensaje genérico a propósito: no se le
+     * aclara al cliente si lo que estuvo mal fue el email o la contraseña.
      */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(AuthenticationException ex) {

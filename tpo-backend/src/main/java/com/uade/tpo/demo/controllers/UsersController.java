@@ -23,7 +23,7 @@ import com.uade.tpo.demo.service.UserService;
 import jakarta.validation.Valid;
 
 /**
- * Administracion de cuentas de usuario.
+ * Administración de cuentas de usuario.
  * Todo este controller es exclusivo del ADMIN (ver SecurityConfig).
  *
  * El registro y el login se gestionan en AuthenticationController,
@@ -36,7 +36,7 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
-    /** Listado de cuentas, paginado. Nunca devuelve contrasenias. */
+    /** Listado de cuentas, paginado. Nunca devuelve contraseñas. */
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getUsers(
             @RequestParam(required = false) Integer page,
@@ -54,7 +54,7 @@ public class UsersController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    /** Asignacion de permisos: cambia el rol de una cuenta. */
+    /** Asignación de permisos: cambia el rol de una cuenta. */
     @PatchMapping("/{userId}/role")
     public ResponseEntity<UserResponse> updateRole(
             @AuthenticationPrincipal User admin,

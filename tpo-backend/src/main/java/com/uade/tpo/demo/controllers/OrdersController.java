@@ -23,7 +23,7 @@ import com.uade.tpo.demo.exceptions.UserNotFoundException;
 import com.uade.tpo.demo.service.OrderService;
 
 /**
- * Las ordenes son siempre las del usuario logueado: el id sale del token.
+ * Las órdenes son siempre las del usuario logueado: el id sale del token.
  */
 @RestController
 @RequestMapping("orders")

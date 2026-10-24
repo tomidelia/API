@@ -36,13 +36,13 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relacion ManyToOne: muchas lineas pertenecen a un mismo carrito.
+    // Relación ManyToOne: muchas líneas pertenecen a un mismo carrito.
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    // Relacion ManyToOne: muchas lineas pueden apuntar al mismo producto.
+    // Relación ManyToOne: muchas líneas pueden apuntar al mismo producto.
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
@@ -50,7 +50,7 @@ public class CartItem {
     @Column(nullable = false)
     private Integer quantity;
 
-    // ESLABON 2 de 3: subtotal de una linea = precio con descuento x cantidad.
+    // ESLABÓN 2 de 3: subtotal de una línea = precio con descuento x cantidad.
     public BigDecimal getSubtotal() {
         return product.getFinalPrice().multiply(BigDecimal.valueOf(quantity));
     }
