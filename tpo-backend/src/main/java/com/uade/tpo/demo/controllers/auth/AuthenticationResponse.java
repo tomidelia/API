@@ -21,7 +21,7 @@ public class AuthenticationResponse {
     @JsonProperty("access_token")
     private String accessToken;
 
-    /** Se devuelve para que el frontend sepa que puede mostrar sin probar. */
+    /** Se devuelve para que el frontend sepa qué puede mostrar sin probar. */
     private String role;
 
     private String username;

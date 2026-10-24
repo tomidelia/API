@@ -34,7 +34,7 @@ import com.uade.tpo.demo.repository.UserRepository;
  * Carga el catálogo inicial de Mesa Llena la primera vez que arranca la
  * aplicación contra una base vacía.
  *
- * Por que existe: los productos viven en la base de datos, no en el repositorio.
+ * Por qué existe: los productos viven en la base de datos, no en el repositorio.
  * Si cada integrante del grupo clona el proyecto y levanta su propio MySQL, se
  * encuentra con un catálogo vacío y tiene que cargar todo a mano antes de poder
  * ver nada. Con esto, clonar y levantar alcanza para tener la tienda andando.
