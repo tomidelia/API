@@ -140,7 +140,7 @@ public class CartServiceImpl implements CartService {
                 .filter(item -> itemId.equals(item.getId()))
                 .findFirst()
                 .orElseThrow(() -> new CartItemNotFoundException(
-                        "El carrito no tiene una linea con id " + itemId));
+                        "El carrito no tiene una línea con id " + itemId));
     }
 
     private void validateStock(Product product, int quantity) throws InsufficientStockException {

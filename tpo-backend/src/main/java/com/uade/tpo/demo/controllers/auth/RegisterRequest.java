@@ -26,11 +26,11 @@ public class RegisterRequest {
     private String username;
 
     @NotBlank(message = "El email es obligatorio")
-    @Email(message = "El email no tiene un formato valido")
+    @Email(message = "El email no tiene un formato válido")
     private String email;
 
-    @NotBlank(message = "La contrasenia es obligatoria")
-    @Size(min = 6, message = "La contrasenia debe tener al menos 6 caracteres")
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
     @NotBlank(message = "El nombre es obligatorio")

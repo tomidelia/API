@@ -112,7 +112,7 @@ public class SecurityConfig {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write("""
-                    {"status":401,"error":"Unauthorized",                    "message":"Tenes que iniciar sesion para hacer esto."}""");
+                    {"status":401,"error":"Unauthorized",                    "message":"Tenés que iniciar sesión para hacer esto."}""");
         };
     }
 }

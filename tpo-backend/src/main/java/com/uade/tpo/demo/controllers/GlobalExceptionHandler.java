@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(AuthenticationException ex) {
-        return build(HttpStatus.UNAUTHORIZED, "Email o contrasenia incorrectos");
+        return build(HttpStatus.UNAUTHORIZED, "Email o contraseña incorrectos");
     }
 
     /** Errores de las validaciones declarativas de los DTO (@NotBlank, @Min...). */

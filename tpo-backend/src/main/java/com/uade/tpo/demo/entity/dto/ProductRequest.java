@@ -20,7 +20,7 @@ public class ProductRequest {
     @NotBlank(message = "El nombre del producto es obligatorio")
     private String name;
 
-    @NotBlank(message = "La descripcion del producto es obligatoria")
+    @NotBlank(message = "La descripción del producto es obligatoria")
     private String description;
 
     @NotNull(message = "El precio es obligatorio")
@@ -35,7 +35,7 @@ public class ProductRequest {
     @Max(value = 100, message = "El descuento no puede superar el 100%")
     private Integer discount = 0;
 
-    @NotNull(message = "La categoria es obligatoria")
+    @NotNull(message = "La categoría es obligatoria")
     private Long categoryId;
 
     /* ----------------------------------------------------------------------
@@ -43,13 +43,13 @@ public class ProductRequest {
        guarda igual y el frontend no muestra ese dato.
        ---------------------------------------------------------------------- */
 
-    @Min(value = 1, message = "El minimo de jugadores es 1")
+    @Min(value = 1, message = "El mínimo de jugadores es 1")
     private Integer minPlayers;
 
-    @Min(value = 1, message = "El maximo de jugadores debe ser al menos 1")
+    @Min(value = 1, message = "El máximo de jugadores debe ser al menos 1")
     private Integer maxPlayers;
 
-    @Min(value = 1, message = "La duracion tiene que ser de al menos 1 minuto")
+    @Min(value = 1, message = "La duración tiene que ser de al menos 1 minuto")
     private Integer durationMinutes;
 
     @Min(value = 0, message = "La edad no puede ser negativa")

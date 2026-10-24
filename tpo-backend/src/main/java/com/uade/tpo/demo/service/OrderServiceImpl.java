@@ -58,11 +58,11 @@ public class OrderServiceImpl implements OrderService {
             throw new UserNotFoundException("No existe el usuario con id " + userId);
 
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new EmptyCartException("El carrito del usuario " + userId + " esta vacio"));
+                .orElseThrow(() -> new EmptyCartException("El carrito del usuario " + userId + " está vacío"));
 
         // PASO 1: no se puede comprar un carrito vacio.
         if (cart.getItems().isEmpty())
-            throw new EmptyCartException("El carrito del usuario " + userId + " esta vacio");
+            throw new EmptyCartException("El carrito del usuario " + userId + " está vacío");
 
         Order order = new Order(cart.getUser());
         BigDecimal total = BigDecimal.ZERO;

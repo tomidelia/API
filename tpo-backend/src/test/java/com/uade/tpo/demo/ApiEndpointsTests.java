@@ -116,7 +116,7 @@ class ApiEndpointsTests {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         // No aclara si fallo el email o la contrasenia, a proposito.
-        assertThat(response.getBody().get("message").toString()).isEqualTo("Email o contrasenia incorrectos");
+        assertThat(response.getBody().get("message").toString()).isEqualTo("Email o contraseña incorrectos");
     }
 
     // ------------------------------------------------- endpoints publicos

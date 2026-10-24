@@ -297,7 +297,7 @@ class CarritoCheckoutOrdenesTests {
         EmptyCartException error = Assertions.assertThrows(EmptyCartException.class,
                 () -> orderService.checkout(comprador));
 
-        assertThat(error.getMessage()).contains("vacio");
+        assertThat(error.getMessage()).contains("vacío");
     }
 
     /**

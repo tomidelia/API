@@ -207,7 +207,7 @@ public class ProductServiceImpl implements ProductService {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() ->
                         new CategoryNotFoundException(
-                                "No existe la categoria con id " + categoryId));
+                                "No existe la categoría con id " + categoryId));
     }
 
     /**
@@ -227,7 +227,7 @@ public class ProductServiceImpl implements ProductService {
     for (MultipartFile file : files) {
         if (file == null || file.isEmpty()) {
             throw new InvalidImageException(
-                    "La imagen del producto no puede estar vacia");
+                    "La imagen del producto no puede estar vacía");
         }
     }
 

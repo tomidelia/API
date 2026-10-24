@@ -255,7 +255,7 @@ public class DemoDataLoader implements CommandLineRunner {
 
         try (InputStream entrada = getClass().getResourceAsStream(ruta)) {
             if (entrada == null)
-                throw new IllegalStateException("No se encontro la imagen " + ruta);
+                throw new IllegalStateException("No se encontró la imagen " + ruta);
 
             return new SerialBlob(entrada.readAllBytes());
 

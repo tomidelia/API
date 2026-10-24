@@ -16,6 +16,6 @@ public class AuthenticationRequest {
     @NotBlank(message = "El email es obligatorio")
     private String email;
 
-    @NotBlank(message = "La contrasenia es obligatoria")
+    @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 }
