@@ -74,16 +74,16 @@ public class DemoDataLoader implements CommandLineRunner {
         // aplicacion dos veces no duplique el catalogo, y que los productos que
         // se carguen despues desde el panel no corran riesgo.
         if (productRepository.count() > 0) {
-            log.info("La base ya tiene productos: no se carga el catalogo inicial.");
+            log.info("La base ya tiene productos: no se carga el catálogo inicial.");
             return;
         }
 
-        log.info("Base vacia: cargando el catalogo inicial de Mesa Llena...");
+        log.info("Base vacía: cargando el catálogo inicial de Mesa Llena...");
 
         // Dos compradores de ejemplo, para poder probar el carrito sin tener
         // que registrarse primero. La contrasenia de los dos es 123456.
-        crearComprador("sofia", "sofia@mail.com", "Sofia", "Gomez");
-        crearComprador("martin", "martin@mail.com", "Martin", "Alvarez");
+        crearComprador("sofia", "sofia@mail.com", "Sofía", "Gómez");
+        crearComprador("martin", "martin@mail.com", "Martín", "Álvarez");
 
         Category estrategia = crearCategoria("Estrategia");
         Category familiar = crearCategoria("Familiar");
@@ -186,7 +186,7 @@ public class DemoDataLoader implements CommandLineRunner {
                         + "arriba de todo. La torre se va volviendo más alta y más "
                         + "inestable con cada jugada. Pierde el que la termina tirando."));
 
-        log.info("Catalogo inicial cargado: {} productos en {} categorias.",
+        log.info("Catálogo inicial cargado: {} productos en {} categorías.",
                 productRepository.count(), categoryRepository.count());
     }
 

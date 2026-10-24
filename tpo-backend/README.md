@@ -362,11 +362,18 @@ los IDs esperados, desactivá antes la carga automática del catálogo demo poni
 
 ### Cómo arrancar
 
-1. Carpeta **`00 - Autenticacion`** → correr **`Login TIENDA`**.
+1. Carpeta **`00 - Autenticación`** → correr **`Login TIENDA`**.
 2. Copiar el `access_token` de la respuesta (el string, sin las comillas).
 3. Abrir el **Base Environment** y pegarlo en la variable `token_admin`.
 4. Correr **`Registrar comprador`** y pegar su token en `token_user`.
 5. Seguir con las carpetas 01 a 08 **en orden**.
+
+> **Los requests que suben fotos necesitan que elijas el archivo a mano.** Insomnia no
+> guarda la ruta del archivo dentro de la colección. En la pestaña *Multipart*, en el
+> campo `images`, tocá **Choose File** y elegí
+> `src/main/resources/demo-images/foto-producto.png`. Si lo dejás vacío, el backend
+> responde 400, porque todo producto tiene que tener al menos una foto (eso es justo lo
+> que prueba **`[400] Dejarlo sin fotos`**: ese es el único que va sin archivo).
 
 | Carpeta | Qué muestra |
 |---|---|
@@ -440,7 +447,7 @@ com.uade.tpo.demo
 ├── exceptions/           Excepciones de negocio
 ├── config/
 │   ├── AdminBootstrap     Crea la cuenta ADMIN de la tienda
-│   ├── DemoDataLoader     Carga el catalogo inicial si la base esta vacia
+│   ├── DemoDataLoader     Carga el catálogo inicial si la base está vacía
 │   └── WebConfig          CORS para el frontend (puerto 5173)
 ```
 
